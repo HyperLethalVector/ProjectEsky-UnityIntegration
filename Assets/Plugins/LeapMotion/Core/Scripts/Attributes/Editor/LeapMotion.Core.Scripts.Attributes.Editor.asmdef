@@ -1,0 +1,17 @@
+{
+    "name": "LeapMotion.Core.Scripts.Attributes.Editor",
+    "references": [
+        "LeapMotion"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
