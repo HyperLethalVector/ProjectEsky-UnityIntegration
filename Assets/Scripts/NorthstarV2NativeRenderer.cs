@@ -6,11 +6,12 @@ using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-namespace ProjectCupbard.Renderer{
+namespace ProjectCupboard.Renderer{
 public class NorthstarV2NativeRenderer : MonoBehaviour
 {
 
-        public ProjectCupbard.Tracking.CupboardTracker myTracker;
+        public ProjectCupboard.Tracking.CupboardTracker myTracker;
+        public ProjectCupboard.Tracking.CupboardTrackerRealsense myTrackerRS;
         public Transform Tracker;        
         public Transform RigCenter;
         public Transform LeapMotionCamera;
@@ -46,11 +47,21 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
                 Tracker.transform.localPosition  = new Vector3(calibration.localPositionRigFromTracker[0],calibration.localPositionRigFromTracker[1],calibration.localPositionRigFromTracker[2]);
                 Tracker.transform.localRotation = new Quaternion(calibration.localRotationRigFromTracker[0],calibration.localRotationRigFromTracker[1],calibration.localRotationRigFromTracker[2],calibration.localRotationRigFromTracker[3]);            
             }
-            myTracker.RigCenter = RigCenter;                        
-            if(calibration.transformBetweenTrackerAndCenter != null){
-                TransformFromTrackerToCenter = new Matrix4x4();         
-                SetMatrixToArray(calibration.transformBetweenTrackerAndCenter);                
-                myTracker.TransformFromTrackerToCenter = TransformFromTrackerToCenter;
+            if(myTracker != null){
+                myTracker.RigCenter = RigCenter;                        
+                if(calibration.transformBetweenTrackerAndCenter != null){
+                    TransformFromTrackerToCenter = new Matrix4x4();         
+                    SetMatrixToArray(calibration.transformBetweenTrackerAndCenter);                
+                    myTracker.TransformFromTrackerToCenter = TransformFromTrackerToCenter;
+                }
+            }
+            if(myTrackerRS != null){
+                myTrackerRS.RigCenter = RigCenter;                        
+                if(calibration.transformBetweenTrackerAndCenter != null){
+                    TransformFromTrackerToCenter = new Matrix4x4();         
+                    SetMatrixToArray(calibration.transformBetweenTrackerAndCenter);                
+                    myTrackerRS.TransformFromTrackerToCenter = TransformFromTrackerToCenter;
+                }
             }
 
         }
