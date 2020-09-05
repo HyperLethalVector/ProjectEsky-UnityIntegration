@@ -54,7 +54,7 @@ void main()
    if(xSettled <= 0.5){ //we're rendering the left eye (As it's flipped upside down)
       xSettled = (xSettled*2) ;     
       vec2 uv = vec2(xSettled,ySettled);      
-      vec3 rectilinear_coordinate = vec3(polyval2d(1.0 - uv.x, uv.y, rightUvToRectX),polyval2d(1.0 - uv.x, uv.y, rightUvToRectY), 1.5);
+      vec3 rectilinear_coordinate = vec3(polyval2d(1.0 - uv.x, uv.y, rightUvToRectX),polyval2d(1.0 - uv.x, uv.y, rightUvToRectY), 1.0);
       vec2 distorted_uv = WorldToViewportInnerVec(CameraMatrixRight,rectilinear_coordinate);       
       distorted_uv += vec2(rightOffset[0],rightOffset[1]);      
       if(distorted_uv.x < 0.0 || distorted_uv.x > 1.0 || distorted_uv.y < 0.0 || distorted_uv.y > 1.0)
@@ -65,7 +65,7 @@ void main()
    }else{ // we're rendering the left eye      
       xSettled = (xSettled-0.5)*2;      
       vec2 uv = vec2(xSettled,ySettled);
-      vec3 rectilinear_coordinate = vec3(polyval2d(1.0 - uv.x, uv.y, leftUvToRectX), polyval2d(1.0 - uv.x, uv.y, leftUvToRectY), 1.5);               
+      vec3 rectilinear_coordinate = vec3(polyval2d(1.0 - uv.x, uv.y, leftUvToRectX), polyval2d(1.0 - uv.x, uv.y, leftUvToRectY), 1.0);               
       vec2 distorted_uv = WorldToViewportInnerVec(CameraMatrixLeft,rectilinear_coordinate); 
       distorted_uv += vec2(leftOffset[0],leftOffset[1]);
       if(distorted_uv.x < 0.0 || distorted_uv.x > 1.0 || distorted_uv.y < 0.0 || distorted_uv.y > 1.0)
