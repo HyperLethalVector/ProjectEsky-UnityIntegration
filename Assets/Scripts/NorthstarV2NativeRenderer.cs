@@ -7,6 +7,21 @@ using AOT;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 namespace ProjectCupboard.Renderer{
+    [System.Serializable]
+    public class EyeBorders{
+        public float minX;
+        public float maxX;
+        public float minY;
+        public float maxY;
+        [HideInInspector]
+        public float[] myBorders = new float[4];
+        public void UpdateBorders(){
+            myBorders[0] = minX;
+            myBorders[1] = maxX;
+            myBorders[2] = minY;
+            myBorders[3] = maxY;
+        }
+    }
 public class NorthstarV2NativeRenderer : MonoBehaviour
 {
 
@@ -97,6 +112,9 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
         float[] rightOffset = new float[2]{0,0};
         float[] leftOffsetCheck = new float[2]{0,0};
         float[] rightOffsetCheck = new float[2]{0,0};
+        public bool UpdateBorders;
+        public EyeBorders leftBoarders;
+        public EyeBorders rightBoarders;        
         public void Initialization(){
                 if(myTexLeft == null){    
                     myTexLeft = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);
@@ -136,6 +154,12 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
             if(launchRenderer){
                 launchRenderer = false;  
                 Initialization();      
+            }
+            if(UpdateBorders){
+                UpdateBorders = false;
+                leftBoarders.UpdateBorders();
+                rightBoarders.UpdateBorders();
+                SetEyeBorders(leftBoarders.myBorders,rightBoarders.myBorders);
             }
             if(requiresRotation){
                 rightOffsetCheck[0] = LeftScreenSpaceOffset.y;
@@ -245,10 +269,10 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
             if(initialized)
             stop();
         }
-        [DllImport("libProjectCupboardLLAPI", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]
         static extern void RegisterDebugCallback(debugCallback cb);
 
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         static extern void stop();
         //Create string param callback delegate
         delegate void debugCallback(IntPtr request, int color, int size);
@@ -278,20 +302,22 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
 
 
         #region nativeMethods
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         // Update is called once per frame
         private static extern IntPtr GetUnityContext();
+        [DllImport("libProjectEskyLLAPI")]
+        private static extern void SetEyeBorders(float[] leftBorders, float[] rightBoarders);
 
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         private static extern void setScreenSpaceOffset(float[] leftOffset, float[] rightOffset);
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         private static extern void setLeftRightPointers(int Left, int Right);
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         private static extern void setLeftRightCameraMatricies(float[] leftCameraMatrix,float[] rightCameraMatrix);
 
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         private static extern void initialize(int xPos, int yPos, int w, int h);
-        [DllImport("libProjectCupboardLLAPI")]
+        [DllImport("libProjectEskyLLAPI")]
         private static extern void setCalibration(float[] leftuvtorectx, float[] leftuvtorecty, float[] rightuvtorectx, float[] rightuvtorecty);
         #endregion
     }

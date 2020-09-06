@@ -13,6 +13,8 @@ uniform float[16] CameraMatrixLeft;
 uniform float[16] CameraMatrixRight;
 uniform float[2] leftOffset;
 uniform float[2] rightOffset;
+uniform float[4] eyeBordersLeft;
+uniform float[4] eyeBordersRight;
 // Evaluate a 2D polynomial from its coefficients
 
 float polyval2d(float X, float Y, float[16] C) {
@@ -57,7 +59,7 @@ void main()
       vec3 rectilinear_coordinate = vec3(polyval2d(1.0 - uv.x, uv.y, rightUvToRectX),polyval2d(1.0 - uv.x, uv.y, rightUvToRectY), 1.0);
       vec2 distorted_uv = WorldToViewportInnerVec(CameraMatrixRight,rectilinear_coordinate);       
       distorted_uv += vec2(rightOffset[0],rightOffset[1]);      
-      if(distorted_uv.x < 0.0 || distorted_uv.x > 1.0 || distorted_uv.y < 0.0 || distorted_uv.y > 1.0)
+      if(distorted_uv.x < eyeBordersRight[0] || distorted_uv.x > eyeBordersRight[1] || distorted_uv.y < eyeBordersRight[2] || distorted_uv.y > eyeBordersRight[3])
          outputColor = vec4(0.0,0.0,0.0,1.0);
       else
          outputColor = texture2D(gSamplerRight, distorted_uv);      
@@ -68,7 +70,7 @@ void main()
       vec3 rectilinear_coordinate = vec3(polyval2d(1.0 - uv.x, uv.y, leftUvToRectX), polyval2d(1.0 - uv.x, uv.y, leftUvToRectY), 1.0);               
       vec2 distorted_uv = WorldToViewportInnerVec(CameraMatrixLeft,rectilinear_coordinate); 
       distorted_uv += vec2(leftOffset[0],leftOffset[1]);
-      if(distorted_uv.x < 0.0 || distorted_uv.x > 1.0 || distorted_uv.y < 0.0 || distorted_uv.y > 1.0)
+      if(distorted_uv.x < eyeBordersLeft[0] || distorted_uv.x > eyeBordersLeft[1] || distorted_uv.y < eyeBordersLeft[2] || distorted_uv.y > eyeBordersLeft[3])
          outputColor = vec4(0.0,0.0,0.0,1.0);
       else     
          outputColor = texture2D(gSamplerLeft, distorted_uv);                   
