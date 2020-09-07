@@ -145,12 +145,14 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
         float TimeLeft = 0f;
         public void ReloadLevel(){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }        
+        }    
+
         void Update()
         {
             if(Input.GetKeyDown(KeyCode.R)){
                 ReloadLevel();       
             }
+
             if(launchRenderer){
                 launchRenderer = false;  
                 Initialization();      
@@ -319,6 +321,7 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
         private static extern void initialize(int xPos, int yPos, int w, int h);
         [DllImport("libProjectEskyLLAPI")]
         private static extern void setCalibration(float[] leftuvtorectx, float[] leftuvtorecty, float[] rightuvtorectx, float[] rightuvtorecty);
+
         #endregion
     }
     [System.Serializable]
