@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-namespace ProjectCupboard.Renderer{
+namespace ProjectEsky.Renderer{
     [System.Serializable]
     public class EyeBorders{
         public float minX;
@@ -25,8 +25,7 @@ namespace ProjectCupboard.Renderer{
 public class NorthstarV2NativeRenderer : MonoBehaviour
 {
 
-        public ProjectCupboard.Tracking.CupboardTracker myTracker;
-        public ProjectCupboard.Tracking.CupboardTrackerRealsense myTrackerRS;
+        public ProjectEsky.Tracking.EskyTracker myTracker;
         public Transform Tracker;        
         public Transform RigCenter;
         public Transform LeapMotionCamera;
@@ -70,15 +69,6 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
                     myTracker.TransformFromTrackerToCenter = TransformFromTrackerToCenter;
                 }
             }
-            if(myTrackerRS != null){
-                myTrackerRS.RigCenter = RigCenter;                        
-                if(calibration.transformBetweenTrackerAndCenter != null){
-                    TransformFromTrackerToCenter = new Matrix4x4();         
-                    SetMatrixToArray(calibration.transformBetweenTrackerAndCenter);                
-                    myTrackerRS.TransformFromTrackerToCenter = TransformFromTrackerToCenter;
-                }
-            }
-
         }
         void Start()
         {
@@ -115,6 +105,7 @@ public class NorthstarV2NativeRenderer : MonoBehaviour
         public bool UpdateBorders;
         public EyeBorders leftBoarders;
         public EyeBorders rightBoarders;        
+
         public void Initialization(){
                 if(myTexLeft == null){    
                     myTexLeft = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);
