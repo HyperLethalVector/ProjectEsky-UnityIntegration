@@ -177,7 +177,7 @@ namespace Microsoft.MixedReality.Toolkit.Input
             { /* Nothing to do, a MixedRealityInputModule was applied in the editor. */ }
             else
             {
-                Debug.LogError($"For Mixed Reality Toolkit input to work properly, please remove your other input module(s) and add a {typeof(MixedRealityInputModule).Name} to your main camera.", inputModules[0]);
+             //   Debug.LogError($"For Mixed Reality Toolkit input to work properly, please remove your other input module(s) and add a {typeof(MixedRealityInputModule).Name} to your main camera.", inputModules[0]);
             }
 
             if (InputSystemProfile == null)
