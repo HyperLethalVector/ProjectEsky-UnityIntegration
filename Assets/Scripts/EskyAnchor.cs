@@ -4,10 +4,28 @@ using UnityEngine;
 namespace ProjectEsky.Tracking{
     public class EskyAnchor : MonoBehaviour
     {
-        public string ID;
+        [HideInInspector]
+        public Dictionary<string,EskyAnchorContent> myContent = new Dictionary<string, EskyAnchorContent>();
+        public Transform contentOrigin;
+        public static EskyAnchor instance;
         private void Awake() {
-            Debug.Log("Subscribing: " + ID);
-            ProjectEsky.Tracking.EskyTracker.instance.SubscribeAnchor(ID,this.gameObject);    
+            instance = this;
+            Debug.Log("Subscribing: origin");
+            ProjectEsky.Tracking.EskyTracker.instance.SubscribeAnchor("origin",this.gameObject);    
+        }
+        public static void Subscribe(EskyAnchorContent contenttosubscribe){
+            if(instance != null){
+                if(!instance.myContent.ContainsKey(contenttosubscribe.ContentID)){
+                    instance.myContent.Add(contenttosubscribe.ContentID,contenttosubscribe);
+                    contenttosubscribe.transform.parent = instance.transform;                   
+                }
+
+            } 
+        }
+        public void RelocalizationCallback(){
+            foreach(KeyValuePair<string,EskyAnchorContent> kvpeac in myContent){
+                kvpeac.Value.OnLocalizedCallback();
+            }
         }
     }
 }

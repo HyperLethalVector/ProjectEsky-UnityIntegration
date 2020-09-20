@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426504287295}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -46,124 +46,158 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce53d801255f5ee448c82513786f6bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myTracker: {fileID: 8877742487726951325}
+  myTracker: {fileID: 0}
   Tracker: {fileID: 0}
   RigCenter: {fileID: 360103426797230293}
   LeapMotionCamera: {fileID: 360103426840104890}
   LeftCamera: {fileID: 360103428309199808}
   RightCamera: {fileID: 360103426964646978}
   WindowPositionX: 0
-  WindowPositionY: 1100
-  WindowWidth: 1920
-  WindowHeight: 1080
+  WindowPositionY: 1080
+  WindowWidth: 3840
+  WindowHeight: 2160
   TransformFromTrackerToCenter:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
+    e00: 0.99746424
+    e01: -0.052764405
+    e02: 0.047760036
+    e03: -0.09267094
+    e10: 0.03017487
+    e11: 0.92131275
+    e12: 0.38764974
+    e13: 0.02536642
+    e20: -0.06445604
+    e21: -0.38522562
+    e22: 0.92056865
+    e23: -0.077840775
     e30: 0
     e31: 0
     e32: 0
-    e33: 0
+    e33: 1
   calibration:
     focusDistance: 0.75
-    baseline: 0.064
+    baseline: 0.032
     left_uv_to_rect_x:
-    - -1.0646981
-    - 1.7238634
-    - 0.19869429
-    - -0.21160789
-    - -0.07964302
-    - 0.8927902
-    - -0.39387473
-    - 0.17542489
-    - 0.08639451
-    - -0.10914362
-    - -0.33591977
-    - 0.44841313
-    - -0.009207448
-    - -0.26777846
-    - 0.9164106
-    - -0.69936126
+    - -0.87257123
+    - 1.4514661
+    - -0.646349
+    - 0.23963901
+    - 0.032897945
+    - 0.704594
+    - -1.0611472
+    - 0.6267725
+    - 0.036290407
+    - -0.6810554
+    - 1.1607745
+    - -0.61070853
+    - -0.13071816
+    - 0.74686605
+    - -0.952891
+    - 0.49546227
     left_uv_to_rect_y:
-    - -0.6375468
-    - 0.011712619
-    - -0.68879455
-    - 0.16564658
-    - 1.5006621
-    - 0.1406959
-    - 0.06037736
-    - -0.38166767
-    - 0.12539743
-    - -0.0962561
-    - -0.2222382
-    - 0.43213433
-    - -0.033596233
-    - 0.2077916
-    - -0.08683406
-    - -0.11420202
+    - -0.403564
+    - 0.14476772
+    - -0.26325762
+    - -0.07070177
+    - 0.94253933
+    - 0.2600616
+    - -0.63755846
+    - 0.32920977
+    - -0.039608657
+    - -1.4456575
+    - 1.7510014
+    - -0.51903963
+    - 0.15437154
+    - 0.6319102
+    - -0.6819888
+    - 0.043756526
     right_uv_to_rect_x:
-    - -1.2180172
-    - 2.286885
-    - 0.32425258
-    - -0.2205813
-    - 0.01551852
-    - -0.25033143
-    - -0.6459811
-    - 0.28377807
-    - 0.0866891
-    - -0.6840855
-    - 1.3476305
-    - -0.75269186
-    - -0.041858573
-    - 0.3936936
-    - -0.80480635
-    - 0.47461385
+    - -0.8661478
+    - 1.6066314
+    - -0.42350826
+    - 0.16676047
+    - -0.41265342
+    - 3.0653038
+    - -6.7538695
+    - 3.7666135
+    - 1.1457812
+    - -8.112741
+    - 16.08663
+    - -9.112227
+    - -0.80060464
+    - 5.272238
+    - -10.211628
+    - 5.821474
     right_uv_to_rect_y:
-    - -0.6728127
-    - -0.33667612
-    - 0.9628593
-    - -0.11851709
-    - 1.6209255
-    - 0.9999538
-    - -1.5762162
-    - 0.6989359
-    - 0.05747681
-    - -1.4621149
-    - 2.6452587
-    - -1.420678
-    - -0.08462453
-    - 0.7393053
-    - -1.3489027
-    - 0.67829055
-    left_eye_offset: []
-    right_eye_offset: []
-    localPositionLeapMotion: []
-    localRotationLeapMotion: []
-    localPositionRigFromTracker: []
-    localRotationRigFromTracker: []
-    transformBetweenTrackerAndCenter: []
+    - -0.37550429
+    - 0.041606568
+    - 0.27970496
+    - -0.022244757
+    - 1.0723399
+    - 0.23362207
+    - -1.1420395
+    - 0.676599
+    - -0.08548838
+    - -1.7681419
+    - 3.1734855
+    - -1.473401
+    - 0.083101705
+    - 1.0238241
+    - -1.6811265
+    - 0.74400693
+    left_eye_offset:
+    - 0
+    - 0.01
+    right_eye_offset:
+    - 0
+    - 0.09
+    localPositionLeapMotion:
+    - -0.018259687
+    - 0.0500936
+    - 0.059545416
+    localRotationLeapMotion:
+    - 0.099349126
+    - 0.041503597
+    - 0.00805395
+    - 0.99415416
+    localPositionRigFromTracker:
+    - 0
+    - 0
+    - 0
+    localRotationRigFromTracker:
+    - 0
+    - 0
+    - 0
+    - 1
+    transformBetweenTrackerAndCenter:
+    - 0.99746424
+    - 0.03017487
+    - -0.06445604
+    - 0
+    - -0.052764405
+    - 0.92131275
+    - -0.38522562
+    - 0
+    - 0.047760036
+    - 0.38764974
+    - 0.92056865
+    - 0
+    - -0.09267094
+    - 0.02536642
+    - -0.077840775
+    - 1
   requiresRotation: 1
   allowsSaving: 1
   load6DOFCalibration: 0
   loadLeapCalibration: 1
-  LeftScreenSpaceOffset: {x: 0.09, y: 0}
-  RightScreenSpaceOffset: {x: 0.01, y: -0.035}
+  LeftScreenSpaceOffset: {x: 0.1, y: 0}
+  RightScreenSpaceOffset: {x: 0.035, y: -0.005}
   updateOffsets: 1
-  UpdateBorders: 0
+  UpdateBorders: 1
   leftBoarders:
     minX: 0
-    maxX: 0
+    maxX: 1
     minY: 0
-    maxY: 0
+    maxY: 1
     myBorders:
     - 0
     - 0
@@ -171,9 +205,9 @@ MonoBehaviour:
     - 0
   rightBoarders:
     minX: 0
-    maxX: 0
+    maxX: 1
     minY: 0
-    maxY: 0
+    maxY: 1
     myBorders:
     - 0
     - 0
@@ -215,7 +249,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66030f667080b2b44bd039e61a167f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReLocalizationCallback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  mapCollectedCallback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ProjectEsky.Tracking.EskyMapSaverBasic, Assembly-CSharp
+        m_MethodName: ReceiveFile
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   smoothing: 0.1
+  smoothingRotation: 0.00001
   TransformFromTrackerToCenter:
     e00: 0
     e01: 0
@@ -233,7 +298,8 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 0
-  RigCenter: {fileID: 360103426797230293}
+  RigCenter: {fileID: 0}
+  ShouldGrabMapTest: 0
 --- !u!1 &360103426797230292
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +323,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426797230292}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -265,7 +331,7 @@ Transform:
   - {fileID: 360103427514317667}
   m_Father: {fileID: 360103426504287424}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
 --- !u!1 &360103426840104886
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,12 +341,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 360103426840104890}
-  - component: {fileID: 360103426840104889}
   - component: {fileID: 360103426840104888}
   - component: {fileID: 360103426840104887}
-  - component: {fileID: 6608672789980628341}
   - component: {fileID: 6608672789980628340}
   - component: {fileID: 6608672789980628343}
+  - component: {fileID: 2379832632935083745}
   m_Layer: 0
   m_Name: LeapMotion
   m_TagString: MainCamera
@@ -295,21 +360,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426840104886}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0.3420201, y: -0, z: -0, w: 0.9396927}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.9999999, y: 0.99999994, z: 1}
   m_Children: []
   m_Father: {fileID: 360103426797230293}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 18.15, y: 0, z: 0}
---- !u!81 &360103426840104889
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360103426840104886}
-  m_Enabled: 1
 --- !u!20 &360103426840104888
 Camera:
   m_ObjectHideFlags: 0
@@ -379,29 +436,6 @@ MonoBehaviour:
   _temporalWarpingMode: 0
   _customWarpAdjustment: 17
   _updateHandInPrecull: 0
---- !u!114 &6608672789980628341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360103426840104886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lockCursorWhenFocusLocked: 1
-  setCursorInvisibleWhenFocusLocked: 0
-  maxGazeCollisionDistance: 10
-  raycastLayerMasks:
-  - serializedVersion: 2
-    m_Bits: 4294967291
-  stabilizer:
-    storedStabilitySamples: 60
-  gazeTransform: {fileID: 0}
-  minHeadVelocityThreshold: 0.5
-  maxHeadVelocityThreshold: 2
 --- !u!114 &6608672789980628340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,6 +470,29 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
+--- !u!114 &2379832632935083745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360103426840104886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockCursorWhenFocusLocked: 1
+  setCursorInvisibleWhenFocusLocked: 0
+  maxGazeCollisionDistance: 10
+  raycastLayerMasks:
+  - serializedVersion: 2
+    m_Bits: 4294967291
+  stabilizer:
+    storedStabilitySamples: 60
+  gazeTransform: {fileID: 0}
+  minHeadVelocityThreshold: 0.5
+  maxHeadVelocityThreshold: 2
 --- !u!1 &360103426964647359
 GameObject:
   m_ObjectHideFlags: 0

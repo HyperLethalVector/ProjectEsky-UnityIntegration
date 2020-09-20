@@ -22,7 +22,6 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTracker : MonoBehaviour
     {
-        public TextAsset loadTestMap;
         public UnityEngine.Events.UnityEvent ReLocalizationCallback;
         public UnityEngine.Events.UnityEvent<byte[],byte[]> mapCollectedCallback;
         Dictionary<string,GameObject> subscribedIDs = new Dictionary<string, GameObject>();
@@ -40,7 +39,6 @@ namespace ProjectEsky.Tracking{
         public Matrix4x4 TransformFromTrackerToCenter;
         public Transform RigCenter;
         Vector3 currentEuler = Vector3.zero;
-        public TextAsset binaryToLoad;
         EskyMap myCurrentMap;
         List<EskyPoseCallbackData> callbackEvents = new List<EskyPoseCallbackData>();
         // Start is called before the first frame update
