@@ -38,8 +38,10 @@ you should try your best to adjust the offsets so that the objects in the scene 
 <TODO: Integrate stabilizer, it's working but buggy due to tracker jitter>
 
 KNOWN ISSUES:
+- The relocalizer is known to be a bit finnicky, try reloading the map onto the t265
 
-1) The relocalizer is known to be a bit finnicky, try reloading the map onto the t265
+KNOWN LIMITATIONS:
+- The project is limited to the OpenGL rendering backend
 
 If you wish to ask questions, please join the North Star Community on Discord! 
 https://discord.gg/fPza2G
@@ -66,5 +68,7 @@ While I don't really give a fuck where and how you use this software, with great
 That being said, this is only under one condition, that you cite the following paper:
 <Bibtex yet to be added, paper is waiting to release>
 <https://www.researchgate.net/publication/344337571_Project_Esky_Enabling_High_Fidelity_Augmented_Reality_Content_on_an_Open_Source_Platform>
+
+If you're looking to contribute, feel free to fork! 
 
 Finally, I always welcome requests for help/collaborations, especially if you're building fun shit! Seek me out :D 
