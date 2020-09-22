@@ -9,6 +9,7 @@ This includes a unity package that handles
 - MRTK Integration with the Leap Motion controller (aligned with the user's view)
 - 6DoF Head Tracking + Re-Localization events (Save map, load map, add persistence, callbacks, ect.)
 - Spatial mapping (Via the ZED SDK, with future plans to rip out the point cloud for t265 to allow scene authoring/phantom model interactions)
+- Object Persistence (Via the t265/1 or ZED SDK <Available in another repo, TBA>)
 
 This channel is dedicated to those who want to use esky in their projects, however if you do use this for research purposes, we kindly ask you to cite the following paper: <TBA>
 
@@ -33,4 +34,23 @@ you should try your best to adjust the offsets so that the objects in the scene 
 <TODO: A scene specifically for screen-space alignment>
 <TODO: Instructions for hand alignment, and save left/right eye offsets in the calibration file>
 <TODO: Native intergration of the ZED tracker, either as a source for pose input, or 3D reconstruction>
+<TODO: Add instructions for relocalization>
+<TODO: Integrate stabilizer, it's working but buggy due to tracker jitter>
 
+KNOWN ISSUES:
+
+1) The relocalizer is known to be a bit finnicky, try reloading the map onto the t265
+
+If you wish to ask questions, please join the North Star Community on Discord! 
+https://discord.gg/fPza2G
+
+
+Quick FAQ:
+
+1) Hey, I see some extra glsl shaders in the root directory, what are these for?
+Actually these are what powers the magic behind the V2 renderer system, I am passing a render texture pointer to a separate OpenGL instance! Allowing for realtime updates and undistortion! (And is what will allow the stabilization techniques later, stay tuned ;) )
+
+2) Wait, does that mean I can use _any_ headset?
+YOU ARE GOSH DARN RIGHT!
+By editing the vertex and fragment shaders, (or heck, even the OpenGL instance!) you can use _any_ headset.
+Alternatively you could replace the cameras in the unity scene with any renderer, steamVR, ect. and still utilize the leapmotion MRTK integration esky provides!
