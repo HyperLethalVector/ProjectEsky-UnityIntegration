@@ -54,3 +54,14 @@ Actually these are what powers the magic behind the V2 renderer system, I am pas
 YOU ARE GOSH DARN RIGHT!
 By editing the vertex and fragment shaders, (or heck, even the OpenGL instance!) you can use _any_ headset.
 Alternatively you could replace the cameras in the unity scene with any renderer, steamVR, ect. and still utilize the leapmotion MRTK integration esky provides!
+
+3) Open Source Renderer plugin/integration?
+Look here: https://github.com/HyperLethalVector/ProjectEskyLLAPI
+<Project currently empty due to dependency issues>
+
+THIS CODE IS LICENSED UNDER THE 3 CLAUSE BSD LICENSE.
+
+While I don't really give a fuck where and how you use this software, with great power comes great responsibility.
+That being said, this is only under one condition, that you cite the following paper:
+<Bibtex yet to be added, paper is waiting to release>
+<https://www.researchgate.net/publication/344337571_Project_Esky_Enabling_High_Fidelity_Augmented_Reality_Content_on_an_Open_Source_Platform>
