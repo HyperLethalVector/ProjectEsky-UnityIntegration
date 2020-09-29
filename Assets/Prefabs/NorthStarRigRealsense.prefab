@@ -53,7 +53,7 @@ MonoBehaviour:
   LeftCamera: {fileID: 360103428309199808}
   RightCamera: {fileID: 360103426964646978}
   WindowPositionX: 0
-  WindowPositionY: 1080
+  WindowPositionY: -1080
   WindowWidth: 3840
   WindowHeight: 2160
   TransformFromTrackerToCenter:
@@ -279,8 +279,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  velocity: {x: 0, y: 0, z: 0}
+  velocityRotation: {x: 0, y: 0, z: 0}
   smoothing: 0.1
   smoothingRotation: 0.00001
+  currentRealsensePose:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  currentRealsenseObject:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   TransformFromTrackerToCenter:
     e00: 0
     e01: 0
@@ -299,6 +317,7 @@ MonoBehaviour:
     e32: 0
     e33: 0
   RigCenter: {fileID: 0}
+  currentEuler: {x: 0, y: 0, z: 0}
   ShouldGrabMapTest: 0
 --- !u!1 &360103426797230292
 GameObject:

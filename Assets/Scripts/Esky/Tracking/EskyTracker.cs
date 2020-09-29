@@ -8,6 +8,81 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ProjectEsky.Tracking{
+    public struct Chunk
+    {
+        /// <summary>
+        /// Reference to the GameObject that holds the MeshFilter. 
+        /// </summary>
+        public GameObject o;
+        /// <summary>
+        /// Dynamic mesh data that will change throughout the spatial mapping.
+        /// </summary>
+        public ProceduralMesh proceduralMesh;
+        /// <summary>
+        /// Final mesh, assigned to once the spatial mapping is over and done processing. 
+        /// </summary>
+        public Mesh mesh;
+    }
+
+    /// <summary>
+    /// Structure to contain a temporary buffer that holds triangles and vertices. 
+    /// </summary>
+    public struct ProceduralMesh
+    {
+        /// <summary>
+        /// List of vertex indexes that make up triangles. 
+        /// </summary>
+        public int[] triangles;
+        /// <summary>
+        /// List of vertices in the mesh. 
+        /// </summary>
+        public Vector3[] vertices;
+        /// <summary>
+        /// MeshFilter of a GameObject that holds the chunk this ProceduralMesh represents. 
+        /// </summary>
+        public MeshFilter mesh;
+    };
+
+
+
+    /// <summary>
+    /// Spatial mapping depth resolution presets.
+    /// </summary>
+    public enum RESOLUTION
+    {
+        /// <summary>
+        /// Create detailed geometry. Requires lots of memory.
+        /// </summary>
+        HIGH,
+        /// <summary>
+        /// Small variations in the geometry will disappear. Useful for large objects.
+        /// </summary>
+        ///
+        MEDIUM,
+        /// <summary>
+        /// Keeps only large variations of the geometry. Useful for outdoors.
+        /// </summary>
+        LOW
+    }
+
+    /// <summary>
+    ///  Spatial mapping depth range presets.
+    /// </summary>
+    public enum RANGE
+    {
+        /// <summary>
+        /// Geometry within 3.5 meters of the camera will be mapped. 
+        /// </summary>
+        NEAR,
+        /// <summary>
+        /// Geometry within 5 meters of the camera will be mapped. 
+        /// </summary>
+        MEDIUM,
+        /// <summary>
+        /// Objects as far as 10 meters away are mapped. Useful for outdoors.
+        /// </summary>
+        FAR
+    }
     [System.Serializable]
     public class EskyMap{
         public byte[] meshDataArray;
@@ -24,21 +99,26 @@ namespace ProjectEsky.Tracking{
     {
         public UnityEngine.Events.UnityEvent ReLocalizationCallback;
         public UnityEngine.Events.UnityEvent<byte[],byte[]> mapCollectedCallback;
-        Dictionary<string,GameObject> subscribedIDs = new Dictionary<string, GameObject>();
+        public Dictionary<string,GameObject> subscribedIDs = new Dictionary<string, GameObject>();
         public static EskyTracker instance;
         delegate void EventCallback(int Result);
         delegate void MapDataCallback(IntPtr data, int Length);
         delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
         bool didInitializeTracker = false;
-        Vector3 velocity = Vector3.zero;
-        Vector3 velocityRotation = Vector3.zero;
+        [HideInInspector]        
+        public Vector3 velocity = Vector3.zero;
+        [HideInInspector]
+        public Vector3 velocityRotation = Vector3.zero;
         public float smoothing = 0.1f;
         public float smoothingRotation= 0.1f;
-        float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
-        float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+        [HideInInspector]
+        public float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+        [HideInInspector]        
+        public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         public Matrix4x4 TransformFromTrackerToCenter;
         public Transform RigCenter;
-        Vector3 currentEuler = Vector3.zero;
+        [HideInInspector]
+        public Vector3 currentEuler = Vector3.zero;
         EskyMap myCurrentMap;
         List<EskyPoseCallbackData> callbackEvents = new List<EskyPoseCallbackData>();
         // Start is called before the first frame update
@@ -53,6 +133,9 @@ namespace ProjectEsky.Tracking{
             Debug.Log("Updating map binaries");
             StartTrackerThread(false);        
         }
+        public virtual void AfterInitialization(){
+
+        }
         EskyMap em;
         public void LoadEskyMapInformation(byte[] eskyMapData,byte[] eskyMapInfo){
             BinaryFormatter bf = new BinaryFormatter();
@@ -61,7 +144,7 @@ namespace ProjectEsky.Tracking{
             SetMapData(eskyMapData,eskyMapData.Length);
         }
         public bool ShouldGrabMapTest= false;
-        public void ObtainPose(){
+        public virtual void ObtainPose(){
             IntPtr ptr = GetLatestPose();                
             Marshal.Copy(ptr, currentRealsensePose, 0, 7);
             transform.localPosition = Vector3.SmoothDamp(transform.localPosition, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
@@ -78,7 +161,6 @@ namespace ProjectEsky.Tracking{
         }    
         void Awake(){
             instance = this;
-
         }
         public void SubscribeAnchor(string ID, GameObject gameObject){
             if(!subscribedIDs.ContainsKey(ID)){
@@ -120,8 +202,7 @@ namespace ProjectEsky.Tracking{
                     instance.ReLocalizationCallback.Invoke();
                 }                
             }
-            if(ShouldCallBackMap){
-                
+            if(ShouldCallBackMap){                
                 if(instance.mapCollectedCallback != null){
                     instance.mapCollectedCallback.Invoke(callbackMemoryMap,callbackMemoryMapInfo);
                 }
@@ -165,17 +246,31 @@ namespace ProjectEsky.Tracking{
             Vector3 pp = new Vector3(position.x,position.y,-position.z);
             return (pp,qq);
         }
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
-        private static extern void SaveOriginPose();
+        #endif
+        public static extern void SaveOriginPose();
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
-        private static extern IntPtr GetLatestPose();
+        #endif
+        public static extern IntPtr GetLatestPose();
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
-        private static extern void InitializeTrackerObject();
+        #endif
+        public static extern void InitializeTrackerObject();
 
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
-        private static extern void StartTrackerThread(bool useLocalization);
-  //      [DllImport("libProjectEskyLLAPI")]
-//        private static extern void 
+        #endif
+        public static extern void StartTrackerThread(bool useLocalization);
         bool UpdateLocalizationCallback = false;
         [MonoPInvokeCallback(typeof(EventCallback))]
         static void OnEventCallback(int Response)
@@ -193,7 +288,11 @@ namespace ProjectEsky.Tracking{
             }
             //Ptr to string
         }
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        #else
+        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        #endif
         static extern void RegisterDebugCallback(debugCallback cb);
         delegate void debugCallback(IntPtr request, int color, int size);
          enum Color { red, green, blue, black, white, yellow, orange };
@@ -215,7 +314,11 @@ namespace ProjectEsky.Tracking{
 
             UnityEngine.Debug.Log("Realsense Tracker: " + debug_string);
         }
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
+        #endif
         static extern void StopTrackers();
         void OnDestroy(){
             StopTrackers();
@@ -262,23 +365,53 @@ namespace ProjectEsky.Tracking{
             instance.AddPoseFromCallback(epcd);
             Debug.Log("Received a pose from the relocalization");
         }
-
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        #else
+        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        #endif
         static extern void RegisterObjectPoseCallback(PoseReceivedCallback poseReceivedCallback);
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        #else
+        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        #endif
         static extern void RegisterLocalizationCallback(EventCallback cb);
-
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        #else
+        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        #endif
         static extern void RegisterBinaryMapCallback(MapDataCallback cb);
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
+        #endif
         static extern void SetBinaryMapData(string inputBytesLocation);
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
+        #endif
         static extern void SetObjectPoseInLocalizedMap(string objectID,float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
+        #endif
         static extern void ObtainObjectPoseInLocalizedMap(string objectID);
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
+        #endif
         static extern void ObtainMap();
+        #if ZED_SDK
+        [DllImport("libProjectEskyLLAPIZED")]        
+        #else
         [DllImport("libProjectEskyLLAPI")]
+        #endif
         static extern void SetMapData(byte[] inputData, int Length);
     }
 }

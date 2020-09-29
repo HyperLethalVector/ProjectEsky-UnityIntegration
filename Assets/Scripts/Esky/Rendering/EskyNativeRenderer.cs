@@ -22,7 +22,7 @@ namespace ProjectEsky.Renderer{
             myBorders[3] = maxY;
         }
     }
-public class NorthstarV2NativeRenderer : MonoBehaviour
+public class EskyNativeRenderer : MonoBehaviour
 {
 
         public ProjectEsky.Tracking.EskyTracker myTracker;
