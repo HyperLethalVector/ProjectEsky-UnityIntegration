@@ -67,8 +67,8 @@ Dang Right!, Look here: https://github.com/HyperLethalVector/ProjectEskyLLAPI
 
 THIS CODE IS LICENSED UNDER THE 3 CLAUSE BSD LICENSE.
 
-While I don't really give a fuck where and how you use this software, with great power comes great responsibility.
-That being said, this is only under one condition, that you cite the following paper:
+While I don't really care where and how you use this software, with great power comes great responsibility.
+That being said, using this software comes with one condition, that you please cite the following paper:
 <Bibtex yet to be added, paper is waiting to release>
 <https://www.researchgate.net/publication/344337571_Project_Esky_Enabling_High_Fidelity_Augmented_Reality_Content_on_an_Open_Source_Platform>
 
