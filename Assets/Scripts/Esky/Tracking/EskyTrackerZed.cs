@@ -139,7 +139,8 @@ namespace ProjectEsky.Tracking{
 //                    chunkPairs.Value.mesh.SetUVs(0,transformedChunkUVs);                                        
                     chunkPairs.Value.mesh.UploadMeshData(false);
                     chunkPairs.Value.o.GetComponent<MeshFilter>().mesh = chunkPairs.Value.mesh;
-
+//                    chunkPairs.Value.mesh.
+                    Debug.Log("Updating Mesh: " + chunkPairs.Key + " With new vertices: " + chunkPairs.Value.mesh.vertices);
                     
                 }else{
                     List<Vector3> transformedChunkVertices = new List<Vector3>();
