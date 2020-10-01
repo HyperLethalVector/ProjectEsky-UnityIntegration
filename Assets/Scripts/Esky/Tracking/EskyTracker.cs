@@ -8,81 +8,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ProjectEsky.Tracking{
-    public struct Chunk
-    {
-        /// <summary>
-        /// Reference to the GameObject that holds the MeshFilter. 
-        /// </summary>
-        public GameObject o;
-        /// <summary>
-        /// Dynamic mesh data that will change throughout the spatial mapping.
-        /// </summary>
-        public ProceduralMesh proceduralMesh;
-        /// <summary>
-        /// Final mesh, assigned to once the spatial mapping is over and done processing. 
-        /// </summary>
-        public Mesh mesh;
-    }
-
-    /// <summary>
-    /// Structure to contain a temporary buffer that holds triangles and vertices. 
-    /// </summary>
-    public struct ProceduralMesh
-    {
-        /// <summary>
-        /// List of vertex indexes that make up triangles. 
-        /// </summary>
-        public int[] triangles;
-        /// <summary>
-        /// List of vertices in the mesh. 
-        /// </summary>
-        public Vector3[] vertices;
-        /// <summary>
-        /// MeshFilter of a GameObject that holds the chunk this ProceduralMesh represents. 
-        /// </summary>
-        public MeshFilter mesh;
-    };
-
-
-
-    /// <summary>
-    /// Spatial mapping depth resolution presets.
-    /// </summary>
-    public enum RESOLUTION
-    {
-        /// <summary>
-        /// Create detailed geometry. Requires lots of memory.
-        /// </summary>
-        HIGH,
-        /// <summary>
-        /// Small variations in the geometry will disappear. Useful for large objects.
-        /// </summary>
-        ///
-        MEDIUM,
-        /// <summary>
-        /// Keeps only large variations of the geometry. Useful for outdoors.
-        /// </summary>
-        LOW
-    }
-
-    /// <summary>
-    ///  Spatial mapping depth range presets.
-    /// </summary>
-    public enum RANGE
-    {
-        /// <summary>
-        /// Geometry within 3.5 meters of the camera will be mapped. 
-        /// </summary>
-        NEAR,
-        /// <summary>
-        /// Geometry within 5 meters of the camera will be mapped. 
-        /// </summary>
-        MEDIUM,
-        /// <summary>
-        /// Objects as far as 10 meters away are mapped. Useful for outdoors.
-        /// </summary>
-        FAR
-    }
+    
     [System.Serializable]
     public class EskyMap{
         public byte[] meshDataArray;
@@ -132,6 +58,7 @@ namespace ProjectEsky.Tracking{
             RegisterLocalizationCallback(OnEventCallback);            
             Debug.Log("Updating map binaries");
             StartTrackerThread(false);        
+            AfterInitialization();
         }
         public virtual void AfterInitialization(){
 
@@ -219,6 +146,10 @@ namespace ProjectEsky.Tracking{
                     }
                 }
             }
+            AfterUpdate();
+        }
+        public virtual void AfterUpdate(){
+
         }
         public void ObtainObjectPoses(){
              foreach(KeyValuePair<string,GameObject> kvp in subscribedIDs){

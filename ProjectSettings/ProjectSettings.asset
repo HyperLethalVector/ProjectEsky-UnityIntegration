@@ -582,7 +582,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: LEAPMOTIONCORE_PRESENT;ZED_SDK
+    1: LEAPMOTIONCORE_PRESENT
     4: ARFOUNDATION_PRESENT
     7: ARFOUNDATION_PRESENT
     14: 

@@ -108,12 +108,12 @@ public class EskyNativeRenderer : MonoBehaviour
 
         public void Initialization(){
                 if(myTexLeft == null){    
-                    myTexLeft = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);
+                    myTexLeft = new RenderTexture(WindowHeight,WindowWidth,16,RenderTextureFormat.ARGBFloat);
                     myTexLeft.Create();        
 
                 }
                 if(myTexRight == null){
-                    myTexRight = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);                    
+                    myTexRight = new RenderTexture(WindowHeight,WindowWidth,16,RenderTextureFormat.ARGBFloat);                    
                     myTexRight.Create();                            
                 }                
 

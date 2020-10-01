@@ -5,14 +5,73 @@ using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
 namespace ProjectEsky.Tracking{
+    public struct Chunk
+    {
+
+        /// <summary>
+        /// Reference to the GameObject that holds the MeshFilter. 
+        /// </summary>
+
+        public GameObject o;
+        /// <summary>
+        /// Final mesh, assigned to once the spatial mapping is over and done processing. 
+        /// </summary>
+        public Mesh mesh;
+        public MeshCollider meshCollider;
+        public MeshRenderer meshRenderer;
+        public void UpdateChunkInformation(float[] chunkVertices, float[] chunkNormals, float[] chunkUVs, int[] chunkIndices){
+            this.chunkVertices = chunkVertices;
+            this.chunkNormals = chunkNormals;
+            this.chunkUVs = chunkUVs;
+            this.chunkIndices = chunkIndices;
+        }
+        public float[] chunkVertices;
+        public float[] chunkNormals;
+        public float[] chunkUVs;
+        public int[] chunkIndices;
+        public bool isDirty;
+    }
     public class EskyTrackerZed : EskyTracker
     {
-        public List<Mesh> myMeshes;
-
-        [MonoPInvokeCallback(typeof(MeshChunksReceivedCallback))]
-        static void OnMapCallback()
-        {            //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
+        public Material spatialMappingMaterial;
+        public GameObject MeshParent;
+        public static EskyTrackerZed zedInstance;
+        Dictionary<int,Chunk> myMeshChunks = new Dictionary<int, Chunk>();
+        public override void AfterInitialization(){
+            zedInstance = this;
+            RegisterMeshCallback(OnMapCallback);
+            RegisterMeshCompleteCallback(OnTransferComplete);
         }
+        [MonoPInvokeCallback(typeof(MeshChunksReceivedCallback))]
+        static void OnMapCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength)
+        {            //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
+            Debug.Log("Received Chunk ID: " + ChunkID + ", vertices length " + verticesLength + ", normals length: " + normalsLength + ", uvlengths: " + uvsLength + ", indicies: " + triangleIndices);
+            float[] chunkVertices = new float[verticesLength];
+            float[] chunkNormals = new float[normalsLength];
+            float[] chunkUVs = new float[uvsLength];
+            int[] chunkIndices = new int[triangleIndicesLength];
+
+            Marshal.Copy(vertices, chunkVertices, 0, verticesLength);
+            Marshal.Copy(normals, chunkNormals, 0, normalsLength);
+//            Marshal.Copy(uvs, chunkUVs, 0, uvsLength);
+            Marshal.Copy(triangleIndices, chunkIndices,0,triangleIndicesLength);
+            if(zedInstance != null){
+                if(!zedInstance.myMeshChunks.ContainsKey(ChunkID)){
+                    Chunk chk = new Chunk();
+                    chk.UpdateChunkInformation(chunkVertices,chunkNormals,chunkUVs,chunkIndices);
+                    zedInstance.myMeshChunks.Add(ChunkID,chk);
+                    chk.isDirty = true;
+                }
+            }
+        }
+        [MonoPInvokeCallback(typeof(MeshChunkTransferCompleted))]
+        static void OnTransferComplete(){
+            Debug.Log("Transfer complete");
+            if(zedInstance != null){
+                zedInstance.processMeshList = true;               
+            }
+        }
+        bool processMeshList = false;
         public override void ObtainPose(){
             IntPtr ptr = GetLatestPose();                
             Marshal.Copy(ptr, currentRealsensePose, 0, 7);
@@ -28,8 +87,111 @@ namespace ProjectEsky.Tracking{
                 RigCenter.transform.rotation = m.rotation;
             }
         }
-        delegate void MeshChunksReceivedCallback();
+
+        public bool StartSpatialMappingTest = false;
+        public bool StopSpatialMappingTest = false;
+        public override void AfterUpdate() {
+            if(StartSpatialMappingTest){
+                StartSpatialMappingTest = false;
+
+                DoStartSpatialMapping();
+            }
+            if(StopSpatialMappingTest){
+                StopSpatialMappingTest = false;
+                DoStopSpatialMapping();
+            }
+            if(processMeshList){
+                processMeshList = false;
+                CheckChunks();
+                CompletedMeshUpdate();
+            }
+        }
+        public void DoStartSpatialMapping(){
+            StartSpatialMapping(45);
+            if(MeshParent == null){
+                MeshParent = new GameObject("MeshParent");                
+            }
+        }
+        public void DoStopSpatialMapping(){
+            StopSpatialMapping(45);
+        }
+
+        void CheckChunks(){
+            Dictionary<int,Chunk> chunksToUpdateInMain = new Dictionary<int, Chunk>();
+            foreach(KeyValuePair<int,Chunk> chunkPairs in myMeshChunks){
+                if(chunkPairs.Value.o != null){
+                    List<Vector3> transformedChunkVertices = new List<Vector3>();
+                    for(int i = 0; i < chunkPairs.Value.chunkVertices.Length; i+=3){
+                        transformedChunkVertices.Add(new Vector3(chunkPairs.Value.chunkVertices[i],chunkPairs.Value.chunkVertices[i+1],chunkPairs.Value.chunkVertices[i+2]));
+                    }
+                    List<Vector3> transformedChunkNormals = new List<Vector3>();
+                    for(int i = 0; i < chunkPairs.Value.chunkNormals.Length; i+=3){
+                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkNormals[i],chunkPairs.Value.chunkNormals[i+1],chunkPairs.Value.chunkNormals[i+2]));
+                    }
+                    List<Vector2> transformedChunkUVs = new List<Vector2>();       
+                    for(int i = 0; i < chunkPairs.Value.chunkUVs.Length; i+=2){
+                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkUVs[i],chunkPairs.Value.chunkUVs[i+1]));
+                    }                           
+
+                    chunkPairs.Value.mesh.SetVertices(transformedChunkVertices);
+                    chunkPairs.Value.mesh.SetNormals(transformedChunkNormals);
+                    chunkPairs.Value.mesh.SetIndices(chunkPairs.Value.chunkIndices,MeshTopology.Triangles,0);                    
+//                    chunkPairs.Value.mesh.SetUVs(0,transformedChunkUVs);                                        
+                    chunkPairs.Value.mesh.UploadMeshData(false);
+                    chunkPairs.Value.o.GetComponent<MeshFilter>().mesh = chunkPairs.Value.mesh;
+
+                    
+                }else{
+                    List<Vector3> transformedChunkVertices = new List<Vector3>();
+                    for(int i = 0; i < chunkPairs.Value.chunkVertices.Length; i+=3){
+                        transformedChunkVertices.Add(new Vector3(chunkPairs.Value.chunkVertices[i],chunkPairs.Value.chunkVertices[i+1],chunkPairs.Value.chunkVertices[i+2]));
+                    }
+                    List<Vector3> transformedChunkNormals = new List<Vector3>();
+                    for(int i = 0; i < chunkPairs.Value.chunkNormals.Length; i+=3){
+                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkNormals[i],chunkPairs.Value.chunkNormals[i+1],chunkPairs.Value.chunkNormals[i+2]));
+                    }
+                    List<Vector2> transformedChunkUVs = new List<Vector2>();       
+                    for(int i = 0; i < chunkPairs.Value.chunkUVs.Length; i+=2){
+                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkUVs[i],chunkPairs.Value.chunkUVs[i+1]));
+                    }                                     
+                    GameObject g = new GameObject("Mesh Chunk - " + chunkPairs);
+                    g.AddComponent<MeshRenderer>();
+                    g.GetComponent<MeshRenderer>().material = spatialMappingMaterial;
+                    g.AddComponent<MeshFilter>();
+                    g.GetComponent<MeshFilter>().mesh = chunkPairs.Value.mesh;
+                    
+                    Chunk modifiedJunk = chunkPairs.Value;
+                    modifiedJunk.mesh = new Mesh();
+                    modifiedJunk.mesh.SetVertices(transformedChunkVertices);
+                    modifiedJunk.mesh.SetNormals(transformedChunkNormals);
+//                    chunkPairs.Value.mesh.SetUVs(0,transformedChunkUVs);                                        
+                    modifiedJunk.mesh.SetIndices(chunkPairs.Value.chunkIndices,MeshTopology.Triangles,0);
+                    modifiedJunk.mesh.UploadMeshData(false);
+                    modifiedJunk.o = g;
+                    chunksToUpdateInMain.Add(chunkPairs.Key,modifiedJunk);
+                    g.transform.parent = MeshParent.transform;                                        
+                }
+            }
+            foreach(KeyValuePair<int,Chunk> kvp in chunksToUpdateInMain){
+                myMeshChunks[kvp.Key] = kvp.Value;
+            }   
+                                  
+        }
+        delegate void MeshChunkTransferCompleted();
+        delegate void MeshChunksReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength);
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void RegisterMeshCompleteCallback(MeshChunkTransferCompleted callback);
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void RegisterMeshCallback(MeshChunksReceivedCallback meshReceivedCallback);        
         [DllImport("libProjectEskyLLAPIZED")]
         static extern void SetMapData(byte[] inputData, int Length);
+        
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void StartSpatialMapping(int ChunkSizes);
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void StopSpatialMapping(int ChunkSizes);
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void CompletedMeshUpdate();
+
     }
 }
