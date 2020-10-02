@@ -5,17 +5,9 @@ using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
 namespace ProjectEsky.Tracking{
-    public struct Chunk
+    public class Chunk
     {
-
-        /// <summary>
-        /// Reference to the GameObject that holds the MeshFilter. 
-        /// </summary>
-
         public GameObject o;
-        /// <summary>
-        /// Final mesh, assigned to once the spatial mapping is over and done processing. 
-        /// </summary>
         public Mesh mesh;
         public MeshCollider meshCollider;
         public MeshRenderer meshRenderer;
@@ -39,28 +31,28 @@ namespace ProjectEsky.Tracking{
         Dictionary<int,Chunk> myMeshChunks = new Dictionary<int, Chunk>();
         public override void AfterInitialization(){
             zedInstance = this;
-            RegisterMeshCallback(OnMapCallback);
+            RegisterMeshCallback(OnMeshReceivedCallback);
             RegisterMeshCompleteCallback(OnTransferComplete);
         }
         [MonoPInvokeCallback(typeof(MeshChunksReceivedCallback))]
-        static void OnMapCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength)
+        static void OnMeshReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength)
         {            //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
-            Debug.Log("Received Chunk ID: " + ChunkID + ", vertices length " + verticesLength + ", normals length: " + normalsLength + ", uvlengths: " + uvsLength + ", indicies: " + triangleIndices);
             float[] chunkVertices = new float[verticesLength];
             float[] chunkNormals = new float[normalsLength];
             float[] chunkUVs = new float[uvsLength];
             int[] chunkIndices = new int[triangleIndicesLength];
-
             Marshal.Copy(vertices, chunkVertices, 0, verticesLength);
             Marshal.Copy(normals, chunkNormals, 0, normalsLength);
-//            Marshal.Copy(uvs, chunkUVs, 0, uvsLength);
-            Marshal.Copy(triangleIndices, chunkIndices,0,triangleIndicesLength);
+            Marshal.Copy(triangleIndices, chunkIndices,0,triangleIndicesLength);            
             if(zedInstance != null){
                 if(!zedInstance.myMeshChunks.ContainsKey(ChunkID)){
                     Chunk chk = new Chunk();
                     chk.UpdateChunkInformation(chunkVertices,chunkNormals,chunkUVs,chunkIndices);
                     zedInstance.myMeshChunks.Add(ChunkID,chk);
                     chk.isDirty = true;
+                }else{
+                    zedInstance.myMeshChunks[ChunkID].UpdateChunkInformation(chunkVertices,chunkNormals,chunkUVs,chunkIndices);
+                    zedInstance.myMeshChunks[ChunkID].isDirty = true;
                 }
             }
         }
@@ -119,64 +111,63 @@ namespace ProjectEsky.Tracking{
         void CheckChunks(){
             Dictionary<int,Chunk> chunksToUpdateInMain = new Dictionary<int, Chunk>();
             foreach(KeyValuePair<int,Chunk> chunkPairs in myMeshChunks){
-                if(chunkPairs.Value.o != null){
-                    List<Vector3> transformedChunkVertices = new List<Vector3>();
-                    for(int i = 0; i < chunkPairs.Value.chunkVertices.Length; i+=3){
-                        transformedChunkVertices.Add(new Vector3(chunkPairs.Value.chunkVertices[i],chunkPairs.Value.chunkVertices[i+1],chunkPairs.Value.chunkVertices[i+2]));
-                    }
-                    List<Vector3> transformedChunkNormals = new List<Vector3>();
-                    for(int i = 0; i < chunkPairs.Value.chunkNormals.Length; i+=3){
-                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkNormals[i],chunkPairs.Value.chunkNormals[i+1],chunkPairs.Value.chunkNormals[i+2]));
-                    }
-                    List<Vector2> transformedChunkUVs = new List<Vector2>();       
-                    for(int i = 0; i < chunkPairs.Value.chunkUVs.Length; i+=2){
-                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkUVs[i],chunkPairs.Value.chunkUVs[i+1]));
-                    }                           
+                if(chunkPairs.Value.isDirty){
+                    chunkPairs.Value.isDirty = false;
+                    if(chunkPairs.Value.o != null){
+                        List<Vector3> transformedChunkVertices = new List<Vector3>();
+                        for(int i = 0; i < chunkPairs.Value.chunkVertices.Length; i+=3){
+                            transformedChunkVertices.Add(new Vector3(chunkPairs.Value.chunkVertices[i],chunkPairs.Value.chunkVertices[i+1],chunkPairs.Value.chunkVertices[i+2]));
+                        } 
+                        List<Vector3> transformedChunkNormals = new List<Vector3>();
+                        for(int i = 0; i < chunkPairs.Value.chunkNormals.Length; i+=3){
+                            transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkNormals[i],chunkPairs.Value.chunkNormals[i+1],chunkPairs.Value.chunkNormals[i+2]));
+                        }
+                        List<Vector2> transformedChunkUVs = new List<Vector2>();       
+                        for(int i = 0; i < chunkPairs.Value.chunkUVs.Length; i+=2){
+                            transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkUVs[i],chunkPairs.Value.chunkUVs[i+1]));
+                        }                           
+                        Chunk modifiedJunk = chunkPairs.Value;                        
+                        modifiedJunk.mesh.Clear();
+                        modifiedJunk.mesh.vertices = transformedChunkVertices.ToArray();
+                        modifiedJunk.mesh.normals = transformedChunkNormals.ToArray();                    
+                        modifiedJunk.mesh.triangles = chunkPairs.Value.chunkIndices; 
+                        chunksToUpdateInMain.Add(chunkPairs.Key,modifiedJunk);                                    
+                    }else{
+                        List<Vector3> transformedChunkVertices = new List<Vector3>();
+                        for(int i = 0; i < chunkPairs.Value.chunkVertices.Length; i+=3){
+                            transformedChunkVertices.Add(new Vector3(chunkPairs.Value.chunkVertices[i],chunkPairs.Value.chunkVertices[i+1],chunkPairs.Value.chunkVertices[i+2]));
+                        }
+                        List<Vector3> transformedChunkNormals = new List<Vector3>();
+                        for(int i = 0; i < chunkPairs.Value.chunkNormals.Length; i+=3){
+                            transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkNormals[i],chunkPairs.Value.chunkNormals[i+1],chunkPairs.Value.chunkNormals[i+2]));
+                        }
+                        List<Vector2> transformedChunkUVs = new List<Vector2>();       
+                        for(int i = 0; i < chunkPairs.Value.chunkUVs.Length; i+=2){
+                            transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkUVs[i],chunkPairs.Value.chunkUVs[i+1]));
+                        }                                     
 
-                    chunkPairs.Value.mesh.SetVertices(transformedChunkVertices);
-                    chunkPairs.Value.mesh.SetNormals(transformedChunkNormals);
-                    chunkPairs.Value.mesh.SetIndices(chunkPairs.Value.chunkIndices,MeshTopology.Triangles,0);                    
-//                    chunkPairs.Value.mesh.SetUVs(0,transformedChunkUVs);                                        
-                    chunkPairs.Value.mesh.UploadMeshData(false);
-                    chunkPairs.Value.o.GetComponent<MeshFilter>().mesh = chunkPairs.Value.mesh;
-//                    chunkPairs.Value.mesh.
-                    Debug.Log("Updating Mesh: " + chunkPairs.Key + " With new vertices: " + chunkPairs.Value.mesh.vertices);
-                    
-                }else{
-                    List<Vector3> transformedChunkVertices = new List<Vector3>();
-                    for(int i = 0; i < chunkPairs.Value.chunkVertices.Length; i+=3){
-                        transformedChunkVertices.Add(new Vector3(chunkPairs.Value.chunkVertices[i],chunkPairs.Value.chunkVertices[i+1],chunkPairs.Value.chunkVertices[i+2]));
+                        Chunk modifiedJunk = chunkPairs.Value;
+                        modifiedJunk.mesh = new Mesh();
+                        modifiedJunk.mesh.MarkDynamic();
+                        modifiedJunk.mesh.SetVertices(transformedChunkVertices);
+                        modifiedJunk.mesh.SetNormals(transformedChunkNormals);                    
+                        modifiedJunk.mesh.SetIndices(chunkPairs.Value.chunkIndices,MeshTopology.Triangles,0);
+                        modifiedJunk.mesh.UploadMeshData(false);
+                        GameObject g = new GameObject("Mesh Chunk - " + chunkPairs);
+                        g.AddComponent<MeshRenderer>();
+                        g.GetComponent<MeshRenderer>().material = spatialMappingMaterial;
+                        g.AddComponent<MeshFilter>();
+                        g.GetComponent<MeshFilter>().mesh = chunkPairs.Value.mesh;
+                        g.GetComponent<MeshFilter>().sharedMesh = chunkPairs.Value.mesh;
+                        modifiedJunk.o = g;
+                        chunksToUpdateInMain.Add(chunkPairs.Key,modifiedJunk);
+                        g.transform.parent = MeshParent.transform;                                        
                     }
-                    List<Vector3> transformedChunkNormals = new List<Vector3>();
-                    for(int i = 0; i < chunkPairs.Value.chunkNormals.Length; i+=3){
-                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkNormals[i],chunkPairs.Value.chunkNormals[i+1],chunkPairs.Value.chunkNormals[i+2]));
-                    }
-                    List<Vector2> transformedChunkUVs = new List<Vector2>();       
-                    for(int i = 0; i < chunkPairs.Value.chunkUVs.Length; i+=2){
-                        transformedChunkNormals.Add(new Vector3(chunkPairs.Value.chunkUVs[i],chunkPairs.Value.chunkUVs[i+1]));
-                    }                                     
-                    GameObject g = new GameObject("Mesh Chunk - " + chunkPairs);
-                    g.AddComponent<MeshRenderer>();
-                    g.GetComponent<MeshRenderer>().material = spatialMappingMaterial;
-                    g.AddComponent<MeshFilter>();
-                    g.GetComponent<MeshFilter>().mesh = chunkPairs.Value.mesh;
-                    
-                    Chunk modifiedJunk = chunkPairs.Value;
-                    modifiedJunk.mesh = new Mesh();
-                    modifiedJunk.mesh.SetVertices(transformedChunkVertices);
-                    modifiedJunk.mesh.SetNormals(transformedChunkNormals);
-//                    chunkPairs.Value.mesh.SetUVs(0,transformedChunkUVs);                                        
-                    modifiedJunk.mesh.SetIndices(chunkPairs.Value.chunkIndices,MeshTopology.Triangles,0);
-                    modifiedJunk.mesh.UploadMeshData(false);
-                    modifiedJunk.o = g;
-                    chunksToUpdateInMain.Add(chunkPairs.Key,modifiedJunk);
-                    g.transform.parent = MeshParent.transform;                                        
                 }
             }
             foreach(KeyValuePair<int,Chunk> kvp in chunksToUpdateInMain){
                 myMeshChunks[kvp.Key] = kvp.Value;
-            }   
-                                  
+            }                                  
         }
         delegate void MeshChunkTransferCompleted();
         delegate void MeshChunksReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength);

@@ -72,7 +72,7 @@ public class EskyNativeRenderer : MonoBehaviour
         }
         void Start()
         {
-            Application.targetFrameRate = 120;
+            Application.targetFrameRate = 60;
             StartCoroutine(PostUpdateSendBuffers());
             LoadCalibration();
             LeftCamera.transform.localPosition=new Vector3(-(calibration.baseline/2.0f),0,0);
@@ -81,10 +81,11 @@ public class EskyNativeRenderer : MonoBehaviour
                 LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
                 RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
             }
+            GL.IssuePluginEvent(GetUnityContext(),1);            
             updateOffsets = true;
             RegisterDebugCallback(OnDebugCallback);    
-            GL.IssuePluginEvent(GetUnityContext(),1);    
-            StartCoroutine(StartSpatialMappingDelayed(2));
+//            GL.IssuePluginEvent(GetUnityContext(),1);    
+//            StartCoroutine(StartSpatialMappingDelayed(2));
         }
         public IEnumerator StartSpatialMappingDelayed(float seconds){
             yield return new WaitForSeconds(seconds);
@@ -105,7 +106,12 @@ public class EskyNativeRenderer : MonoBehaviour
         public bool UpdateBorders;
         public EyeBorders leftBoarders;
         public EyeBorders rightBoarders;        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void OnBeforeSceneLoadRuntimeMethod()
+        {
 
+            Debug.Log("Before scene loaded");
+        }
         public void Initialization(){
                 if(myTexLeft == null){    
                     myTexLeft = new RenderTexture(WindowHeight,WindowWidth,16,RenderTextureFormat.ARGBFloat);
@@ -117,14 +123,13 @@ public class EskyNativeRenderer : MonoBehaviour
                     myTexRight.Create();                            
                 }                
 
-                initialize(WindowPositionX,WindowPositionY,WindowWidth,WindowHeight);                    
+                      
                 LeftCamera.targetTexture = myTexLeft;
                 RightCamera.targetTexture = myTexRight;
                 int left = (int)myTexLeft.GetNativeTexturePtr();
                 int right = (int)myTexRight.GetNativeTexturePtr();
                 Debug.LogError(left);
                 Debug.LogError(right);              
-                GL.IssuePluginEvent(GetUnityContext(),1);    
                 LeftArray = MatrixToFloat(LeftCamera.projectionMatrix);
                 RightArray = MatrixToFloat(RightCamera.projectionMatrix);                
                 setLeftRightPointers(left,right);
@@ -290,6 +295,9 @@ public class EskyNativeRenderer : MonoBehaviour
         }
         public IEnumerator PostUpdateSendBuffers(){
             yield return new WaitForEndOfFrame(); // wait til the end of the first frame to start the process for launching
+            yield return new WaitForSeconds(2);
+            initialize(WindowPositionX,WindowPositionY,WindowWidth,WindowHeight);              
+            yield return new WaitForSeconds(1);            
             launchRenderer = true;
         }
 
