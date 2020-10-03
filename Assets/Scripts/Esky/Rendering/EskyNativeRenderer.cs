@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using AOT;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -72,18 +73,22 @@ public class EskyNativeRenderer : MonoBehaviour
         }
         void Start()
         {
+            RegisterDebugCallback(OnDebugCallback);                
+            GL.IssuePluginEvent(GetUnityContext(),1);              
             Application.targetFrameRate = 60;
             StartCoroutine(PostUpdateSendBuffers());
             LoadCalibration();
             LeftCamera.transform.localPosition=new Vector3(-(calibration.baseline/2.0f),0,0);
             RightCamera.transform.localPosition=new Vector3((calibration.baseline/2.0f),0,0);
             if(requiresRotation){
+                LeftCamera.fieldOfView = 70 * (WindowWidth/WindowHeight) / ((float)LeftCamera.pixelWidth / LeftCamera.pixelHeight);
+                RightCamera.fieldOfView = 70 * (WindowWidth/WindowHeight) / ((float)LeftCamera.pixelWidth / LeftCamera.pixelHeight);                
                 LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
                 RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
             }
-            GL.IssuePluginEvent(GetUnityContext(),1);            
+          
             updateOffsets = true;
-            RegisterDebugCallback(OnDebugCallback);    
+
 //            GL.IssuePluginEvent(GetUnityContext(),1);    
 //            StartCoroutine(StartSpatialMappingDelayed(2));
         }
@@ -113,15 +118,17 @@ public class EskyNativeRenderer : MonoBehaviour
             Debug.Log("Before scene loaded");
         }
         public void Initialization(){
-                if(myTexLeft == null){    
+                if(requiresRotation){
+                    myTexLeft = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);
+                    myTexLeft.Create();        
+                    myTexRight = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);                    
+                    myTexRight.Create(); 
+                }else{
                     myTexLeft = new RenderTexture(WindowHeight,WindowWidth,16,RenderTextureFormat.ARGBFloat);
                     myTexLeft.Create();        
-
-                }
-                if(myTexRight == null){
                     myTexRight = new RenderTexture(WindowHeight,WindowWidth,16,RenderTextureFormat.ARGBFloat);                    
-                    myTexRight.Create();                            
-                }                
+                    myTexRight.Create();                     
+                }                           
 
                       
                 LeftCamera.targetTexture = myTexLeft;
@@ -142,7 +149,6 @@ public class EskyNativeRenderer : MonoBehaviour
         public void ReloadLevel(){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }    
-
         void Update()
         {
             if(Input.GetKeyDown(KeyCode.R)){
@@ -158,6 +164,12 @@ public class EskyNativeRenderer : MonoBehaviour
                 leftBoarders.UpdateBorders();
                 rightBoarders.UpdateBorders();
                 SetEyeBorders(leftBoarders.myBorders,rightBoarders.myBorders);
+            }
+            if(Input.GetKeyDown(KeyCode.C)){
+                initialized = false;
+                stop();
+                Thread.Sleep(1000);
+                StartCoroutine(PostUpdateSendBuffers());
             }
             if(requiresRotation){
                 rightOffsetCheck[0] = LeftScreenSpaceOffset.y;
