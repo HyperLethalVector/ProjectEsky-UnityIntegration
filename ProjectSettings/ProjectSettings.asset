@@ -582,7 +582,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: LEAPMOTIONCORE_PRESENT
+    1: LEAPMOTIONCORE_PRESENT;CALIBRATOR_ENABLED
     4: 
     7: 
     14: 

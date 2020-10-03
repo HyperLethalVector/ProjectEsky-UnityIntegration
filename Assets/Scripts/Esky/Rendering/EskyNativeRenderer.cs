@@ -81,8 +81,8 @@ public class EskyNativeRenderer : MonoBehaviour
             LeftCamera.transform.localPosition=new Vector3(-(calibration.baseline/2.0f),0,0);
             RightCamera.transform.localPosition=new Vector3((calibration.baseline/2.0f),0,0);
             if(requiresRotation){
-                LeftCamera.fieldOfView = 70 * (WindowWidth/WindowHeight) / ((float)LeftCamera.pixelWidth / LeftCamera.pixelHeight);
-                RightCamera.fieldOfView = 70 * (WindowWidth/WindowHeight) / ((float)LeftCamera.pixelWidth / LeftCamera.pixelHeight);                
+//                LeftCamera.fieldOfView = 70 * (WindowWidth/WindowHeight) / ((float)LeftCamera.pixelWidth / LeftCamera.pixelHeight);
+  //              RightCamera.fieldOfView = 70 * (WindowWidth/WindowHeight) / ((float)LeftCamera.pixelWidth / LeftCamera.pixelHeight);                
                 LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
                 RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
             }
@@ -119,9 +119,9 @@ public class EskyNativeRenderer : MonoBehaviour
         }
         public void Initialization(){
                 if(requiresRotation){
-                    myTexLeft = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);
+                    myTexLeft = new RenderTexture(WindowWidth*2,WindowHeight*2,16,RenderTextureFormat.ARGBFloat);
                     myTexLeft.Create();        
-                    myTexRight = new RenderTexture(WindowWidth,WindowHeight,16,RenderTextureFormat.ARGBFloat);                    
+                    myTexRight = new RenderTexture(WindowWidth*2,WindowHeight*2,16,RenderTextureFormat.ARGBFloat);                    
                     myTexRight.Create(); 
                 }else{
                     myTexLeft = new RenderTexture(WindowHeight,WindowWidth,16,RenderTextureFormat.ARGBFloat);
@@ -138,7 +138,11 @@ public class EskyNativeRenderer : MonoBehaviour
                 Debug.LogError(left);
                 Debug.LogError(right);              
                 LeftArray = MatrixToFloat(LeftCamera.projectionMatrix);
-                RightArray = MatrixToFloat(RightCamera.projectionMatrix);                
+                RightArray = MatrixToFloat(RightCamera.projectionMatrix);
+                if(requiresRotation){
+                    LeftCamera.fieldOfView = 58.71551f;
+                    RightCamera.fieldOfView = 58.71551f;//CALCULATED
+                }                
                 setLeftRightPointers(left,right);
                 setCalibration(calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y);
                 setLeftRightCameraMatricies(LeftArray,RightArray);                    
@@ -257,12 +261,11 @@ public class EskyNativeRenderer : MonoBehaviour
             calibration.localPositionLeapMotion = new float[3]{localPosLeapMotion.x,localPosLeapMotion.y,localPosLeapMotion.z};
             calibration.localRotationLeapMotion = new float[4]{localRotLeapMotion.x,localRotLeapMotion.y,localRotLeapMotion.z,localRotLeapMotion.w};
 
-
+            if(Tracker != null){
             Vector3 localPosTrackingRig = Tracker.localPosition;
             Quaternion localRotTrackingRig = Tracker.localRotation;
             calibration.localPositionRigFromTracker = new float[3]{localPosTrackingRig.x,localPosTrackingRig.y,localPosTrackingRig.z};            
             calibration.localRotationRigFromTracker = new float[4]{localRotTrackingRig.x,localRotTrackingRig.y,localRotTrackingRig.z,localRotTrackingRig.w};
-
             Matrix4x4 WtoTracker = Tracker.worldToLocalMatrix;
             Matrix4x4 WtoRC =  RigCenter.worldToLocalMatrix;
 
@@ -271,6 +274,8 @@ public class EskyNativeRenderer : MonoBehaviour
             float[] transformAsArray = new float[16];
             GetMatrixAsArray(AtoL,ref transformAsArray);
             calibration.transformBetweenTrackerAndCenter = transformAsArray;
+            }
+
             string json = JsonUtility.ToJson(calibration);
             System.IO.File.WriteAllText("NorthStarCalibration.json", json);
             Debug.Log("Saved Calibration");
