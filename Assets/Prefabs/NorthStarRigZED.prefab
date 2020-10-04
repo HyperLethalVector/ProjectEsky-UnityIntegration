@@ -295,8 +295,8 @@ MonoBehaviour:
   allowsSaving: 1
   load6DOFCalibration: 0
   loadLeapCalibration: 1
-  LeftScreenSpaceOffset: {x: 0.1, y: 0}
-  RightScreenSpaceOffset: {x: 0.035, y: -0.005}
+  LeftScreenSpaceOffset: {x: 0.1, y: -0.1}
+  RightScreenSpaceOffset: {x: 0.035, y: -0.1}
   updateOffsets: 1
   UpdateBorders: 1
   leftBoarders:
@@ -401,7 +401,10 @@ MonoBehaviour:
   RigCenter: {fileID: 0}
   currentEuler: {x: 0, y: 0, z: 0}
   ShouldGrabMapTest: 0
-  myMeshes: []
+  spatialMappingMaterial: {fileID: 0}
+  MeshParent: {fileID: 0}
+  StartSpatialMappingTest: 0
+  StopSpatialMappingTest: 0
 --- !u!1 &8316358255301950391
 GameObject:
   m_ObjectHideFlags: 0

@@ -312,8 +312,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66030f667080b2b44bd039e61a167f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReLocalizationCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  mapCollectedCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  velocity: {x: 0, y: 0, z: 0}
+  velocityRotation: {x: 0, y: 0, z: 0}
   smoothing: 0.1
   smoothingRotation: 0.0001
+  currentRealsensePose:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  currentRealsenseObject:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   TransformFromTrackerToCenter:
     e00: 0
     e01: 0
@@ -332,8 +356,8 @@ MonoBehaviour:
     e32: 0
     e33: 0
   RigCenter: {fileID: 0}
-  binaryToLoad: {fileID: 0}
-  updateOrigin: 0
+  currentEuler: {x: 0, y: 0, z: 0}
+  ShouldGrabMapTest: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,8 +370,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758f7837cd4235042b20666b06807fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ReLocalizationCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  mapCollectedCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  velocity: {x: 0, y: 0, z: 0}
+  velocityRotation: {x: 0, y: 0, z: 0}
   smoothing: 0.1
   smoothingRotation: 0.0001
+  currentRealsensePose:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  currentRealsenseObject:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   TransformFromTrackerToCenter:
     e00: 0
     e01: 0
@@ -366,8 +414,12 @@ MonoBehaviour:
     e32: 0
     e33: 0
   RigCenter: {fileID: 0}
-  binaryToLoad: {fileID: 0}
-  updateOrigin: 0
+  currentEuler: {x: 0, y: 0, z: 0}
+  ShouldGrabMapTest: 0
+  spatialMappingMaterial: {fileID: 0}
+  MeshParent: {fileID: 0}
+  StartSpatialMappingTest: 0
+  StopSpatialMappingTest: 0
 --- !u!850595691 &1951979263
 LightingSettings:
   m_ObjectHideFlags: 0
