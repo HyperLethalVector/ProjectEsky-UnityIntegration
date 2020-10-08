@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 360103426504287424}
-  - component: {fileID: 360103426504287425}
   - component: {fileID: 6608672789980628342}
   - component: {fileID: 8877742487726951325}
+  - component: {fileID: 208651425}
   m_Layer: 0
   m_Name: NorthStarRigRealsense
   m_TagString: Untagged
@@ -34,185 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &360103426504287425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360103426504287295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce53d801255f5ee448c82513786f6bfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  myTracker: {fileID: 0}
-  Tracker: {fileID: 0}
-  RigCenter: {fileID: 360103426797230293}
-  LeapMotionCamera: {fileID: 360103426840104890}
-  LeftCamera: {fileID: 360103428309199808}
-  RightCamera: {fileID: 360103426964646978}
-  WindowPositionX: 1080
-  WindowPositionY: 0
-  WindowWidth: 3840
-  WindowHeight: 2160
-  TransformFromTrackerToCenter:
-    e00: 0.99746424
-    e01: -0.052764405
-    e02: 0.047760036
-    e03: -0.09267094
-    e10: 0.03017487
-    e11: 0.92131275
-    e12: 0.38764974
-    e13: 0.02536642
-    e20: -0.06445604
-    e21: -0.38522562
-    e22: 0.92056865
-    e23: -0.077840775
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 1
-  calibration:
-    focusDistance: 0.75
-    baseline: 0.032
-    left_uv_to_rect_x:
-    - -0.87257123
-    - 1.4514661
-    - -0.646349
-    - 0.23963901
-    - 0.032897945
-    - 0.704594
-    - -1.0611472
-    - 0.6267725
-    - 0.036290407
-    - -0.6810554
-    - 1.1607745
-    - -0.61070853
-    - -0.13071816
-    - 0.74686605
-    - -0.952891
-    - 0.49546227
-    left_uv_to_rect_y:
-    - -0.403564
-    - 0.14476772
-    - -0.26325762
-    - -0.07070177
-    - 0.94253933
-    - 0.2600616
-    - -0.63755846
-    - 0.32920977
-    - -0.039608657
-    - -1.4456575
-    - 1.7510014
-    - -0.51903963
-    - 0.15437154
-    - 0.6319102
-    - -0.6819888
-    - 0.043756526
-    right_uv_to_rect_x:
-    - -0.8661478
-    - 1.6066314
-    - -0.42350826
-    - 0.16676047
-    - -0.41265342
-    - 3.0653038
-    - -6.7538695
-    - 3.7666135
-    - 1.1457812
-    - -8.112741
-    - 16.08663
-    - -9.112227
-    - -0.80060464
-    - 5.272238
-    - -10.211628
-    - 5.821474
-    right_uv_to_rect_y:
-    - -0.37550429
-    - 0.041606568
-    - 0.27970496
-    - -0.022244757
-    - 1.0723399
-    - 0.23362207
-    - -1.1420395
-    - 0.676599
-    - -0.08548838
-    - -1.7681419
-    - 3.1734855
-    - -1.473401
-    - 0.083101705
-    - 1.0238241
-    - -1.6811265
-    - 0.74400693
-    left_eye_offset:
-    - 0
-    - 0.01
-    right_eye_offset:
-    - 0
-    - 0.09
-    localPositionLeapMotion:
-    - -0.018259687
-    - 0.0500936
-    - 0.059545416
-    localRotationLeapMotion:
-    - 0.099349126
-    - 0.041503597
-    - 0.00805395
-    - 0.99415416
-    localPositionRigFromTracker:
-    - 0
-    - 0
-    - 0
-    localRotationRigFromTracker:
-    - 0
-    - 0
-    - 0
-    - 1
-    transformBetweenTrackerAndCenter:
-    - 0.99746424
-    - 0.03017487
-    - -0.06445604
-    - 0
-    - -0.052764405
-    - 0.92131275
-    - -0.38522562
-    - 0
-    - 0.047760036
-    - 0.38764974
-    - 0.92056865
-    - 0
-    - -0.09267094
-    - 0.02536642
-    - -0.077840775
-    - 1
-  requiresRotation: 1
-  allowsSaving: 1
-  load6DOFCalibration: 0
-  loadLeapCalibration: 1
-  LeftScreenSpaceOffset: {x: 0.1, y: -0.1}
-  RightScreenSpaceOffset: {x: 0.035, y: -0.1}
-  updateOffsets: 1
-  UpdateBorders: 1
-  leftBoarders:
-    minX: 0
-    maxX: 1
-    minY: 0
-    maxY: 1
-    myBorders:
-    - 0
-    - 0
-    - 0
-    - 0
-  rightBoarders:
-    minX: 0
-    maxX: 1
-    minY: 0
-    maxY: 1
-    myBorders:
-    - 0
-    - 0
-    - 0
-    - 0
 --- !u!114 &6608672789980628342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +74,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -264,24 +84,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  mapCollectedCallback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ProjectEsky.Tracking.EskyMapSaverBasic, Assembly-CSharp
-        m_MethodName: ReceiveFile
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   velocity: {x: 0, y: 0, z: 0}
   velocityRotation: {x: 0, y: 0, z: 0}
-  smoothing: 0.1
+  smoothing: 0.01
   smoothingRotation: 0.00001
   currentRealsensePose:
   - 0
@@ -319,6 +124,70 @@ MonoBehaviour:
   RigCenter: {fileID: 0}
   currentEuler: {x: 0, y: 0, z: 0}
   ShouldGrabMapTest: 0
+--- !u!114 &208651425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360103426504287295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7065063c12d417b46a220c58a7cdb0da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LoadDisplaySettings: 1
+  displaySettings:
+    DisplayXLoc: 1080
+    DisplayYLoc: 0
+    DisplayWidth: 1920
+    DisplayHeight: 1080
+    EyeTextureWidth: 1920
+    EyeTextureHeight: 1080
+    RendererWindowID: 1
+    Initialized: 0
+    allowsSavingCalibration: 1
+  renderTextureSettings:
+    LeftRenderTexture: {fileID: 0}
+    RightRenderTexture: {fileID: 0}
+    LeftCamera: {fileID: 360103428309199808}
+    RightCamera: {fileID: 360103426964646978}
+    RequiresRotation: 1
+    LeftProjectionMatrix: []
+    RightProjectionMatrix: []
+  myEyeBorders:
+    minXLeft: 0
+    maxXLeft: 1
+    minYLeft: 0
+    maxYLeft: 1
+    minXRight: 0
+    maxXRight: 1
+    minYRight: 0
+    maxYRight: 1
+    myBorders:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  loadLeapCalibration: 0
+  runInBackgroundInitial: 0
+  calibration:
+    focusDistance: 0
+    baseline: 0
+    left_uv_to_rect_x: []
+    left_uv_to_rect_y: []
+    right_uv_to_rect_x: []
+    right_uv_to_rect_y: []
+    left_eye_offset: []
+    right_eye_offset: []
+    localPositionLeapMotion: []
+    localRotationLeapMotion: []
+  LeapMotionCamera: {fileID: 0}
+  StartRendererAfterInitializing: 1
 --- !u!1 &360103426797230292
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb0e8dd6c809854f8fea5e0976884f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  editTimePose: 1
+  editTimePose: 0
   _frameOptimization: 0
   _physicsExtrapolation: 1
   _physicsExtrapolationTime: 0.011111111
