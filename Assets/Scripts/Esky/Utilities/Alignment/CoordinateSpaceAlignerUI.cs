@@ -17,7 +17,7 @@ namespace Esky.Calibrator
             Show_Message_CalculatingAlignment1,
             Show_Message_CalculatingAlignment2                        
         }
-        public ProjectEsky.Renderer.EskyNativeRenderer myrendererDriver;
+        public ProjectEsky.Rendering.EskyNativeDxRenderer myrendererDriver;
 
         public CoordinateSpaceAligner myDriver;
         string HandInvisible = "Place your right hand in front of the screen, back facing you!";
@@ -48,22 +48,22 @@ namespace Esky.Calibrator
         void Update()
         {
             if(Input.GetKey(KeyCode.UpArrow)){
-                myrendererDriver.LeapMotionCamera.localPosition += new Vector3(0 ,1.0f*translationAdjustmentSpeed*Time.deltaTime , 0);
+                myrendererDriver.LeapMotionCamera.transform.localPosition += new Vector3(0 ,1.0f*translationAdjustmentSpeed*Time.deltaTime , 0);
             }
             if(Input.GetKey(KeyCode.LeftArrow)){
-                myrendererDriver.LeapMotionCamera.localPosition += new Vector3(-1.0f*translationAdjustmentSpeed*Time.deltaTime , 0 , 0);
+                myrendererDriver.LeapMotionCamera.transform.localPosition += new Vector3(-1.0f*translationAdjustmentSpeed*Time.deltaTime , 0 , 0);
             }            
             if(Input.GetKey(KeyCode.RightArrow)){
-                myrendererDriver.LeapMotionCamera.localPosition += new Vector3(1.0f*translationAdjustmentSpeed*Time.deltaTime , 0, 0);
+                myrendererDriver.LeapMotionCamera.transform.localPosition += new Vector3(1.0f*translationAdjustmentSpeed*Time.deltaTime , 0, 0);
             }            
             if(Input.GetKey(KeyCode.DownArrow)){
-                myrendererDriver.LeapMotionCamera.localPosition += new Vector3(0 ,-1.0f*translationAdjustmentSpeed*Time.deltaTime , 0);
+                myrendererDriver.LeapMotionCamera.transform.localPosition += new Vector3(0 ,-1.0f*translationAdjustmentSpeed*Time.deltaTime , 0);
             }
             if(Input.GetKey(KeyCode.M)){
-                myrendererDriver.LeapMotionCamera.localPosition += new Vector3(0 ,0, 1.0f*translationAdjustmentSpeed*Time.deltaTime );
+                myrendererDriver.LeapMotionCamera.transform.localPosition += new Vector3(0 ,0, 1.0f*translationAdjustmentSpeed*Time.deltaTime );
             }
             if(Input.GetKey(KeyCode.N)){
-                myrendererDriver.LeapMotionCamera.localPosition += new Vector3(0, 0 ,-1.0f*translationAdjustmentSpeed*Time.deltaTime);
+                myrendererDriver.LeapMotionCamera.transform.localPosition += new Vector3(0, 0 ,-1.0f*translationAdjustmentSpeed*Time.deltaTime);
             }            
             if(myPrevState != myDriver.myCurrentState){
                 Debug.Log("Switching To: " + myDriver.myCurrentState);

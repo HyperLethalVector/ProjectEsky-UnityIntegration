@@ -180,26 +180,26 @@ namespace ProjectEsky.Tracking{
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         public static extern void SaveOriginPose();
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         public static extern IntPtr GetLatestPose();
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         public static extern void InitializeTrackerObject();
 
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         public static extern void StartTrackerThread(bool useLocalization);
         bool UpdateLocalizationCallback = false;
@@ -222,7 +222,7 @@ namespace ProjectEsky.Tracking{
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
         #else
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
         #endif
         static extern void RegisterDebugCallback(debugCallback cb);
         delegate void debugCallback(IntPtr request, int color, int size);
@@ -248,7 +248,7 @@ namespace ProjectEsky.Tracking{
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         static extern void StopTrackers();
         void OnDestroy(){
@@ -299,49 +299,49 @@ namespace ProjectEsky.Tracking{
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
         #else
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
         #endif
         static extern void RegisterObjectPoseCallback(PoseReceivedCallback poseReceivedCallback);
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
         #else
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
         #endif
         static extern void RegisterLocalizationCallback(EventCallback cb);
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
         #else
-        [DllImport("libProjectEskyLLAPI", CallingConvention = CallingConvention.Cdecl)]        
+        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
         #endif
         static extern void RegisterBinaryMapCallback(MapDataCallback cb);
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         static extern void SetBinaryMapData(string inputBytesLocation);
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         static extern void SetObjectPoseInLocalizedMap(string objectID,float tx, float ty, float tz, float qx, float qy, float qz, float qw);
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         static extern void ObtainObjectPoseInLocalizedMap(string objectID);
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         static extern void ObtainMap();
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
         #else
-        [DllImport("libProjectEskyLLAPI")]
+        [DllImport("libProjectEskyLLAPIIntel")]
         #endif
         static extern void SetMapData(byte[] inputData, int Length);
     }

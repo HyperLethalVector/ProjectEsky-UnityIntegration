@@ -1,0 +1,11 @@
+{
+    "DisplayXLoc": 1920,
+    "DisplayYLoc": 0,
+    "DisplayWidth": 1920,
+    "DisplayHeight": 1080,
+    "EyeTextureWidth": 1920,
+    "EyeTextureHeight": 1080,
+    "RendererWindowID": 1,
+    "Initialized": false,
+    "allowsSavingCalibration": true
+}
