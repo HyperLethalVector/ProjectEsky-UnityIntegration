@@ -16,7 +16,7 @@ Required Software:
 - Unity 2019.4.X
 - LeapMotion libraries (I recommend the latest orion beta)
 - Visual Studio C++ Redistributable: https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
-
+- Microsoft Direct X End-User Redistributable: https://www.microsoft.com/en-gb/download/confirmation.aspx?id=35
 - Windows (Sadly, for now.....)
 
 
