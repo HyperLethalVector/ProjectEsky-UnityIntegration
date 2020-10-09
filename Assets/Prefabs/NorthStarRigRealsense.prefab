@@ -138,12 +138,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadDisplaySettings: 1
   displaySettings:
-    DisplayXLoc: 1080
+    DisplayXLoc: 0
     DisplayYLoc: 0
-    DisplayWidth: 1920
-    DisplayHeight: 1080
-    EyeTextureWidth: 1920
-    EyeTextureHeight: 1080
+    DisplayWidth: 1280
+    DisplayHeight: 720
+    EyeTextureWidth: 1280
+    EyeTextureHeight: 720
     RendererWindowID: 1
     Initialized: 0
     allowsSavingCalibration: 1
@@ -173,7 +173,7 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  loadLeapCalibration: 0
+  loadLeapCalibration: 1
   runInBackgroundInitial: 0
   calibration:
     focusDistance: 0
@@ -186,7 +186,7 @@ MonoBehaviour:
     right_eye_offset: []
     localPositionLeapMotion: []
     localRotationLeapMotion: []
-  LeapMotionCamera: {fileID: 0}
+  LeapMotionCamera: {fileID: 360103426840104886}
   StartRendererAfterInitializing: 1
 --- !u!1 &360103426797230292
 GameObject:
@@ -211,7 +211,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426797230292}
-  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
+  m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -219,7 +219,7 @@ Transform:
   - {fileID: 360103427514317667}
   m_Father: {fileID: 360103426504287424}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!1 &360103426840104886
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 360103426840104887}
   - component: {fileID: 6608672789980628340}
   - component: {fileID: 6608672789980628343}
-  - component: {fileID: 2379832632935083745}
+  - component: {fileID: 404459197}
   m_Layer: 0
   m_Name: LeapMotion
   m_TagString: MainCamera
@@ -248,7 +248,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426840104886}
-  m_LocalRotation: {x: -0.3420201, y: -0, z: -0, w: 0.9396927}
+  m_LocalRotation: {x: -0.17364816, y: -0, z: -0, w: 0.9848078}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.9999999, y: 0.99999994, z: 1}
   m_Children: []
@@ -358,7 +358,7 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
---- !u!114 &2379832632935083745
+--- !u!114 &404459197
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

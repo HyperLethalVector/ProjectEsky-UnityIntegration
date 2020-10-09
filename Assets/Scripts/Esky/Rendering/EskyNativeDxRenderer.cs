@@ -123,7 +123,7 @@ namespace ProjectEsky.Rendering{
         public DisplayCalibration calibration;
         public GameObject LeapMotionCamera;
         void Start() {
-
+            Application.targetFrameRate = 90;
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
@@ -131,6 +131,12 @@ namespace ProjectEsky.Rendering{
         void LoadCalibration(){
             calibration = new DisplayCalibration();
             calibration.baseline = 0.0f;
+
+            if(LoadDisplaySettings){
+                if(File.Exists("DisplaySettings.json")){
+                    displaySettings = JsonUtility.FromJson<DisplaySettings>(File.ReadAllText("DisplaySettings.json"));
+                }
+            }            
             if(File.Exists("DisplayCalibration.json")){
                 calibration = JsonUtility.FromJson<DisplayCalibration>(File.ReadAllText("DisplayCalibration.json")); 
                 if(calibration.baseline == 0.0f){
@@ -154,8 +160,6 @@ namespace ProjectEsky.Rendering{
                 if(renderTextureSettings.RequiresRotation){
                     renderTextureSettings.LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
                     renderTextureSettings.RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
-                    renderTextureSettings.LeftCamera.fieldOfView = 58.71551f;
-                    renderTextureSettings.RightCamera.fieldOfView = 58.71551f;//CALCULATED                
                 }
                 renderTextureSettings.LeftRenderTexture = new RenderTexture(displaySettings.EyeTextureWidth, displaySettings.EyeTextureHeight, 24, renderTextureFormat);
                 renderTextureSettings.RightRenderTexture = new RenderTexture(displaySettings.EyeTextureWidth, displaySettings.EyeTextureHeight, 24, renderTextureFormat);
@@ -164,15 +168,14 @@ namespace ProjectEsky.Rendering{
                 myEyeBorders.UpdateBorders();
                 renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.LeftCamera.projectionMatrix,true);// = renderTextureSettings..renderTextureSettings.LeftCamera.projectionMatrix,renderTextureSettings.RightCamera.projectionMatrix;
                 renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.RightCamera.projectionMatrix,false);//
+                if(renderTextureSettings.RequiresRotation){
+                    renderTextureSettings.LeftCamera.fieldOfView = 40;
+                    renderTextureSettings.RightCamera.fieldOfView = 40;//Pre-CALCULATED                
+                }
             }else{
                 Debug.LogError("Waah! My display calibration file is missing :(");
             }
 
-            if(LoadDisplaySettings){
-                if(File.Exists("DisplaySettings.json")){
-                    displaySettings = JsonUtility.FromJson<DisplaySettings>(File.ReadAllText("DisplaySettings.json"));
-                }
-            }
         }
         public void SaveCalibration(){
             if(LeapMotionCamera != null){
@@ -197,13 +200,13 @@ namespace ProjectEsky.Rendering{
                 backgroundRendererCoroutine = null;
             }
             yield return new WaitForEndOfFrame();
-            IntPtr ptrLeft = renderTextureSettings.LeftRenderTexture.GetNativeTexturePtr();
+            IntPtr ptrLeft = renderTextureSettings.RightRenderTexture.GetNativeTexturePtr();
             SendTextureIdToPluginByIdLeft(id, ptrLeft);
-            IntPtr ptrRight = renderTextureSettings.RightRenderTexture.GetNativeTexturePtr();
+            IntPtr ptrRight = renderTextureSettings.LeftRenderTexture.GetNativeTexturePtr();
             SendTextureIdToPluginByIdRight(id, ptrRight);        
             GL.IssuePluginEvent(InitGraphics(), 0);
             yield return new WaitForEndOfFrame();
-                                SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                    
+            SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                    
             yield return new WaitForEndOfFrame();
             if (backgroundRendererCoroutine == null) {
                 Application.runInBackground = true;
@@ -287,7 +290,7 @@ namespace ProjectEsky.Rendering{
         public delegate void DebugDelegate(string message);
 
 
-
+        [MonoPInvokeCallback(typeof(MyDele))]
         static void CallbackFunction(string message){
             Debug.Log("--PluginCallback--: "+message);
         }
@@ -301,7 +304,7 @@ namespace ProjectEsky.Rendering{
         int ColorToInt(Color32 color) {
             return (color.r << 16) + (color.g << 8) + color.b;
         }
-
+        delegate void MyDele(string s);
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRenderTextureWidthHeight(int id, int width, int height);
         [DllImport ("ProjectEskyLLAPIRenderer")]
