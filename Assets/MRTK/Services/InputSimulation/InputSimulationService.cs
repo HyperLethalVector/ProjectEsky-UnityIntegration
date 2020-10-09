@@ -282,14 +282,14 @@ namespace Microsoft.MixedReality.Toolkit.Input
             // This was causing issues while simulating in editor for VR, as the UpDown
             // camera movement is mapped to controller AXIS_3, which happens to be the 
             // select trigger for WMR controllers.
-            if (profile.IsCameraControlEnabled && !XRDevice.isPresent)
-            {
-                EnableCameraControl();
-            }
-            else
-            {
+//            if (profile.IsCameraControlEnabled && !XRDevice.isPresent)
+  //          {
+      //          EnableCameraControl();
+    //        }
+        //    else
+          //  {
                 DisableCameraControl();
-            }
+            //}
 
             UpdateMouseDelta();
 

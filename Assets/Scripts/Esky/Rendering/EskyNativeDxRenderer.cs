@@ -73,7 +73,7 @@ namespace ProjectEsky.Rendering{
         public bool Initialized = false;
         public bool allowsSavingCalibration = true;
     }
-    [System.Serializable]
+    [System.Serializable] 
     public class RenderTextureSettings{
         [HideInInspector]
         public RenderTexture LeftRenderTexture;
