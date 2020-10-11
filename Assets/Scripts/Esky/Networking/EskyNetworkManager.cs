@@ -38,7 +38,7 @@ namespace ProjectEsky.Networking{
         }
         bool connectClient = false;
         private void Update() {
-            if(connectClient){
+            if(connectClient || Input.GetKeyDown(KeyCode.C)){
                 connectClient = false;
                 StartClient();
             }
