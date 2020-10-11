@@ -47,7 +47,7 @@ For hand-aligning the leapmotion controller, you can use the tool in Assets/Scen
 
 KNOWN ISSUES:
 - The relocalizer is known to be a bit finnicky, try reloading the map onto the t265
-- With unity 2020, the editor might get 
+- With unity 2020, the editor might freeze, if it does, please unplug your realsense then plug it back in (or if you're running a deck X, hold the two buttons to power cycle the t261) 
 
 If you wish to ask questions, please join the North Star Community on Discord! 
 https://discord.gg/fPza2G
