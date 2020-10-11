@@ -3,7 +3,7 @@
 Welcome to Project Esky! 
 
 Project Esky aims to be the OpenSource, software companion to allow developing with the Deck X/North Star Display system out of the box! 
-(Utilizing the Intel Realsense t265/1 or a ZED system for 6DoF tracking <Available in another repo, TBA>)
+(Utilizing the Intel Realsense t265/1 or a ZED system)
 
 This includes a unity package that handles
 - Rendering (with V2 undistortion via a separate OpenGL Renderer)
