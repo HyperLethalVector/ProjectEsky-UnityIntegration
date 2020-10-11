@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 1
-  syncInterval: 0.2
+  syncInterval: 0.016
   LocalPosition: {x: 0, y: 0, z: 0}
   LocalRotation: {x: 0, y: 0, z: 0}
   TranslationSmoothingFactor: 0.005

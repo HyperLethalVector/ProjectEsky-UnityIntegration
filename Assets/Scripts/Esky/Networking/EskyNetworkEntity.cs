@@ -46,13 +46,8 @@ namespace ProjectEsky.Networking{
                 if(Tracking.EskyHMDOrigin.instance != null){
                     Vector3 targetPosition = Tracking.EskyHMDOrigin.instance.transform.position;
                     Quaternion targetRotation = Tracking.EskyHMDOrigin.instance.transform.rotation;
-                    if(Vector3.Distance(transform.position, targetPosition) > DistanceBeforeSnap){
-                        transform.position = targetPosition;
-                        transform.rotation = targetRotation;
-                    }else{
-                        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * TranslationSmoothingFactor*2);
-                        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * RotationSmoothingFactor*10);
-                    }                
+                    transform.position = targetPosition;
+                    transform.rotation = targetRotation;
                     if(closestAnchor != null)
                     {
                         LocalPosition = closestAnchor.transform.InverseTransformPoint(transform.position);
@@ -90,12 +85,8 @@ namespace ProjectEsky.Networking{
                     {
                         Vector3 targetPosition = closestAnchor.transform.TransformPoint(LocalPosition);
                         Quaternion targetRotation = Quaternion.Euler(closestAnchor.transform.TransformDirection(LocalRotation));                    
-                        if(Vector3.Distance(transform.position, targetPosition) > DistanceBeforeSnap){
-                            transform.position = targetPosition;
-                            transform.rotation = targetRotation;
-                        }
-                        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * TranslationSmoothingFactor);
-                        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * RotationSmoothingFactor);
+                        transform.position = targetPosition;
+                        transform.rotation = targetRotation;
                     }                    
                 }
                 OnOtherClientCallback();
@@ -105,12 +96,8 @@ namespace ProjectEsky.Networking{
                 {
                     Vector3 targetPosition = closestAnchor.transform.TransformPoint(LocalPosition);
                     Quaternion targetRotation = Quaternion.Euler(closestAnchor.transform.TransformDirection(LocalRotation));                    
-                    if(Vector3.Distance(transform.position, targetPosition) > DistanceBeforeSnap){
-                        transform.position = targetPosition;
-                        transform.rotation = targetRotation;
-                    }
-                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * TranslationSmoothingFactor);
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * RotationSmoothingFactor);
+                    transform.position = targetPosition;
+                    transform.rotation = targetRotation;
                 }
                 OnOtherClientCallback();
             }
