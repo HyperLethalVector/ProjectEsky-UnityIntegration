@@ -9,7 +9,6 @@ namespace ProjectEsky.Tracking{
         // Start is called before the first frame update
         void Start()
         {
-            
         }
 
         // Update is called once per frame
@@ -35,6 +34,8 @@ namespace ProjectEsky.Tracking{
             byte[] data = System.IO.File.ReadAllBytes(MapName);
             byte[] dataInfo = System.IO.File.ReadAllBytes(MapName+".info");
             EskyTracker.instance.LoadEskyMapInformation(data,dataInfo);
+        }
+        public void OnDestroy(){
         }
     }
 }

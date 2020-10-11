@@ -10,9 +10,6 @@ namespace ProjectEsky.Tracking{
         public static EskyAnchor instance;
         private void Awake() {
             instance = this;
-            Debug.Log("Subscribing: origin");
-            if(ProjectEsky.Tracking.EskyTracker.instance != null)
-            ProjectEsky.Tracking.EskyTracker.instance.SubscribeAnchor("origin",this.gameObject);    
         }
         public static void Subscribe(EskyAnchorContent contenttosubscribe){
             if(instance != null){

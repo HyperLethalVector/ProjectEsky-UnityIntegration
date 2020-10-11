@@ -21,16 +21,20 @@ namespace ProjectEsky.Tracking{
         public Quaternion rotation;
         public Vector3 position;
     }
+    [System.Serializable]
+    public class MapSavedCallback : UnityEngine.Events.UnityEvent<byte[],byte[]>{
+
+    }
     public class EskyTracker : MonoBehaviour
     {
         public UnityEngine.Events.UnityEvent ReLocalizationCallback;
-        public UnityEngine.Events.UnityEvent<byte[],byte[]> mapCollectedCallback;
-        public Dictionary<string,GameObject> subscribedIDs = new Dictionary<string, GameObject>();
+        [SerializeField]
+        public MapSavedCallback mapCollectedCallback;
+        public GameObject subscribedAnchor;// = new Dictionary<string, GameObject>();
         public static EskyTracker instance;
         delegate void EventCallback(int Result);
         delegate void MapDataCallback(IntPtr data, int Length);
         delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
-        bool didInitializeTracker = false;
         [HideInInspector]        
         public Vector3 velocity = Vector3.zero;
         [HideInInspector]
@@ -46,17 +50,16 @@ namespace ProjectEsky.Tracking{
         [HideInInspector]
         public Vector3 currentEuler = Vector3.zero;
         EskyMap myCurrentMap;
-        List<EskyPoseCallbackData> callbackEvents = new List<EskyPoseCallbackData>();
+        EskyPoseCallbackData callbackEvents = null;
         // Start is called before the first frame update
         void Start()
         {
-            RegisterDebugCallback(OnDebugCallback);    
+            
             InitializeTrackerObject();
             RegisterBinaryMapCallback(OnMapCallback);
             RegisterObjectPoseCallback(OnPoseReceivedCallback);
 
             RegisterLocalizationCallback(OnEventCallback);            
-            Debug.Log("Updating map binaries");
             StartTrackerThread(false);        
             AfterInitialization();
         }
@@ -87,31 +90,11 @@ namespace ProjectEsky.Tracking{
             }
         }    
         void Awake(){
+            RegisterDebugCallback(OnDebugCallback);    
             instance = this;
         }
-        public void SubscribeAnchor(string ID, GameObject gameObject){
-            if(!subscribedIDs.ContainsKey(ID)){
-                subscribedIDs.Add(ID,gameObject);
-            }else{
-                subscribedIDs[ID] = gameObject;
-            }
-        }
-        public void UnSubscribeAnchor(string ID, GameObject gameObject){
-            if(!subscribedIDs.ContainsKey(ID)){
-                subscribedIDs.Remove(ID);
-            }
-        }
-        public void SaveObjectPoses(){
-            foreach(KeyValuePair<string, GameObject> kvpgo in subscribedIDs){
-                (Vector3,Quaternion) ppqq = UnityPoseToIntel(kvpgo.Value.transform.position,kvpgo.Value.transform.rotation);
-                Debug.Log("Start Saving Object: " + kvpgo.Key);
-                SetObjectPoseInLocalizedMap(kvpgo.Key,ppqq.Item1.x,ppqq.Item1.y,ppqq.Item2.z,ppqq.Item2.x,ppqq.Item2.y,ppqq.Item2.z,ppqq.Item2.w);
-                Debug.Log("Done Saving Object: " + kvpgo.Key);                
-                //Should add some form of callback scripts
-            }
-        }
+
         public void SaveTheMap(){
-            SaveObjectPoses();
             ObtainMap();
         }
         // Update is called once per frame
@@ -135,30 +118,20 @@ namespace ProjectEsky.Tracking{
                 }
                 ShouldCallBackMap = false;
             }
-            if(callbackEvents.Count > 0){
-                while(callbackEvents.Count > 0){
-                    EskyPoseCallbackData epcd = callbackEvents[0];
-                    callbackEvents.RemoveAt(0);
-                    Debug.Log("Received Callback and processing for: " + epcd.PoseID);
-                    if(subscribedIDs.ContainsKey(epcd.PoseID)){
-                        subscribedIDs[epcd.PoseID].transform.position = epcd.position;
-                        subscribedIDs[epcd.PoseID].transform.rotation = epcd.rotation;                        
-                    }
+            if(callbackEvents != null){
+                if(EskyAnchor.instance != null){
+                    EskyAnchor.instance.transform.position = callbackEvents.position;
+                    EskyAnchor.instance.transform.rotation = callbackEvents.rotation;                        
                 }
+                callbackEvents = null;                
             }
             AfterUpdate();
         }
         public virtual void AfterUpdate(){
 
         }
-        public void ObtainObjectPoses(){
-             foreach(KeyValuePair<string,GameObject> kvp in subscribedIDs){
-                try{
-                    ObtainObjectPoseInLocalizedMap(kvp.Key);                                    
-                }catch(System.Exception e){
-                    Debug.LogError(e);
-                }
-            }
+        public void ObtainObjectPoses(){             
+            ObtainObjectPoseInLocalizedMap("origin_of_map");                                    
         }
         public (Vector3,Quaternion) IntelPoseToUnity(float[] inputPose){
             Quaternion q = new Quaternion(inputPose[3],inputPose[4],inputPose[5],inputPose[6]);
@@ -267,11 +240,6 @@ namespace ProjectEsky.Tracking{
             if(instance != null){
                 EskyMap myMap = new EskyMap();
                 instance.callbackMemoryMap = received;
-                myMap.objectIDs = new List<string>();
-                foreach(KeyValuePair<string,GameObject> pairs in instance.subscribedIDs){
-                    myMap.objectIDs.Add(pairs.Key);
-                }
-
                 //I should collect the mesh data here
                 BinaryFormatter b = new BinaryFormatter();
                 MemoryStream memoryStream= new MemoryStream();
@@ -284,12 +252,12 @@ namespace ProjectEsky.Tracking{
             //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
         }
         public void AddPoseFromCallback(EskyPoseCallbackData epcd){
-            callbackEvents.Add(epcd);
+            callbackEvents = epcd;
         }
         [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
         static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
             EskyPoseCallbackData epcd = new EskyPoseCallbackData();
-            (Vector3, Quaternion) vq = instance.IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);
+            (Vector3, Quaternion) vq = instance.IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
             epcd.PoseID = ObjectID;
             epcd.position = vq.Item1;
             epcd.rotation = vq.Item2;
