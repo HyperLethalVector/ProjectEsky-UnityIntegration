@@ -71,7 +71,7 @@ namespace ProjectEsky.Tracking{
             BinaryFormatter bf = new BinaryFormatter();
             MemoryStream ms = new MemoryStream(eskyMapInfo);
             em  = (EskyMap)bf.Deserialize(ms);
-            SetMapData(eskyMapData,eskyMapData.Length);
+            SetMapData(new byte[]{},0);
         }
         public bool ShouldGrabMapTest= false;
         public virtual void ObtainPose(){
@@ -114,7 +114,7 @@ namespace ProjectEsky.Tracking{
             }
             if(ShouldCallBackMap){                
                 if(instance.mapCollectedCallback != null){
-                    instance.mapCollectedCallback.Invoke(callbackMemoryMap,callbackMemoryMapInfo);
+                    instance.mapCollectedCallback.Invoke(System.IO.File.ReadAllBytes("temp.raw"),callbackMemoryMapInfo);
                 }
                 ShouldCallBackMap = false;
             }
@@ -234,8 +234,8 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(MapDataCallback))]
         static void OnMapCallback(IntPtr receivedData, int Length)
         {
-            byte[] received = new byte[Length];
-            Marshal.Copy(receivedData, received, 0, Length);
+
+            byte[] received = System.IO.File.ReadAllBytes("temp.raw");
             Debug.Log("Received map data of length: " + Length);
             if(instance != null){
                 EskyMap myMap = new EskyMap();

@@ -6,7 +6,7 @@ using UnityEngine;
 using Leap.Unity;
 #endif
 
-namespace Esky.Calibrator
+namespace ProjectEsky.Calibrator
 {
     public enum CoordinateAlignerStates{
         Idle = 0,

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Esky.Calibrator
+namespace ProjectEsky.Calibrator
 {
     public class CoordinateSpaceAlignerUI : MonoBehaviour
     {

@@ -26,14 +26,15 @@ namespace ProjectEsky.Tracking{
             "",
              "Area.binary",
             "binary");
-            System.IO.File.WriteAllBytes(path,dataMap);
+
+            System.IO.File.Copy("temp.raw",path,true);
             System.IO.File.WriteAllBytes(path+".info",dataInfo);
             #endif
         }
         public void LoadFile(){
-            byte[] data = System.IO.File.ReadAllBytes(MapName);
+            System.IO.File.Copy(MapName,"temp.raw",true);
             byte[] dataInfo = System.IO.File.ReadAllBytes(MapName+".info");
-            EskyTracker.instance.LoadEskyMapInformation(data,dataInfo);
+            EskyTracker.instance.LoadEskyMapInformation(null,dataInfo);
         }
         public void OnDestroy(){
         }
