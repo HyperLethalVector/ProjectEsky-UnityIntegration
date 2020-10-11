@@ -23,6 +23,7 @@ namespace ProjectEsky.Networking{
         float timeBetweenChecks = 0f;
         float timeBetweenUpdates = 1f;
         float timeAtCheck = 0f;
+        public bool useSmoothing;
         public virtual void FixedUpdate()
         {               
             if(closestAnchor == null)
@@ -65,7 +66,7 @@ namespace ProjectEsky.Networking{
                     Debug.LogError("ERROR: There must be a HMD origin attached to a gameobject within the scene");//")
                 }
             }
-            else if(ServerControlledEntity)
+            else if(ServerControlledEntity)// this entities information is controlled by the server
             {
                 if(isServer){                
                     if(closestAnchor != null)
@@ -85,19 +86,29 @@ namespace ProjectEsky.Networking{
                     {
                         Vector3 targetPosition = closestAnchor.transform.TransformPoint(LocalPosition);
                         Quaternion targetRotation = Quaternion.Euler(closestAnchor.transform.TransformDirection(LocalRotation));                    
-                        transform.position = targetPosition;
-                        transform.rotation = targetRotation;
+                        if(useSmoothing){
+                            transform.position = Vector3.MoveTowards(transform.position,targetPosition,Time.deltaTime*TranslationSmoothingFactor);
+                            transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,Time.deltaTime*RotationSmoothingFactor);
+                        }else{
+                            transform.position = targetPosition;
+                            transform.rotation = targetRotation;
+                        }
                     }                    
                 }
                 OnOtherClientCallback();
 
-            }else{ // this entities information is controlled by the server
+            }else{ // this entities information is controlled by another client
                 if (closestAnchor != null)
                 {
                     Vector3 targetPosition = closestAnchor.transform.TransformPoint(LocalPosition);
                     Quaternion targetRotation = Quaternion.Euler(closestAnchor.transform.TransformDirection(LocalRotation));                    
-                    transform.position = targetPosition;
-                    transform.rotation = targetRotation;
+                    if(useSmoothing){
+                        transform.position = Vector3.MoveTowards(transform.position,targetPosition,Time.deltaTime*TranslationSmoothingFactor);
+                        transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,Time.deltaTime*RotationSmoothingFactor);
+                    }else{
+                        transform.position = targetPosition;
+                        transform.rotation = targetRotation;
+                    }
                 }
                 OnOtherClientCallback();
             }
