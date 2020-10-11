@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5642469850258339713}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0223}
-  m_LocalScale: {x: 0.03, y: 0.02, z: 0.03}
+  m_LocalPosition: {x: 0, y: 0, z: 0.1544}
+  m_LocalScale: {x: 0.18, y: 0.08, z: 0.09}
   m_Children: []
   m_Father: {fileID: 5642469851888011677}
   m_RootOrder: 1
@@ -121,7 +121,7 @@ Transform:
   m_GameObject: {fileID: 5642469851279835158}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 5642469851888011677}
   m_RootOrder: 0
@@ -252,7 +252,8 @@ MonoBehaviour:
   syncInterval: 0.016
   LocalPosition: {x: 0, y: 0, z: 0}
   LocalRotation: {x: 0, y: 0, z: 0}
-  TranslationSmoothingFactor: 0.005
-  RotationSmoothingFactor: 0.00001
+  TranslationSmoothingFactor: 2
+  RotationSmoothingFactor: 90
   DistanceBeforeSnap: 1
+  useSmoothing: 1
   ServerControlledEntity: 0
