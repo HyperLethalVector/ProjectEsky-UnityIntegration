@@ -25,6 +25,7 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTrackerZed : EskyTracker
     {
+        float cam_v_fov = 0;//stub initialization for  later use
         public Material spatialMappingMaterial;
         public GameObject MeshParent;
         public static EskyTrackerZed zedInstance;
@@ -33,6 +34,7 @@ namespace ProjectEsky.Tracking{
             zedInstance = this;
             RegisterMeshCallback(OnMeshReceivedCallback);
             RegisterMeshCompleteCallback(OnTransferComplete);
+            SetTextureInitializedCallback(OnTextureInitialized);
         }
         [MonoPInvokeCallback(typeof(MeshChunksReceivedCallback))]
         static void OnMeshReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength)
@@ -44,6 +46,7 @@ namespace ProjectEsky.Tracking{
             Marshal.Copy(vertices, chunkVertices, 0, verticesLength);
             Marshal.Copy(normals, chunkNormals, 0, normalsLength);
             Marshal.Copy(triangleIndices, chunkIndices,0,triangleIndicesLength);            
+            Debug.Log("Received Mesh ID: " + ChunkID + " with " + verticesLength + "vertices, " + normalsLength + " normals and " + triangleIndicesLength + " triangles!");
             if(zedInstance != null){
                 if(!zedInstance.myMeshChunks.ContainsKey(ChunkID)){
                     Chunk chk = new Chunk();
@@ -63,6 +66,25 @@ namespace ProjectEsky.Tracking{
                 zedInstance.processMeshList = true;               
             }
         }
+        [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
+        static void OnTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float v_fov){
+            if(zedInstance != null){
+                zedInstance.textureWidth = textureWidth;
+                zedInstance.textureHeight = textureHeight;
+                zedInstance.textureChannels = textureChannels;
+                zedInstance.hasInitializedTexture = true;
+                zedInstance.cam_v_fov = v_fov;
+            }
+        }
+        [HideInInspector]
+        public bool hasInitializedTexture = false;
+        [HideInInspector]
+        public int textureWidth;
+        [HideInInspector]                
+        public int textureHeight;
+        [HideInInspector]        
+        public int textureChannels;
+
         bool processMeshList = false;
         public override void ObtainPose(){
             IntPtr ptr = GetLatestPose();                
@@ -75,17 +97,41 @@ namespace ProjectEsky.Tracking{
             Matrix4x4 m = Matrix4x4.TRS(transform.transform.position,transform.transform.rotation,Vector3.one);
             m = m * TransformFromTrackerToCenter.inverse;
             if(RigCenter != null){
+                try{
                 RigCenter.transform.position = m.MultiplyPoint3x4(Vector3.zero);
                 RigCenter.transform.rotation = m.rotation;
+                }catch(System.Exception e){
+
+                }
             }
         }
 
         public bool StartSpatialMappingTest = false;
         public bool StopSpatialMappingTest = false;
+        public RenderTexture tex;
+        bool canRenderImages = false;
+        public UnityEngine.UI.RawImage myImage;
+        public Camera previewCamera;
         public override void AfterUpdate() {
+            if(hasInitializedTexture){
+                HookDeviceToZed();
+                Debug.Log("Creating texture with: " + textureChannels + " channels");
+                hasInitializedTexture = false;
+                if(textureChannels == 4){
+                    previewCamera.fieldOfView = cam_v_fov;
+                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
+                    tex.Create();
+                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
+                    if(myImage != null){
+                        myImage.texture = tex;
+                        myImage.gameObject.SetActive(true);
+                    }
+                    canRenderImages = true;
+                    StartCoroutine(WaitEndFrameCameraUpdate());
+                }
+            }
             if(StartSpatialMappingTest){
                 StartSpatialMappingTest = false;
-
                 DoStartSpatialMapping();
             }
             if(StopSpatialMappingTest){
@@ -99,15 +145,28 @@ namespace ProjectEsky.Tracking{
             }
         }
         public void DoStartSpatialMapping(){
-            StartSpatialMapping(45);
+            StartSpatialMapping(500);
             if(MeshParent == null){
                 MeshParent = new GameObject("MeshParent");                
             }
         }
         public void DoStopSpatialMapping(){
-            StopSpatialMapping(45);
+            StopSpatialMapping(500);
         }
+        IEnumerator WaitEndFrameCameraUpdate(){
+            while(true){
+                yield return new WaitForEndOfFrame();
+                if(canRenderImages){
+                    GL.IssuePluginEvent(GetRenderEventFunc(), 1);
+                }
+            }
+        }
+        public void OnPreRender() {
+            if(canRenderImages){
 
+                //GL.IssuePluginEvent(GetRenderEventFunc(), 1);
+            }
+        }
         void CheckChunks(){
             Dictionary<int,Chunk> chunksToUpdateInMain = new Dictionary<int, Chunk>();
             foreach(KeyValuePair<int,Chunk> chunkPairs in myMeshChunks){
@@ -171,6 +230,14 @@ namespace ProjectEsky.Tracking{
         }
         delegate void MeshChunkTransferCompleted();
         delegate void MeshChunksReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength);
+        delegate void RenderTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float v_fov);
+        [DllImport("libProjectEskyLLAPIZED")]
+        public static extern IntPtr GetRenderEventFunc();
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void HookDeviceToZed();
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void SetTextureInitializedCallback(RenderTextureInitialized callback);
+
         [DllImport("libProjectEskyLLAPIZED")]
         static extern void RegisterMeshCompleteCallback(MeshChunkTransferCompleted callback);
         [DllImport("libProjectEskyLLAPIZED")]
@@ -182,6 +249,8 @@ namespace ProjectEsky.Tracking{
         static extern void StartSpatialMapping(int ChunkSizes);
         [DllImport("libProjectEskyLLAPIZED")]
         static extern void StopSpatialMapping(int ChunkSizes);
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void SetRenderTexturePointer(IntPtr texPointer);
         [DllImport("libProjectEskyLLAPIZED")]
         static extern void CompletedMeshUpdate();
 

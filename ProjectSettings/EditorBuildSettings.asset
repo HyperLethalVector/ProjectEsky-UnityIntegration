@@ -5,15 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/HandInteractionExamples.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 1
-    path: Assets/Scenes/Networking/NetworkingServerExample.unity
-    guid: ff692db3d9bde48458105e4b36553ae9
   m_configObjects:
     Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: fa2f561e1eda4f8498f1cb26567a31b7,
       type: 2}

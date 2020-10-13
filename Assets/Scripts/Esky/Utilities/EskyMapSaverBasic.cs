@@ -26,13 +26,20 @@ namespace ProjectEsky.Tracking{
             "",
              "Area.binary",
             "binary");
-
-            System.IO.File.Copy("temp.raw",path,true);
+            #if ZED_SDK
+            System.IO.File.Copy("temp.raw.area",path,true);
+            #else
+            System.IO.File.Copy("temp.raw",path,true);            
+            #endif
             System.IO.File.WriteAllBytes(path+".info",dataInfo);
             #endif
         }
         public void LoadFile(){
+            #if ZED_SDK            
+            System.IO.File.Copy(MapName,"temp.raw.area",true);
+            #else
             System.IO.File.Copy(MapName,"temp.raw",true);
+            #endif
             byte[] dataInfo = System.IO.File.ReadAllBytes(MapName+".info");
             EskyTracker.instance.LoadEskyMapInformation(null,dataInfo);
         }

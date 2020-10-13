@@ -114,7 +114,11 @@ namespace ProjectEsky.Tracking{
             }
             if(ShouldCallBackMap){                
                 if(instance.mapCollectedCallback != null){
-                    instance.mapCollectedCallback.Invoke(System.IO.File.ReadAllBytes("temp.raw"),callbackMemoryMapInfo);
+                    #if ZED_SDK
+                    instance.mapCollectedCallback.Invoke(System.IO.File.ReadAllBytes("temp.raw.area"),callbackMemoryMapInfo);
+                    #else
+                    instance.mapCollectedCallback.Invoke(System.IO.File.ReadAllBytes("temp.raw.area"),callbackMemoryMapInfo);                    
+                    #endif
                 }
                 ShouldCallBackMap = false;
             }
@@ -215,8 +219,11 @@ namespace ProjectEsky.Tracking{
                 debug_string,
                 "</color>"
                 );
-
-            UnityEngine.Debug.Log("Realsense Tracker: " + debug_string);
+            #if ZED_SDK
+            UnityEngine.Debug.Log("ZED Tracker: " + debug_string);
+            #else
+            UnityEngine.Debug.Log("Realsense Tracker: " + debug_string);            
+            #endif
         }
         #if ZED_SDK
         [DllImport("libProjectEskyLLAPIZED")]        
@@ -234,8 +241,11 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(MapDataCallback))]
         static void OnMapCallback(IntPtr receivedData, int Length)
         {
-
-            byte[] received = System.IO.File.ReadAllBytes("temp.raw");
+            #if ZED_SDK
+            byte[] received = System.IO.File.ReadAllBytes("temp.raw.area");
+            #else
+            byte[] received = System.IO.File.ReadAllBytes("temp.raw");            
+            #endif
             Debug.Log("Received map data of length: " + Length);
             if(instance != null){
                 EskyMap myMap = new EskyMap();

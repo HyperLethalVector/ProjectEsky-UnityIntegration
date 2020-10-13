@@ -183,10 +183,12 @@ namespace ProjectEsky.Rendering{
                 calibration.localPositionLeapMotion = new float[3]{localPosLeapMotion.x,localPosLeapMotion.y,localPosLeapMotion.z};
                 calibration.localRotationLeapMotion = new float[4]{localRotLeapMotion.x,localRotLeapMotion.y,localRotLeapMotion.z,localRotLeapMotion.w};
             }
+            DisplaySettings ds = displaySettings;
+            ds.Initialized = false;
             string json = JsonUtility.ToJson(calibration,true);
             System.IO.File.WriteAllText("DisplayCalibration.json", json);
             Debug.Log("Saved Calibration");
-            string json2 = JsonUtility.ToJson(displaySettings,true);
+            string json2 = JsonUtility.ToJson(ds,true);
             System.IO.File.WriteAllText("DisplaySettings.json",json2);
         }
         public bool StartRendererAfterInitializing;
