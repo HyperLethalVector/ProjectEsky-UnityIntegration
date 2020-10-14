@@ -87,22 +87,13 @@ namespace ProjectEsky.Tracking{
 
         bool processMeshList = false;
         public override void ObtainPose(){
-            IntPtr ptr = GetLatestPose();                
-            Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-            transform.localPosition = Vector3.SmoothDamp(transform.localPosition, new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]),ref velocity,smoothing); 
-            Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);
-            currentEuler = Vector3.SmoothDamp(transform.localRotation.eulerAngles,q.eulerAngles,ref velocityRotation,smoothingRotation);
-            transform.localRotation = Quaternion.Euler(currentEuler);    
-
-            Matrix4x4 m = Matrix4x4.TRS(transform.transform.position,transform.transform.rotation,Vector3.one);
-            m = m * TransformFromTrackerToCenter.inverse;
-            if(RigCenter != null){
-                try{
-                RigCenter.transform.position = m.MultiplyPoint3x4(Vector3.zero);
-                RigCenter.transform.rotation = m.rotation;
-                }catch(System.Exception e){
-
-                }
+            if(ApplyPoses){
+                IntPtr ptr = GetLatestPose();                
+                Marshal.Copy(ptr, currentRealsensePose, 0, 7);
+                transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]),ref velocity,smoothing); 
+                Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);
+                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,q.eulerAngles,ref velocityRotation,smoothingRotation);
+                transform.rotation = Quaternion.Euler(currentEuler);                
             }
         }
 

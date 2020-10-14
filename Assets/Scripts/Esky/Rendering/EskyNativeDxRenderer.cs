@@ -71,7 +71,6 @@ namespace ProjectEsky.Rendering{
         public int RendererWindowID;
         [HideInInspector]
         public bool Initialized = false;
-        public bool allowsSavingCalibration = true;
     }
     [System.Serializable] 
     public class RenderTextureSettings{
@@ -110,6 +109,7 @@ namespace ProjectEsky.Rendering{
     }
     public class EskyNativeDxRenderer : MonoBehaviour
     {
+        public bool allowsSavingCalibration = true;
         public bool LoadDisplaySettings = true;
         public DisplaySettings displaySettings;
         public RenderTextureSettings renderTextureSettings;
@@ -168,8 +168,8 @@ namespace ProjectEsky.Rendering{
                 renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.LeftCamera.projectionMatrix,true);// = renderTextureSettings..renderTextureSettings.LeftCamera.projectionMatrix,renderTextureSettings.RightCamera.projectionMatrix;
                 renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.RightCamera.projectionMatrix,false);//
                 if(renderTextureSettings.RequiresRotation){
-                    renderTextureSettings.LeftCamera.fieldOfView = 40;//52.75 for 1.5 weighting
-                    renderTextureSettings.RightCamera.fieldOfView = 40;//Pre-CALCULATED                
+                    renderTextureSettings.LeftCamera.fieldOfView = 43.01793f;//52.75 for 1.5 weighting
+                    renderTextureSettings.RightCamera.fieldOfView = 43.01793f;//Pre-CALCULATED                
                 }
             }else{
                 Debug.LogError("Waah! My display calibration file is missing :(");
@@ -193,7 +193,7 @@ namespace ProjectEsky.Rendering{
         }
         public bool StartRendererAfterInitializing;
         // Update is called once per frame
-        void Update() { if(StartRendererAfterInitializing){StartRendererAfterInitializing = false; ShowExternalWindow(0);} if(Input.GetKeyDown(KeyCode.S) && displaySettings.allowsSavingCalibration){SaveCalibration();}}
+        void Update() { if(StartRendererAfterInitializing){StartRendererAfterInitializing = false; ShowExternalWindow(0);} if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}}
         IEnumerator CallPluginAtEndOfFrame(int id) {
             if (backgroundRendererCoroutine != null) {
                 Application.runInBackground = true;

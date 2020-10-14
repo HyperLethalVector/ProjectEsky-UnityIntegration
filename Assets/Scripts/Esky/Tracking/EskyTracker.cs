@@ -8,6 +8,73 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ProjectEsky.Tracking{
+    public static class QuaternionUtil {	
+        public static Quaternion AngVelToDeriv(Quaternion Current, Vector3 AngVel) {
+            var Spin = new Quaternion(AngVel.x, AngVel.y, AngVel.z, 0f);
+            var Result = Spin * Current;
+            return new Quaternion(0.5f * Result.x, 0.5f * Result.y, 0.5f * Result.z, 0.5f * Result.w);
+        } 
+
+        public static Vector3 DerivToAngVel(Quaternion Current, Quaternion Deriv) {
+            var Result = Deriv * Quaternion.Inverse(Current);
+            return new Vector3(2f * Result.x, 2f * Result.y, 2f * Result.z);
+        }
+
+        public static Quaternion IntegrateRotation(Quaternion Rotation, Vector3 AngularVelocity, float DeltaTime) {
+            if (DeltaTime < Mathf.Epsilon) return Rotation;
+            var Deriv = AngVelToDeriv(Rotation, AngularVelocity);
+            var Pred = new Vector4(
+                    Rotation.x + Deriv.x * DeltaTime,
+                    Rotation.y + Deriv.y * DeltaTime,
+                    Rotation.z + Deriv.z * DeltaTime,
+                    Rotation.w + Deriv.w * DeltaTime
+            ).normalized;
+            return new Quaternion(Pred.x, Pred.y, Pred.z, Pred.w);
+        }
+        
+        public static Quaternion SmoothDamp(Quaternion rot, Quaternion target, ref Quaternion deriv, float time) {
+            if (Time.deltaTime < Mathf.Epsilon) return rot;
+            // account for double-cover
+            var Dot = Quaternion.Dot(rot, target);
+            var Multi = Dot > 0f ? 1f : -1f;
+            target.x *= Multi;
+            target.y *= Multi;
+            target.z *= Multi;
+            target.w *= Multi;
+            // smooth damp (nlerp approx)
+            var Result = new Vector4(
+                Mathf.SmoothDamp(rot.x, target.x, ref deriv.x, time),
+                Mathf.SmoothDamp(rot.y, target.y, ref deriv.y, time),
+                Mathf.SmoothDamp(rot.z, target.z, ref deriv.z, time),
+                Mathf.SmoothDamp(rot.w, target.w, ref deriv.w, time)
+            ).normalized;
+            
+            // ensure deriv is tangent
+            var derivError = Vector4.Project(new Vector4(deriv.x, deriv.y, deriv.z, deriv.w), Result);
+            deriv.x -= derivError.x;
+            deriv.y -= derivError.y;
+            deriv.z -= derivError.z;
+            deriv.w -= derivError.w;		
+            
+            return new Quaternion(Result.x, Result.y, Result.z, Result.w);
+        }
+    }
+    [System.Serializable]
+    public class EskyTrackerOffset{
+        public Vector3 LocalRigTranslation;
+        public Quaternion LocalRigRotation;
+        bool CalibrationLoaded = false;
+        public void SetCalibrationLoaded(){
+            CalibrationLoaded = true;
+        }
+        public bool GetCalibrationLoaded(){
+            return CalibrationLoaded;
+        }
+        public Vector3 CameraPreviewTranslation;
+        public Vector3 CameraPreviewRotation;
+        public bool UsesCameraPreview;
+        public bool AllowsSaving = true;
+    }
     
     [System.Serializable]
     public class EskyMap{
@@ -27,6 +94,8 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTracker : MonoBehaviour
     {
+        public bool ApplyPoses = true;
+        public EskyTrackerOffset myOffsets;
         public UnityEngine.Events.UnityEvent ReLocalizationCallback;
         [SerializeField]
         public MapSavedCallback mapCollectedCallback;
@@ -45,8 +114,8 @@ namespace ProjectEsky.Tracking{
         public float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         [HideInInspector]        
         public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
-        public Matrix4x4 TransformFromTrackerToCenter;
         public Transform RigCenter;
+        public Transform CameraPreview;
         [HideInInspector]
         public Vector3 currentEuler = Vector3.zero;
         EskyMap myCurrentMap;
@@ -54,7 +123,7 @@ namespace ProjectEsky.Tracking{
         // Start is called before the first frame update
         void Start()
         {
-            
+            LoadCalibration();
             InitializeTrackerObject();
             RegisterBinaryMapCallback(OnMapCallback);
             RegisterObjectPoseCallback(OnPoseReceivedCallback);
@@ -62,6 +131,22 @@ namespace ProjectEsky.Tracking{
             RegisterLocalizationCallback(OnEventCallback);            
             StartTrackerThread(false);        
             AfterInitialization();
+        }
+        public virtual void LoadCalibration(){
+            if(File.Exists("TrackerOffset.json")){
+                myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText("TrackerOffset.json"));
+                myOffsets.SetCalibrationLoaded();
+                if(RigCenter != null){
+                    RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
+                    RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
+                    Debug.Log("Loaded 6DOF tracker offsets!");
+                }
+            }
+        }
+        public virtual void SaveCalibration(){
+            string json = JsonUtility.ToJson(myOffsets,true);
+            System.IO.File.WriteAllText("TrackerOffset.json", json);
+            Debug.Log("Saved 6DOF tracker offsets!");
         }
         public virtual void AfterInitialization(){
 
@@ -75,18 +160,13 @@ namespace ProjectEsky.Tracking{
         }
         public bool ShouldGrabMapTest= false;
         public virtual void ObtainPose(){
-            IntPtr ptr = GetLatestPose();                
-            Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-            transform.localPosition = Vector3.SmoothDamp(transform.localPosition, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
-            Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);            
-            currentEuler = Vector3.SmoothDamp(transform.localRotation.eulerAngles,new Vector3(-q.eulerAngles.x,-q.eulerAngles.y,q.eulerAngles.z),ref velocityRotation,smoothingRotation);
-            transform.localRotation = Quaternion.Euler(currentEuler);    
-
-            Matrix4x4 m = Matrix4x4.TRS(transform.transform.position,transform.transform.rotation,Vector3.one);
-            m = m * TransformFromTrackerToCenter.inverse;
-            if(RigCenter != null){
-                RigCenter.transform.position = m.MultiplyPoint3x4(Vector3.zero);
-                RigCenter.transform.rotation = m.rotation;
+            if(ApplyPoses){
+                IntPtr ptr = GetLatestPose();                
+                Marshal.Copy(ptr, currentRealsensePose, 0, 7);
+                transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
+                Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);            
+                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,new Vector3(-q.eulerAngles.x,-q.eulerAngles.y,q.eulerAngles.z),ref velocityRotation,smoothingRotation);
+                transform.rotation = Quaternion.Euler(currentEuler);    
             }
         }    
         void Awake(){
@@ -101,6 +181,11 @@ namespace ProjectEsky.Tracking{
         void Update()
         {
             ObtainPose();
+            if(myOffsets.AllowsSaving){
+                if(Input.GetKeyDown(KeyCode.S)){
+                    SaveCalibration();
+                }
+            }
             if(ShouldGrabMapTest){
                 ShouldGrabMapTest = false;
                 SaveTheMap();

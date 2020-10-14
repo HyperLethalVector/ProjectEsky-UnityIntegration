@@ -1,0 +1,25 @@
+{
+    "LocalRigTranslation": {
+        "x": 0.033,
+        "y": -0.018,
+        "z": -0.131
+    },
+    "LocalRigRotation": {
+        "x":  0.236,
+        "y": 0.0,
+        "z": 0.0,
+        "w":  0.972
+    },
+    "CameraPreviewTranslation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "CameraPreviewRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "UsesCameraPreview": false,
+    "AllowsSaving": true
+}

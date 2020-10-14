@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1399602288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1399602289}
+  m_Layer: 0
+  m_Name: CameraPreviewStub
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1399602289
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399602288}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 360103426504287424}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &360103426504287295
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,6 +61,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 360103426797230293}
+  - {fileID: 1399602289}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -70,6 +101,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66030f667080b2b44bd039e61a167f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ApplyPoses: 1
+  myOffsets:
+    LocalRigTranslation: {x: 0, y: 0, z: 0}
+    LocalRigRotation: {x: 0, y: 0, z: 0, w: 0}
+    CameraPreviewTranslation: {x: 0, y: 0, z: 0}
+    CameraPreviewRotation: {x: 0, y: 0, z: 0}
+    UsesCameraPreview: 0
+    AllowsSaving: 1
   ReLocalizationCallback:
     m_PersistentCalls:
       m_Calls:
@@ -130,24 +169,8 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  TransformFromTrackerToCenter:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  RigCenter: {fileID: 0}
+  RigCenter: {fileID: 360103426797230293}
+  CameraPreview: {fileID: 1399602289}
   currentEuler: {x: 0, y: 0, z: 0}
   ShouldGrabMapTest: 0
 --- !u!114 &208651425
@@ -162,6 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7065063c12d417b46a220c58a7cdb0da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowsSavingCalibration: 1
   LoadDisplaySettings: 1
   displaySettings:
     DisplayXLoc: 0
@@ -172,7 +196,6 @@ MonoBehaviour:
     EyeTextureHeight: 720
     RendererWindowID: 1
     Initialized: 0
-    allowsSavingCalibration: 1
   renderTextureSettings:
     LeftRenderTexture: {fileID: 0}
     RightRenderTexture: {fileID: 0}
@@ -287,13 +310,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426840104886}
-  m_LocalRotation: {x: -0.17364816, y: -0, z: -0, w: 0.9848078}
-  m_LocalPosition: {x: 0, y: 0.041871585, z: 0.027327102}
-  m_LocalScale: {x: 0.9999999, y: 0.99999994, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 360103426797230293}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 18.15, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &360103426840104888
 Camera:
   m_ObjectHideFlags: 0
