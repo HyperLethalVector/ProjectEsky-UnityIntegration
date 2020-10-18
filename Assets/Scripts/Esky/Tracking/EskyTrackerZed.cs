@@ -86,13 +86,18 @@ namespace ProjectEsky.Tracking{
         public int textureChannels;
 
         bool processMeshList = false;
+        public float ConvertRadiansToDegrees(double radians)
+        {
+            float degrees = (float)((180f / Math.PI) * radians);
+            return (degrees);
+        }
+
         public override void ObtainPose(){
             if(ApplyPoses){
                 IntPtr ptr = GetLatestPose();                
                 Marshal.Copy(ptr, currentRealsensePose, 0, 7);
                 transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]),ref velocity,smoothing); 
-                Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);
-                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,q.eulerAngles,ref velocityRotation,smoothingRotation);
+                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,new Vector3(ConvertRadiansToDegrees(currentRealsensePose[3]),ConvertRadiansToDegrees(currentRealsensePose[4]),ConvertRadiansToDegrees(currentRealsensePose[5])),ref velocityRotation,smoothingRotation);
                 transform.rotation = Quaternion.Euler(currentEuler);                
             }
         }
