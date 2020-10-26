@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
@@ -25,16 +26,95 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTrackerZed : EskyTracker
     {
+        public bool useRelativeTransform = false;
         float cam_v_fov = 0;//stub initialization for  later use
         public Material spatialMappingMaterial;
-        public GameObject MeshParent;
+       
         public static EskyTrackerZed zedInstance;
         Dictionary<int,Chunk> myMeshChunks = new Dictionary<int, Chunk>();
+        void Start()
+        {
+            LoadCalibration();
+            InitializeTrackerObject();
+            RegisterBinaryMapCallback(OnMapCallback);
+            RegisterObjectPoseCallback(OnPoseReceivedCallback);
+
+            RegisterLocalizationCallback(OnEventCallback);            
+            StartTrackerThread(false);        
+            AfterInitialization();
+        }
         public override void AfterInitialization(){
             zedInstance = this;
             RegisterMeshCallback(OnMeshReceivedCallback);
             RegisterMeshCompleteCallback(OnTransferComplete);
             SetTextureInitializedCallback(OnTextureInitialized);
+        }
+        public override void SaveEskyMapInformation(){
+            ObtainMap();
+        }
+         public override void LoadEskyMap(EskyMap m){
+            retEskyMap = m;
+            if(File.Exists("temp.raw"))File.Delete("temp.raw");
+            System.IO.File.WriteAllBytes("temp.raw",m.mapBLOB);
+            SetMapData(new byte[]{},0);
+        }
+        void OnDestroy(){
+            StopTrackers();
+        }
+        [MonoPInvokeCallback(typeof(MapDataCallback))]
+        static void OnMapCallback(IntPtr receivedData, int Length)
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            while(!File.Exists("temp.raw.area")){
+                TimeSpan ts = sw.Elapsed;
+                if(ts.TotalSeconds > 4)break;                
+            }
+            sw.Restart();
+            bool didComplete = false;
+            byte[] received = null;
+            while(!didComplete){//this sucks, but it's the only way to wait til the zed has actually _finished_ writing the file
+                try{
+                    #if ZED_SDK
+                    received = System.IO.File.ReadAllBytes("temp.raw.area");
+                    #else
+                    received = System.IO.File.ReadAllBytes("temp.raw");            
+                    #endif
+
+                didComplete = true;//will flag the pass is complete                    
+                }catch(System.Exception e){
+                    TimeSpan ts = sw.Elapsed;
+                    if(ts.TotalSeconds > 4)break; 
+                    
+                }
+            }
+            if(didComplete){
+                UnityEngine.Debug.Log("Received map data of length: " + received.Length);
+                if(instance != null){
+                    EskyMap retEskyMap = new EskyMap();
+                    retEskyMap.mapBLOB = received;
+                    instance.SetEskyMapInstance(retEskyMap);
+                    //I should collect the mesh data here
+                }else{
+                    UnityEngine.Debug.LogError("The instance of the tracker was null, cancelling data map export");
+                }
+            }else{
+                UnityEngine.Debug.LogError("Problem exporting the map, *shrug*");
+            }
+            //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
+        }
+        public void AddPoseFromCallback(EskyPoseCallbackData epcd){
+            callbackEvents = epcd;
+        }
+        [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
+        static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
+            EskyPoseCallbackData epcd = new EskyPoseCallbackData();
+            (Vector3, Quaternion) vq = instance.IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
+            epcd.PoseID = ObjectID;
+            epcd.position = vq.Item1;
+            epcd.rotation = vq.Item2;
+            ((EskyTrackerZed)instance).AddPoseFromCallback(epcd);
+            UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
         [MonoPInvokeCallback(typeof(MeshChunksReceivedCallback))]
         static void OnMeshReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength)
@@ -86,14 +166,26 @@ namespace ProjectEsky.Tracking{
         public int textureChannels;
 
         bool processMeshList = false;
+        public float ConvertRadiansToDegrees(double radians)
+        {
+            float degrees = (float)((180f / Math.PI) * radians);
+            return (degrees);
+        }
+
         public override void ObtainPose(){
             if(ApplyPoses){
                 IntPtr ptr = GetLatestPose();                
                 Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-                transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]),ref velocity,smoothing); 
-                Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);
-                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,q.eulerAngles,ref velocityRotation,smoothingRotation);
-                transform.rotation = Quaternion.Euler(currentEuler);                
+                if(useRelativeTransform){
+                    transform.localPosition = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]),ref velocity,smoothing);                     
+                    currentEuler = Vector3.SmoothDamp(transform.localRotation.eulerAngles,new Vector3(ConvertRadiansToDegrees(currentRealsensePose[3]),ConvertRadiansToDegrees(currentRealsensePose[4]),ConvertRadiansToDegrees(currentRealsensePose[5])),ref velocityRotation,smoothingRotation);
+                    transform.localRotation = Quaternion.Euler(currentEuler);                                                    
+                }else{
+                    transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]),ref velocity,smoothing); 
+                    currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,new Vector3(ConvertRadiansToDegrees(currentRealsensePose[3]),ConvertRadiansToDegrees(currentRealsensePose[4]),ConvertRadiansToDegrees(currentRealsensePose[5])),ref velocityRotation,smoothingRotation);
+                    transform.rotation = Quaternion.Euler(currentEuler);                
+                }
+
             }
         }
 
@@ -150,12 +242,6 @@ namespace ProjectEsky.Tracking{
                 if(canRenderImages){
                     GL.IssuePluginEvent(GetRenderEventFunc(), 1);
                 }
-            }
-        }
-        public void OnPreRender() {
-            if(canRenderImages){
-
-                //GL.IssuePluginEvent(GetRenderEventFunc(), 1);
             }
         }
         void CheckChunks(){
@@ -219,6 +305,51 @@ namespace ProjectEsky.Tracking{
                 myMeshChunks[kvp.Key] = kvp.Value;
             }                                  
         }
+        
+
+        #region TrackerSpecific
+
+        [DllImport("libProjectEskyLLAPIZED")]        
+        public static extern void SaveOriginPose();
+
+        [DllImport("libProjectEskyLLAPIZED")]        
+        public static extern IntPtr GetLatestPose();
+
+        [DllImport("libProjectEskyLLAPIZED")]        
+        public static extern void InitializeTrackerObject();
+
+        [DllImport("libProjectEskyLLAPIZED")]        
+        public static extern void StartTrackerThread(bool useLocalization);
+
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        static extern void RegisterDebugCallback(debugCallback cb);
+
+        [DllImport("libProjectEskyLLAPIZED")]        
+        static extern void StopTrackers();
+
+
+
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        static extern void RegisterObjectPoseCallback(PoseReceivedCallback poseReceivedCallback);
+
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        static extern void RegisterLocalizationCallback(EventCallback cb);
+
+        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
+        static extern void RegisterBinaryMapCallback(MapDataCallback cb);
+        
+        [DllImport("libProjectEskyLLAPIZED")]        
+        static extern void SetBinaryMapData(string inputBytesLocation);
+        
+        [DllImport("libProjectEskyLLAPIZED")]
+        static extern void SetObjectPoseInLocalizedMap(string objectID,float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+
+        [DllImport("libProjectEskyLLAPIZED")]        
+        static extern void ObtainObjectPoseInLocalizedMap(string objectID);
+        [DllImport("libProjectEskyLLAPIZED")]        
+        static extern void ObtainMap();
+        #endregion
+        #region ZED Specific
         delegate void MeshChunkTransferCompleted();
         delegate void MeshChunksReceivedCallback(int ChunkID, IntPtr vertices, int verticesLength, IntPtr normals, int normalsLength, IntPtr uvs, int uvsLength, IntPtr triangleIndices, int triangleIndicesLength);
         delegate void RenderTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float v_fov);
@@ -244,6 +375,6 @@ namespace ProjectEsky.Tracking{
         static extern void SetRenderTexturePointer(IntPtr texPointer);
         [DllImport("libProjectEskyLLAPIZED")]
         static extern void CompletedMeshUpdate();
-
+        #endregion
     }
 }

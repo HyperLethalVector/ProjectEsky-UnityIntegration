@@ -6,8 +6,108 @@ using AOT;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-
+using System.Diagnostics;
 namespace ProjectEsky.Tracking{
+    #region 
+    using UnityEngine;
+    using System.Runtime.Serialization;
+    using System.Collections;
+    public enum Color { red, green, blue, black, white, yellow, orange };
+    public class Vector3SerializationSurrogate : ISerializationSurrogate
+    {
+    
+        // Method called to serialize a Vector3 object
+        public void GetObjectData(System.Object obj,SerializationInfo info, StreamingContext context)
+        {
+    
+            Vector3 v3 = (Vector3)obj;
+            info.AddValue("x", v3.x);
+            info.AddValue("y", v3.y);
+            info.AddValue("z", v3.z);
+        }
+    
+        // Method called to deserialize a Vector3 object
+        public System.Object SetObjectData(System.Object obj,SerializationInfo info,
+                                        StreamingContext context,ISurrogateSelector selector)
+        {
+    
+            Vector3 v3 = (Vector3)obj;
+            v3.x = (float)info.GetValue("x", typeof(float));
+            v3.y = (float)info.GetValue("y", typeof(float));
+            v3.z = (float)info.GetValue("z", typeof(float));
+            obj = v3;
+            return obj;
+        }
+    }
+    public class QuaternionSerializationSurrogate : ISerializationSurrogate
+    {
+    
+        // Method called to serialize a Vector3 object
+        public void GetObjectData(System.Object obj,SerializationInfo info, StreamingContext context)
+        {
+    
+            Quaternion v3 = (Quaternion)obj;
+            info.AddValue("x", v3.x);
+            info.AddValue("y", v3.y);
+            info.AddValue("z", v3.z);
+            info.AddValue("w",v3.w);
+        }
+    
+        // Method called to deserialize a Vector3 object
+        public System.Object SetObjectData(System.Object obj,SerializationInfo info,
+                                        StreamingContext context,ISurrogateSelector selector)
+        {
+    
+            Quaternion v3 = (Quaternion)obj;
+            v3.x = (float)info.GetValue("x", typeof(float));
+            v3.y = (float)info.GetValue("y", typeof(float));
+            v3.z = (float)info.GetValue("z", typeof(float));
+            v3.w = (float)info.GetValue("w", typeof(float));
+            obj = v3;
+            return obj;
+        }
+    }
+    #endregion
+   [System.Serializable]
+    public class EskyAnchorContentInfo{
+        [SerializeField]
+        public Vector3 localPosition;
+        public Quaternion localRotation;
+    }
+    [System.Serializable]
+    public class EskyMap{
+        public byte[] mapBLOB;
+        public byte[] meshDataArray;        
+        public Dictionary<string,EskyAnchorContentInfo> contentLocations;
+        public byte[] GetBytes(){
+            MemoryStream ms = new MemoryStream();
+            SurrogateSelector surrogateSelector = new SurrogateSelector();
+            surrogateSelector.AddSurrogate(typeof(Vector3),new StreamingContext(StreamingContextStates.All),new Vector3SerializationSurrogate());
+            surrogateSelector.AddSurrogate(typeof(Quaternion),new StreamingContext(StreamingContextStates.All),new QuaternionSerializationSurrogate());                        
+            BinaryFormatter bf  = new BinaryFormatter();
+            bf.SurrogateSelector = surrogateSelector;
+            bf.Serialize(ms,this);
+            byte[] b = ms.ToArray();
+            ms.Close();
+            return b;
+        }
+        public static EskyMap GetMapFromArray(byte[] data){
+            MemoryStream ms = new MemoryStream(data);
+            BinaryFormatter bf  = new BinaryFormatter();
+            SurrogateSelector surrogateSelector = new SurrogateSelector();
+            surrogateSelector.AddSurrogate(typeof(Vector3),new StreamingContext(StreamingContextStates.All),new Vector3SerializationSurrogate());
+            surrogateSelector.AddSurrogate(typeof(Quaternion),new StreamingContext(StreamingContextStates.All),new QuaternionSerializationSurrogate());                        
+            bf.SurrogateSelector = surrogateSelector;                        
+            try{
+                EskyMap em = (EskyMap)bf.Deserialize(ms);
+                return em;
+            }catch(System.Exception e){
+                UnityEngine.Debug.LogError("Couldn't load esky map from data!: " + e);
+                return null;
+            }
+        }
+    }
+
     public static class QuaternionUtil {	
         public static Quaternion AngVelToDeriv(Quaternion Current, Vector3 AngVel) {
             var Spin = new Quaternion(AngVel.x, AngVel.y, AngVel.z, 0f);
@@ -76,20 +176,13 @@ namespace ProjectEsky.Tracking{
         public bool AllowsSaving = true;
     }
     
-    [System.Serializable]
-    public class EskyMap{
-        public byte[] meshDataArray;
-        public List<string> objectIDs;
-        public byte[] extraInformation;
-        public string FileLocation;
-    }
     public class EskyPoseCallbackData{
         public string PoseID;
         public Quaternion rotation;
         public Vector3 position;
     }
     [System.Serializable]
-    public class MapSavedCallback : UnityEngine.Events.UnityEvent<byte[],byte[]>{
+    public class MapSavedCallback : UnityEngine.Events.UnityEvent<EskyMap>{
 
     }
     public class EskyTracker : MonoBehaviour
@@ -99,11 +192,12 @@ namespace ProjectEsky.Tracking{
         public UnityEngine.Events.UnityEvent ReLocalizationCallback;
         [SerializeField]
         public MapSavedCallback mapCollectedCallback;
+        protected EskyMap retEskyMap;
         public GameObject subscribedAnchor;// = new Dictionary<string, GameObject>();
         public static EskyTracker instance;
-        delegate void EventCallback(int Result);
-        delegate void MapDataCallback(IntPtr data, int Length);
-        delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+        public delegate void EventCallback(int Result);
+        public delegate void MapDataCallback(IntPtr data, int Length);
+        public delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
         [HideInInspector]        
         public Vector3 velocity = Vector3.zero;
         [HideInInspector]
@@ -118,20 +212,9 @@ namespace ProjectEsky.Tracking{
         public Transform CameraPreview;
         [HideInInspector]
         public Vector3 currentEuler = Vector3.zero;
-        EskyMap myCurrentMap;
-        EskyPoseCallbackData callbackEvents = null;
+        protected EskyPoseCallbackData callbackEvents = null;
+        public GameObject MeshParent;
         // Start is called before the first frame update
-        void Start()
-        {
-            LoadCalibration();
-            InitializeTrackerObject();
-            RegisterBinaryMapCallback(OnMapCallback);
-            RegisterObjectPoseCallback(OnPoseReceivedCallback);
-
-            RegisterLocalizationCallback(OnEventCallback);            
-            StartTrackerThread(false);        
-            AfterInitialization();
-        }
         public virtual void LoadCalibration(){
             if(File.Exists("TrackerOffset.json")){
                 myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText("TrackerOffset.json"));
@@ -139,43 +222,35 @@ namespace ProjectEsky.Tracking{
                 if(RigCenter != null){
                     RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
                     RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
-                    Debug.Log("Loaded 6DOF tracker offsets!");
+                    UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
                 }
             }
         }
         public virtual void SaveCalibration(){
             string json = JsonUtility.ToJson(myOffsets,true);
             System.IO.File.WriteAllText("TrackerOffset.json", json);
-            Debug.Log("Saved 6DOF tracker offsets!");
+            UnityEngine.Debug.Log("Saved 6DOF tracker offsets!");
         }
         public virtual void AfterInitialization(){
 
         }
-        EskyMap em;
-        public void LoadEskyMapInformation(byte[] eskyMapData,byte[] eskyMapInfo){
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream(eskyMapInfo);
-            em  = (EskyMap)bf.Deserialize(ms);
-            SetMapData(new byte[]{},0);
+        public void SetEskyMapInstance(EskyMap em){
+            ShouldCallBackMap = true;
+            retEskyMap = em;
         }
-        public bool ShouldGrabMapTest= false;
+        public virtual void LoadEskyMap(EskyMap m){
+           
+        }
+        public virtual void SaveEskyMapInformation(){
+        }
         public virtual void ObtainPose(){
-            if(ApplyPoses){
-                IntPtr ptr = GetLatestPose();                
-                Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-                transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
-                Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);            
-                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,new Vector3(-q.eulerAngles.x,-q.eulerAngles.y,q.eulerAngles.z),ref velocityRotation,smoothingRotation);
-                transform.rotation = Quaternion.Euler(currentEuler);    
-            }
+           
         }    
         void Awake(){
-            RegisterDebugCallback(OnDebugCallback);    
             instance = this;
         }
+        public virtual void ObtainObjectPoses(){
 
-        public void SaveTheMap(){
-            ObtainMap();
         }
         // Update is called once per frame
         void Update()
@@ -186,10 +261,6 @@ namespace ProjectEsky.Tracking{
                     SaveCalibration();
                 }
             }
-            if(ShouldGrabMapTest){
-                ShouldGrabMapTest = false;
-                SaveTheMap();
-            }
             if(UpdateLocalizationCallback){
                 UpdateLocalizationCallback = false;
                 ObtainObjectPoses();
@@ -198,11 +269,16 @@ namespace ProjectEsky.Tracking{
                 }                
             }
             if(ShouldCallBackMap){                
+                if(EskyAnchor.instance != null){
+                    (Dictionary<string,EskyAnchorContentInfo>,byte[]) returnvals = EskyAnchor.instance.GetEskyMapInfo();
+                    retEskyMap.contentLocations = returnvals.Item1;
+                    retEskyMap.meshDataArray = returnvals.Item2;
+                }                
                 if(instance.mapCollectedCallback != null){
                     #if ZED_SDK
-                    instance.mapCollectedCallback.Invoke(System.IO.File.ReadAllBytes("temp.raw.area"),callbackMemoryMapInfo);
+                    instance.mapCollectedCallback.Invoke(retEskyMap);
                     #else
-                    instance.mapCollectedCallback.Invoke(System.IO.File.ReadAllBytes("temp.raw.area"),callbackMemoryMapInfo);                    
+                    instance.mapCollectedCallback.Invoke(retEskyMap);                    
                     #endif
                 }
                 ShouldCallBackMap = false;
@@ -219,9 +295,7 @@ namespace ProjectEsky.Tracking{
         public virtual void AfterUpdate(){
 
         }
-        public void ObtainObjectPoses(){             
-            ObtainObjectPoseInLocalizedMap("origin_of_map");                                    
-        }
+
         public (Vector3,Quaternion) IntelPoseToUnity(float[] inputPose){
             Quaternion q = new Quaternion(inputPose[3],inputPose[4],inputPose[5],inputPose[6]);
             Vector3 p = new Vector3(inputPose[0],inputPose[1],-inputPose[2]);
@@ -239,173 +313,37 @@ namespace ProjectEsky.Tracking{
             Vector3 pp = new Vector3(position.x,position.y,-position.z);
             return (pp,qq);
         }
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        public static extern void SaveOriginPose();
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        public static extern IntPtr GetLatestPose();
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        public static extern void InitializeTrackerObject();
-
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        public static extern void StartTrackerThread(bool useLocalization);
         bool UpdateLocalizationCallback = false;
         [MonoPInvokeCallback(typeof(EventCallback))]
-        static void OnEventCallback(int Response)
+        public static void OnEventCallback(int Response)
         {
             switch(Response){
                 case 1:
-                Debug.Log("We received the localization event!!");
+                UnityEngine.Debug.Log("We received the localization event!!");
                 if(instance != null){
                     instance.UpdateLocalizationCallback = true;
                 }
                 break;
                 default:
-                Debug.Log("We received a callback I'm unfamiliar with, sorry!: " + Response);
+                UnityEngine.Debug.Log("We received a callback I'm unfamiliar with, sorry!: " + Response);
                 break;
             }
             //Ptr to string
         }
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
-        #else
-        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        #endif
-        static extern void RegisterDebugCallback(debugCallback cb);
-        delegate void debugCallback(IntPtr request, int color, int size);
-         enum Color { red, green, blue, black, white, yellow, orange };
-        [MonoPInvokeCallback(typeof(debugCallback))]
-        static void OnDebugCallback(IntPtr request, int color, int size)
-        {
-            //Ptr to string
-            string debug_string = Marshal.PtrToStringAnsi(request, size);
+        
+       
+        public delegate void debugCallback(IntPtr request, int color, int size);
 
-            //Add Specified Color
-            debug_string =
-                String.Format("{0}{1}{2}{3}{4}",
-                "<color=",
-                ((Color)color).ToString(),
-                ">",
-                debug_string,
-                "</color>"
-                );
-            #if ZED_SDK
-            UnityEngine.Debug.Log("ZED Tracker: " + debug_string);
-            #else
-            UnityEngine.Debug.Log("Realsense Tracker: " + debug_string);            
-            #endif
-        }
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        static extern void StopTrackers();
-        void OnDestroy(){
-            StopTrackers();
-        }
-        byte[] callbackMemoryMap;
+
+        
         byte[] callbackMemoryMapInfo;
         bool ShouldCallBackMap= false;
 
-        [MonoPInvokeCallback(typeof(MapDataCallback))]
-        static void OnMapCallback(IntPtr receivedData, int Length)
-        {
-            #if ZED_SDK
-            byte[] received = System.IO.File.ReadAllBytes("temp.raw.area");
-            #else
-            byte[] received = System.IO.File.ReadAllBytes("temp.raw");            
-            #endif
-            Debug.Log("Received map data of length: " + Length);
-            if(instance != null){
-                EskyMap myMap = new EskyMap();
-                instance.callbackMemoryMap = received;
-                //I should collect the mesh data here
-                BinaryFormatter b = new BinaryFormatter();
-                MemoryStream memoryStream= new MemoryStream();
-                b.Serialize(memoryStream,myMap);
-                instance.callbackMemoryMapInfo = memoryStream.ToArray();
-                instance.ShouldCallBackMap = true;
-            }else{
-                Debug.LogError("The instance of the tracker was null, cancelling data map export");
-            }
-            //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
-        }
-        public void AddPoseFromCallback(EskyPoseCallbackData epcd){
-            callbackEvents = epcd;
-        }
-        [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
-        static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
-            EskyPoseCallbackData epcd = new EskyPoseCallbackData();
-            (Vector3, Quaternion) vq = instance.IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
-            epcd.PoseID = ObjectID;
-            epcd.position = vq.Item1;
-            epcd.rotation = vq.Item2;
-            instance.AddPoseFromCallback(epcd);
-            Debug.Log("Received a pose from the relocalization");
-        }
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
-        #else
-        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        #endif
-        static extern void RegisterObjectPoseCallback(PoseReceivedCallback poseReceivedCallback);
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
-        #else
-        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        #endif
-        static extern void RegisterLocalizationCallback(EventCallback cb);
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
-        #else
-        [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        #endif
-        static extern void RegisterBinaryMapCallback(MapDataCallback cb);
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        static extern void SetBinaryMapData(string inputBytesLocation);
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        static extern void SetObjectPoseInLocalizedMap(string objectID,float tx, float ty, float tz, float qx, float qy, float qz, float qw);
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        static extern void ObtainObjectPoseInLocalizedMap(string objectID);
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        static extern void ObtainMap();
-        #if ZED_SDK
-        [DllImport("libProjectEskyLLAPIZED")]        
-        #else
-        [DllImport("libProjectEskyLLAPIIntel")]
-        #endif
-        static extern void SetMapData(byte[] inputData, int Length);
+        
+        
+        #region TrackerSpecific
+
+        
+        #endregion
     }
 }
