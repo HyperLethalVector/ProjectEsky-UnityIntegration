@@ -24,11 +24,14 @@ namespace ProjectEsky.Networking{
         float timeBetweenUpdates = 1f;
         float timeAtCheck = 0f;
         public bool useSmoothing;
-        public virtual void FixedUpdate()
+        public virtual void FixedUpdate()//this will be modified when the large scale mapping system becomes prevalent
         {               
             if(closestAnchor == null)
-            if(Tracking.EskyAnchor.instance != null){
-                closestAnchor = ProjectEsky.Tracking.EskyAnchor.instance.gameObject;
+            if(EskyTrackingOrigin.OriginsInScene.Count > 0){
+                foreach( KeyValuePair<string,EskyTrackingOrigin> originkeys in EskyTrackingOrigin.OriginsInScene){
+                    closestAnchor = originkeys.Value.gameObject;
+                    break;
+                }
             }
             AfterFixedUpdate();
         }
@@ -47,8 +50,6 @@ namespace ProjectEsky.Networking{
                 if(Tracking.EskyHMDOrigin.instance != null){
                     Vector3 targetPosition = Tracking.EskyHMDOrigin.instance.transform.position;
                     Quaternion targetRotation = Tracking.EskyHMDOrigin.instance.transform.rotation;
-                    transform.position = targetPosition;
-                    transform.rotation = targetRotation;
                     if(closestAnchor != null)
                     {
                         LocalPosition = closestAnchor.transform.InverseTransformPoint(transform.position);
