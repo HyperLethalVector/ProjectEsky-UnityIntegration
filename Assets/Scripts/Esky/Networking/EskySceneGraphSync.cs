@@ -37,7 +37,7 @@ namespace ProjectEsky.Networking{
             {
                 if(_timeBeforeSend > syncInterval){
                     _timeBeforeSend = 0;
-                    foreach(KeyValuePair<int,EskySceneGraphNode> subbedObj in SubscribedObjects){                        
+                    foreach(KeyValuePair<int,EskySceneGraphNode> subbedObj in SubscribedObjects){                     
                         CmdUpdatePose(subbedObj.Key,subbedObj.Value.transform.localPosition,subbedObj.Value.transform.localRotation);
                     }                    
                 }else{
@@ -57,13 +57,12 @@ namespace ProjectEsky.Networking{
                 }else{
                     Debug.LogError("Couldn't find ID: " + n.ObjectID);
                 }
-                nodesToUpdate.Add((n.ObjectID,n));
+                SceneGraph.Add(n.ObjectID,n);
             }else{
                 Node n = SceneGraph[ID];
                 n.localPosition = localPosition;
                 n.localRotation = localRotation;
                 SceneGraph[ID] = n;
-                nodesToUpdate.Add((n.ObjectID,n));
             }
         }
         void OnGraphChange(SyncDictionary<int,Node>.Operation op, int itemIndex, Node newItem)

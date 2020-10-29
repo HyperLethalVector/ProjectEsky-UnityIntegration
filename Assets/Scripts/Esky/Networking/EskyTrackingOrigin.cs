@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ProjectEsky.Networking{
     public class EskyTrackingOrigin : MonoBehaviour
     {
-        public static Dictionary<string,EskyTrackingOrigin> OriginsInScene;
+        public static Dictionary<string,EskyTrackingOrigin> OriginsInScene = new Dictionary<string, EskyTrackingOrigin>();
         public string originID;
         // Start is called before the first frame update
         void Awake()
