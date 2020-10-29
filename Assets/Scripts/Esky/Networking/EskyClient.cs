@@ -38,7 +38,7 @@ namespace ProjectEsky.Networking{
         }
         public void TriggerClientARObjects(){
             if(!hasSetAR){
-                hasSetAR = true;
+                hasSetAR = true; 
                 CmdTriggerServerIsClientFlag();
             }
         }
