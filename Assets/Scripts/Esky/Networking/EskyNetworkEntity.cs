@@ -88,8 +88,13 @@ namespace ProjectEsky.Networking{
                         Vector3 targetPosition = closestAnchor.transform.TransformPoint(LocalPosition);
                         Quaternion targetRotation = Quaternion.Euler(closestAnchor.transform.TransformDirection(LocalRotation));                    
                         if(useSmoothing){
-                            transform.position = Vector3.MoveTowards(transform.position,targetPosition,Time.deltaTime*TranslationSmoothingFactor);
-                            transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,Time.deltaTime*RotationSmoothingFactor);
+                            if(Vector3.Distance(transform.position, targetPosition) > DistanceBeforeSnap){
+                                transform.position = targetPosition;
+                                transform.rotation = targetRotation;
+                            }else{
+                                transform.position = Vector3.MoveTowards(transform.position,targetPosition,Time.deltaTime*TranslationSmoothingFactor);
+                                transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,Time.deltaTime*RotationSmoothingFactor);
+                            }
                         }else{
                             transform.position = targetPosition;
                             transform.rotation = targetRotation;
@@ -104,8 +109,13 @@ namespace ProjectEsky.Networking{
                     Vector3 targetPosition = closestAnchor.transform.TransformPoint(LocalPosition);
                     Quaternion targetRotation = Quaternion.Euler(closestAnchor.transform.TransformDirection(LocalRotation));                    
                     if(useSmoothing){
-                        transform.position = Vector3.MoveTowards(transform.position,targetPosition,Time.deltaTime*TranslationSmoothingFactor);
-                        transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,Time.deltaTime*RotationSmoothingFactor);
+                        if(Vector3.Distance(transform.position, targetPosition) > DistanceBeforeSnap){
+                            transform.position = targetPosition;
+                            transform.rotation = targetRotation;
+                        }else{
+                            transform.position = Vector3.MoveTowards(transform.position,targetPosition,Time.deltaTime*TranslationSmoothingFactor);
+                            transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,Time.deltaTime*RotationSmoothingFactor);
+                        }
                     }else{
                         transform.position = targetPosition;
                         transform.rotation = targetRotation;

@@ -102,6 +102,7 @@ namespace ProjectEsky.Networking{
         int connectionAttempts = 0;
         public override void OnClientDisconnect(NetworkConnection conn)
         {
+            base.OnClientDisconnect(conn);
             isConnected = false;
             Debug.Log("OnClientDisconnect");            
             Debug.Log("Disconnected from server!");
