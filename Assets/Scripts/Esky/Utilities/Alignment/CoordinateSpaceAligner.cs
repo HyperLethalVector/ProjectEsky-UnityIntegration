@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if CALIBRATOR_ENABLED
 using Leap.Unity;
-#endif
 
 namespace ProjectEsky.Calibrator
 {
@@ -433,7 +431,6 @@ namespace ProjectEsky.Calibrator
 
         public void SolveKabschAndAlign()
         {
-        #if CALIBRATOR_ENABLED
             Debug.Log("Trying solve...");
             if (finalPoints.Count >= minSamplePointsNeeded)
             {
@@ -469,7 +466,6 @@ namespace ProjectEsky.Calibrator
                 handRig.SetActive(false);
                 myCurrentState = CoordinateAlignerStates.Reset;
             }
-            #endif
         }
 
         private void OnDrawGizmos()
