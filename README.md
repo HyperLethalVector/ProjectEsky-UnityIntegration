@@ -47,7 +47,7 @@ For hand-aligning the leapmotion controller, you can use the tool in Assets/Scen
 
 KNOWN ISSUES:
 - The relocalizer is known to be a bit finnicky, try reloading the map onto the t265
-- With unity 2020, the editor might freeze, if it does, please unplug your realsense then plug it back in (or if you're running a deck X, hold the two buttons to power cycle the t261) 
+- With unity, the editor might freeze, if it does, please unplug your realsense then plug it back in (or if you're running a deck X, hold the two buttons to power cycle the t261) 
 
 If you wish to ask questions, please join the North Star Community on Discord! 
 https://discord.gg/fPza2G
@@ -55,8 +55,8 @@ https://discord.gg/fPza2G
 
 Quick FAQ:
 
-1) Hey, I see some extra glsl shaders in the root directory, what are these for?
-Actually these are what powers the magic behind the V2 renderer system, I am passing a render texture pointer to a separate OpenGL instance! Allowing for realtime updates and undistortion! (And is what will allow the stabilization techniques later, stay tuned ;) )
+1) Hey, I see some extra hlsl shaders in the root directory, what are these for?
+Actually these are what powers the magic behind the V2 renderer system, I am passing a render texture pointer to a separate DirectX instance! Allowing for realtime updates and undistortion! (And is what will allow the stabilization techniques later, stay tuned ;) )
 
 2) Wait, does that mean I can use _any_ headset?
 YOU ARE GOSH DARN RIGHT!
@@ -66,9 +66,26 @@ Alternatively you could replace the cameras in the unity scene with any renderer
 THIS CODE IS LICENSED UNDER THE 3 CLAUSE BSD LICENSE.
 
 While I don't really care where and how you use this software, with great power comes great responsibility.
-That being said, using this software comes with one condition, that you please cite the following paper:
-<Bibtex yet to be added, paper is waiting to release>
-<https://www.researchgate.net/publication/344337571_Project_Esky_Enabling_High_Fidelity_Augmented_Reality_Content_on_an_Open_Source_Platform>
+That being said, using this software comes with one condition, that you please use the following bibtex citation:
+
+@inproceedings{10.1145/3380867.3426220,
+author = {Constantine, Rompapas Damien and Quiros, Daniel Flores and Rodda, Charlton and Brown, Bryan Christopher and Zerkin, Noah Benjamin and Cassinelli, Alvaro},
+title = {Project Esky: Enabling High Fidelity Augmented Reality on an Open Source Platform},
+year = {2020},
+isbn = {9781450375269},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3380867.3426220},
+doi = {10.1145/3380867.3426220},
+abstract = {This demonstration showcases a complete Open-Source Augmented Reality (AR) modular platform capable of high fidelity natural hand-interactions with virtual content, high field of view, and spatial mapping for environment interactions. We do this via several live desktop demonstrations. Finally, included in this demonstration is a completed open source schematic, allowing anyone interested in utilizing our proposed platform to engage with high fidelity AR. It is our hope that the work described in this demo will be a stepping stone towards bringing high-fidelity AR content to researchers and commodity users alike.},
+booktitle = {Companion Proceedings of the 2020 Conference on Interactive Surfaces and Spaces},
+pages = {61–63},
+numpages = {3},
+keywords = {open source platforms, high fidelity, augmented reality, collaborative augmented reality},
+location = {Virtual Event, Portugal},
+series = {ISS '20}
+}
+
 
 If you're looking to contribute, feel free to fork! 
 
