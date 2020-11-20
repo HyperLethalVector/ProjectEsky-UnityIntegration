@@ -7,7 +7,8 @@ namespace ProjectEsky.Tracking{
         SixDOF = 0,
         FourDOF_Y_Rotation = 1,
         ThreeDOF_Translation = 2,
-        ThreeDOF_Rotation = 3
+        ThreeDOF_Rotation = 3,
+        Floor_FourDOF_Y_ROTATION = 4
     }
     [System.Serializable]
     public enum FollowTarget{
@@ -41,7 +42,7 @@ namespace ProjectEsky.Tracking{
                 break;
             }
             }catch(System.NullReferenceException e){
-                Debug.LogError("There was an issue getting the target, does the relavent eskyhandorigin script exist in scene?");
+                Debug.LogError("There was an issue getting the target, does the relavent eskyhandorigin script exist in scene?: " + e);
             }
         }
 
@@ -53,17 +54,17 @@ namespace ProjectEsky.Tracking{
 
                     switch(followType){
                         case FollowType.SixDOF:
-                        transform.position = myOrigin.transform.position + TranslationOffset;
+                        transform.position = myOrigin.transform.position + ( myOrigin.transform.rotation * TranslationOffset);
                         transform.rotation = myOrigin.transform.rotation * Quaternion.Euler(RotationOffset);
                         break;
                         case FollowType.ThreeDOF_Translation:
-                        transform.position = myOrigin.transform.position + TranslationOffset;
+                        transform.position = myOrigin.transform.position + ( myOrigin.transform.rotation * TranslationOffset);
                         break;
                         case FollowType.ThreeDOF_Rotation:
                         transform.rotation = myOrigin.transform.rotation * Quaternion.Euler(RotationOffset);
                         break;
                         case FollowType.FourDOF_Y_Rotation:
-                        transform.position = myOrigin.transform.position+ TranslationOffset;
+                        transform.position = myOrigin.transform.position + ( myOrigin.transform.rotation * TranslationOffset);
                         transform.rotation = Quaternion.Euler(new Vector3(0,myOrigin.transform.eulerAngles.y,0))* Quaternion.Euler(RotationOffset);
                         break;
                     }

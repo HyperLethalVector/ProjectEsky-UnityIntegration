@@ -59,7 +59,7 @@ float4 PShader(float4 position : SV_POSITION, float2 tex: TEXCOORD) : SV_TARGET
     float2 distorted_uv = tex;
     if(xSettled < 0.5){//we render the left eye
         float2 newTex = float2(xSettled*2,ySettled);
-        float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, rightUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, rightUvToRectY), 1.2);
+        float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, rightUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, rightUvToRectY), 1.0);
         float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixRight,rectilinear_coordinate);
         distorted_uv += float2(offsets.z,offsets.w);        
         if(distorted_uv.x < eyeBordersRight.x || distorted_uv.x > eyeBordersRight.y || distorted_uv.y < eyeBordersRight.z || distorted_uv.y > eyeBordersRight.w)
@@ -68,7 +68,7 @@ float4 PShader(float4 position : SV_POSITION, float2 tex: TEXCOORD) : SV_TARGET
         return txDiffuseLeft.Sample(samLinear, distorted_uv);
     }else{//we render the right eye
         float2 newTex = float2((xSettled-0.5)*2,ySettled);  
-        float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, leftUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, leftUvToRectY), 1.2);
+        float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, leftUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, leftUvToRectY), 1.0);
         float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixLeft,rectilinear_coordinate);
         distorted_uv += float2(offsets.x,offsets.y);
         if(distorted_uv.x < eyeBordersLeft.x || distorted_uv.x > eyeBordersLeft.y || distorted_uv.y < eyeBordersLeft.z || distorted_uv.y > eyeBordersLeft.w)

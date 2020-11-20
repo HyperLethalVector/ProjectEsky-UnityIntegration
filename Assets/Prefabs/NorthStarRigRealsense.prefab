@@ -40,8 +40,8 @@ GameObject:
   m_Component:
   - component: {fileID: 360103426504287424}
   - component: {fileID: 6608672789980628342}
-  - component: {fileID: 8877742487726951325}
   - component: {fileID: 208651425}
+  - component: {fileID: 1708553963508663787}
   m_Layer: 0
   m_Name: NorthStarRigRealsense
   m_TagString: Untagged
@@ -79,100 +79,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _leapProvider: {fileID: 360103426840104887}
   ModelPool:
-  - GroupName: BasicHands
+  - GroupName: NetworkedHands
     _handModelManager: {fileID: 0}
-    LeftModel: {fileID: 114994683550464134, guid: 2aa010a1e75292e49a24f3f71bb9cddb,
-      type: 3}
-    IsLeftToBeSpawned: 1
-    RightModel: {fileID: 114245269363414434, guid: 2276723046d707c4f94d431ceb80ab92,
-      type: 3}
-    IsRightToBeSpawned: 1
-    IsEnabled: 1
+    LeftModel: {fileID: 0}
+    IsLeftToBeSpawned: 0
+    RightModel: {fileID: 0}
+    IsRightToBeSpawned: 0
+    IsEnabled: 0
     CanDuplicate: 0
---- !u!114 &8877742487726951325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360103426504287295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66030f667080b2b44bd039e61a167f22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ApplyPoses: 1
-  myOffsets:
-    LocalRigTranslation: {x: 0, y: 0, z: 0}
-    LocalRigRotation: {x: 0, y: 0, z: 0, w: 0}
-    CameraPreviewTranslation: {x: 0, y: 0, z: 0}
-    CameraPreviewRotation: {x: 0, y: 0, z: 0}
-    UsesCameraPreview: 0
-    AllowsSaving: 1
-  ReLocalizationCallback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: RelocalizationCallback
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: StartClient
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  mapCollectedCallback:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: ReceiveFile
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  subscribedAnchor: {fileID: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  velocityRotation: {x: 0, y: 0, z: 0}
-  smoothing: 0.05
-  smoothingRotation: 0.0000001
-  currentRealsensePose:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  currentRealsenseObject:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  RigCenter: {fileID: 360103426797230293}
-  CameraPreview: {fileID: 1399602289}
-  currentEuler: {x: 0, y: 0, z: 0}
-  ShouldGrabMapTest: 0
 --- !u!114 &208651425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,6 +151,57 @@ MonoBehaviour:
     localRotationLeapMotion: []
   LeapMotionCamera: {fileID: 360103426840104886}
   StartRendererAfterInitializing: 1
+--- !u!114 &1708553963508663787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360103426504287295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6875b57a49687d5449fb40c72ff82523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ApplyPoses: 1
+  myOffsets:
+    LocalRigTranslation: {x: 0, y: 0, z: 0}
+    LocalRigRotation: {x: 0, y: 0, z: 0, w: 0}
+    CameraPreviewTranslation: {x: 0, y: 0, z: 0}
+    CameraPreviewRotation: {x: 0, y: 0, z: 0}
+    UsesCameraPreview: 0
+    AllowsSaving: 1
+  ReLocalizationCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  mapCollectedCallback:
+    m_PersistentCalls:
+      m_Calls: []
+  subscribedAnchor: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  velocityRotation: {x: 0, y: 0, z: 0}
+  smoothing: 0.000001
+  smoothingRotation: 1e-11
+  currentRealsensePose:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  currentRealsenseObject:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  RigCenter: {fileID: 360103426797230293}
+  CameraPreview: {fileID: 1399602289}
+  currentEuler: {x: 0, y: 0, z: 0}
+  MeshParent: {fileID: 0}
 --- !u!1 &360103426797230292
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,6 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a11978ff7e36c4db32d02ff641157c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAR: 0
 --- !u!1 &360103426840104886
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,8 +276,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360103426840104886}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.17364816, y: -0, z: -0, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: 0.041871585, z: 0.027327102}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 360103426797230293}

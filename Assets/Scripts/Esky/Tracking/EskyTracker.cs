@@ -188,9 +188,10 @@ namespace ProjectEsky.Tracking{
     public class EskyTracker : MonoBehaviour
     {
         public bool ApplyPoses = true;
+        [HideInInspector]
         public EskyTrackerOffset myOffsets;
         public UnityEngine.Events.UnityEvent ReLocalizationCallback;
-        [SerializeField]
+        [SerializeField] 
         public MapSavedCallback mapCollectedCallback;
         protected EskyMap retEskyMap;
         public GameObject subscribedAnchor;// = new Dictionary<string, GameObject>();

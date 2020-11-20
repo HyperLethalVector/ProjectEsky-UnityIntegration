@@ -11,7 +11,6 @@ namespace ProjectEsky.Networking{
     public class EskyNetworkManager : NetworkManager
     {
         public bool AutoStartServer = false;
-        bool isConnected = false;
         public static EskyNetworkManager instance;
         public UnityEvent OnStartedServer;
         public UnityEvent OnStoppedServer;
@@ -87,7 +86,6 @@ namespace ProjectEsky.Networking{
                 OnClientConnected.Invoke(conn);
             }
             Debug.Log("Connected to server!");
-            isConnected = true;
         }
         public override void OnServerDisconnect(NetworkConnection conn)
         {
@@ -103,7 +101,6 @@ namespace ProjectEsky.Networking{
         public override void OnClientDisconnect(NetworkConnection conn)
         {
             base.OnClientDisconnect(conn);
-            isConnected = false;
             Debug.Log("OnClientDisconnect");            
             Debug.Log("Disconnected from server!");
             connectionAttempts++;

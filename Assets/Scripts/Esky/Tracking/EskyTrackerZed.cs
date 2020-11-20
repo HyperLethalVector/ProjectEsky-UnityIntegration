@@ -83,6 +83,7 @@ namespace ProjectEsky.Tracking{
 
                 didComplete = true;//will flag the pass is complete                    
                 }catch(System.Exception e){
+                    Debug.LogError(e);                    
                     TimeSpan ts = sw.Elapsed;
                     if(ts.TotalSeconds > 4)break; 
                     
