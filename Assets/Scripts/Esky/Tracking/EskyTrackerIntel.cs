@@ -8,9 +8,27 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ProjectEsky.Tracking{
-
+    public enum ComPort{
+        COM0 = 0,
+        COM1 = 1,
+        COM2 = 2,
+        COM3=  3,
+        COM4 = 4,
+        COM5 = 5,
+        COM6 = 6,
+        COM7 = 7,
+        COM8 = 8,
+        COM9 = 9,
+        COM10 = 10
+    }
     public class EskyTrackerIntel : EskyTracker
     {
+        public Camera previewCamera;
+        public RenderTexture tex;
+        public UnityEngine.UI.RawImage myImage;
+        bool canRenderImages = false;     
+        public bool UsesDeckXIntegrator;
+        public ComPort comPort;
         void Start()
         {
             RegisterDebugCallback(OnDebugCallback);    
@@ -18,11 +36,13 @@ namespace ProjectEsky.Tracking{
             InitializeTrackerObject();
             RegisterBinaryMapCallback(OnMapCallback);
             RegisterObjectPoseCallback(OnPoseReceivedCallback);
-
+            if(UsesDeckXIntegrator){
+                SetSerialComPort((int)comPort);
+            }
             RegisterLocalizationCallback(OnEventCallback);            
             StartTrackerThread(false);        
             AfterInitialization();
-            
+            SetTextureInitializedCallback(OnTextureInitialized);            
         }
         public override void LoadEskyMap(EskyMap m){
             retEskyMap = m;
@@ -32,6 +52,39 @@ namespace ProjectEsky.Tracking{
         }
         public override void ObtainObjectPoses(){             
             ObtainObjectPoseInLocalizedMap("origin_of_map");
+        }
+        public override void AfterUpdate()
+        {
+            base.AfterUpdate();
+            if(hasInitializedTexture){
+                ChangeCameraParam(textureWidth,textureHeight,fx,fy,cx,cy,fovx,fovy);
+                HookDeviceToIntel();
+                Debug.Log("Creating texture with: " + textureChannels + " channels");
+                hasInitializedTexture = false;
+                if(textureChannels == 4){
+//                    previewCamera.fieldOfView = cam_v_fov;
+
+                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
+                    tex.Create();
+                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
+                    if(myImage != null){
+                        myImage.texture = tex;
+                        myImage.gameObject.SetActive(true);
+                    }
+                    canRenderImages = true;
+                    StartCoroutine(WaitEndFrameCameraUpdate());
+                }else{
+                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.R16);
+                    tex.Create();
+                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
+                    if(myImage != null){
+                        myImage.texture = tex;
+                        myImage.gameObject.SetActive(true);
+                    }
+                    canRenderImages = true;
+                    StartCoroutine(WaitEndFrameCameraUpdate());                    
+                }
+            }
         }
         public override void ObtainPose(){
             if(ApplyPoses){
@@ -111,11 +164,24 @@ namespace ProjectEsky.Tracking{
             }
             //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
         }
+        delegate void RenderTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx, float fy, float cx, float cy, float fovx, float fovy, float focalLength);
         public void AddPoseFromCallback(EskyPoseCallbackData epcd){
             callbackEvents = epcd;
         }
         void OnDestroy(){
             StopTrackers();
+        }
+        public void ChangeCameraParam(float width, float height, float fx, float fy, float cx, float cy, float fovx, float fovy)
+        {    
+            float widthScale = (float)Screen.width / width;
+            float heightScale = (float)Screen.height / height;
+            double fovXScale = (2.0 * Mathf.Atan ((float)(width / (2.0 * fx)))) / (Mathf.Atan2 ((float)cx, (float)fx) + Mathf.Atan2 ((float)(width - cx), (float)fx));
+            double fovYScale = (2.0 * Mathf.Atan ((float)(height / (2.0 * fy)))) / (Mathf.Atan2 ((float)cy, (float)fy) + Mathf.Atan2 ((float)(height - cy), (float)fy));
+            if (widthScale < heightScale) {
+                previewCamera.fieldOfView = (float)(fovx* fovXScale);
+            } else {
+                previewCamera.fieldOfView = (float)(fovy * fovYScale);
+            }
         }
         [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
         static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
@@ -127,7 +193,8 @@ namespace ProjectEsky.Tracking{
             ((EskyTrackerIntel)instance).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
-
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void HookDeviceToIntel();
         [DllImport("libProjectEskyLLAPIIntel")]
         public static extern void SaveOriginPose();
  
@@ -136,6 +203,10 @@ namespace ProjectEsky.Tracking{
  
         [DllImport("libProjectEskyLLAPIIntel")]
         public static extern void InitializeTrackerObject();
+        
+ 
+        [DllImport("libProjectEskyLLAPIIntel")]
+        public static extern void SetSerialComPort(int port);
 
         [DllImport("libProjectEskyLLAPIIntel")]
         public static extern void StartTrackerThread(bool useLocalization);
@@ -169,5 +240,37 @@ namespace ProjectEsky.Tracking{
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetMapData(byte[] inputData, int Length);
+
+        [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
+        static void OnTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio){
+            if(instance != null){
+                Debug.Log("Received the texture initializaed callback");
+                instance.textureWidth = textureWidth;
+                instance.textureHeight = textureHeight;
+                instance.textureChannels = textureChannels;
+                instance.hasInitializedTexture = true;
+                instance.fx = fx;
+                instance.fx = fy;
+                instance.cx = cx;
+                instance.cy = cy;
+                instance.fovx = fovx;
+                instance.fovy = fovy;
+                                                                
+            }
+        }
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetTextureInitializedCallback(RenderTextureInitialized callback);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetRenderTexturePointer(IntPtr texPointer);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        public static extern IntPtr GetRenderEventFunc();        
+        IEnumerator WaitEndFrameCameraUpdate(){
+            while(true){
+                yield return new WaitForEndOfFrame();
+                if(canRenderImages){
+                    GL.IssuePluginEvent(GetRenderEventFunc(), 1);
+                }
+            }
+        }
     }
 }

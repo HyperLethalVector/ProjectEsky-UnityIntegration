@@ -271,7 +271,6 @@ namespace ProjectEsky.Rendering{
         }
 
         void OnApplicationQuit (){
-            Debug.Log("Quitting?");
             if(windowsOn.Count > 0){
                 StopGraphicsCoroutine();
                 foreach (int winId in windowsOn) {

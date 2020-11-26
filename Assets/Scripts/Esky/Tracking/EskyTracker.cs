@@ -339,8 +339,17 @@ namespace ProjectEsky.Tracking{
         
         byte[] callbackMemoryMapInfo;
         bool ShouldCallBackMap= false;
+        [HideInInspector]
+        public bool hasInitializedTexture = false;
+        [HideInInspector]
+        public int textureWidth;
+        [HideInInspector]                
+        public int textureHeight;
+        [HideInInspector]        
+        public int textureChannels;
+        [HideInInspector]
+        public float fx,fy,cx,cy,fovx,fovy,focalLength;
 
-        
         
         #region TrackerSpecific
 

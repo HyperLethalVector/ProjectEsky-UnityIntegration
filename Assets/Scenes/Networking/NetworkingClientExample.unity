@@ -611,6 +611,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 501714874, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_projectionMatrixMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 501714874, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: field of view
+      value: 26.991467
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058463554, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: -2.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058463554, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058463554, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 848
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058463554, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 1399602289, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.032
+      objectReference: {fileID: 0}
     - target: {fileID: 360103426504287295, guid: 731011d86797ce64d80a69e8db74e3fc,
         type: 3}
       propertyPath: m_Name
@@ -676,6 +704,26 @@ PrefabInstance:
       propertyPath: MeshParent
       value: 
       objectReference: {fileID: 600649820}
+    - target: {fileID: 1708553963508663787, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: previewCamera
+      value: 
+      objectReference: {fileID: 208651425}
+    - target: {fileID: 1708553963508663787, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: myImage
+      value: 
+      objectReference: {fileID: 208651424}
+    - target: {fileID: 1708553963508663787, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: comPort
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708553963508663787, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: UsesDeckXIntegrator
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6608672789980628342, guid: 731011d86797ce64d80a69e8db74e3fc,
         type: 3}
       propertyPath: ModelPool.Array.data[0].LeftModel
@@ -686,8 +734,31 @@ PrefabInstance:
       propertyPath: ModelPool.Array.data[0].RightModel
       value: 
       objectReference: {fileID: 114245270920299826}
+    - target: {fileID: 6608672789980628342, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: ModelPool.Array.data[0].IsEnabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+--- !u!114 &208651424 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1058463552, guid: 731011d86797ce64d80a69e8db74e3fc,
+    type: 3}
+  m_PrefabInstance: {fileID: 208651423}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!20 &208651425 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 501714874, guid: 731011d86797ce64d80a69e8db74e3fc,
+    type: 3}
+  m_PrefabInstance: {fileID: 208651423}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &245238979 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1737940507785971839, guid: ffbe4bef620a0a542bb77fe2f765c905,

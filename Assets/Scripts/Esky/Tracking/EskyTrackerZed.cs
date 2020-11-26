@@ -157,15 +157,7 @@ namespace ProjectEsky.Tracking{
                 zedInstance.cam_v_fov = v_fov;
             }
         }
-        [HideInInspector]
-        public bool hasInitializedTexture = false;
-        [HideInInspector]
-        public int textureWidth;
-        [HideInInspector]                
-        public int textureHeight;
-        [HideInInspector]        
-        public int textureChannels;
-
+ 
         bool processMeshList = false;
         public float ConvertRadiansToDegrees(double radians)
         {
