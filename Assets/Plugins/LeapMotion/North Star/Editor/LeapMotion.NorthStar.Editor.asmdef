@@ -1,0 +1,19 @@
+{
+    "name": "LeapMotion.NorthStar.Editor",
+    "references": [
+        "GUID:17a9cd949e870ce4fa3964d9310bec48",
+        "GUID:7d27038d101d67b458d02c13e2c7fefe",
+        "GUID:4e42b929e177eca4b860e2212b3a1a35"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

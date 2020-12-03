@@ -1,0 +1,20 @@
+{
+    "name": "LeapMotion.InteractionEngine.Scripts.Internal.Editor",
+    "references": [
+        "GUID:17a9cd949e870ce4fa3964d9310bec48",
+        "GUID:7d27038d101d67b458d02c13e2c7fefe",
+        "GUID:9d74cff47b8a0f042a4967be20030a2c",
+        "GUID:69001c67d3af4f24c8465bddf26d3e58"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

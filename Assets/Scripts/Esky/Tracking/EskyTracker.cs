@@ -187,6 +187,9 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTracker : MonoBehaviour
     {
+        
+        public static string TrackerCalibrationsFolder = "./TrackingCalibrations/";
+        public string TrackerCalibrationFileName = "TrackerOffset.json";
         public bool ApplyPoses = true;
         [HideInInspector]
         public EskyTrackerOffset myOffsets;
@@ -217,19 +220,21 @@ namespace ProjectEsky.Tracking{
         public GameObject MeshParent;
         // Start is called before the first frame update
         public virtual void LoadCalibration(){
-            if(File.Exists("TrackerOffset.json")){
-                myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText("TrackerOffset.json"));
+            if(File.Exists(TrackerCalibrationsFolder + TrackerCalibrationFileName)){
+                myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText(TrackerCalibrationsFolder + TrackerCalibrationFileName));
                 myOffsets.SetCalibrationLoaded();
                 if(RigCenter != null){
                     RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
                     RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
                     UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
                 }
+            }else{
+                Debug.LogError("Walp, no tracking calibration was loaded, does the file exist?");
             }
         }
         public virtual void SaveCalibration(){
             string json = JsonUtility.ToJson(myOffsets,true);
-            System.IO.File.WriteAllText("TrackerOffset.json", json);
+            System.IO.File.WriteAllText(TrackerCalibrationsFolder+TrackerCalibrationFileName, json);
             UnityEngine.Debug.Log("Saved 6DOF tracker offsets!");
         }
         public virtual void AfterInitialization(){

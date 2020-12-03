@@ -1,0 +1,170 @@
+fileFormatVersion: 2
+guid: 7085adf9fab112f488e6a2fc052d8369
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Display_L_Eye_Active_Area
+    100004: Display_R_Eye_Active_Area
+    100006: Eye_Calibration_Bottom_L
+    100008: Eye_Calibration_Bottom_R
+    100010: Eye_Calibration_Top_L
+    100012: Eye_Calibration_Top_R
+    100014: Foci_L_Eye_A
+    100016: Foci_L_Eye_B
+    100018: Foci_R_Eye_A
+    100020: Foci_R_Eye_B
+    100022: Headset_Mesh_001
+    100024: Part_Studio_1__4_
+    100026: RIGEL_L_Lens_Location
+    100028: RIGEL_R_Lens_Location
+    400000: //RootNode
+    400002: Display_L_Eye_Active_Area
+    400004: Display_R_Eye_Active_Area
+    400006: Eye_Calibration_Bottom_L
+    400008: Eye_Calibration_Bottom_R
+    400010: Eye_Calibration_Top_L
+    400012: Eye_Calibration_Top_R
+    400014: Foci_L_Eye_A
+    400016: Foci_L_Eye_B
+    400018: Foci_R_Eye_A
+    400020: Foci_R_Eye_B
+    400022: Headset_Mesh_001
+    400024: Part_Studio_1__4_
+    400026: RIGEL_L_Lens_Location
+    400028: RIGEL_R_Lens_Location
+    2100000: Calibration_Rigel
+    2100002: unnamed
+    2100004: Foci
+    2100006: Rigel_Related
+    2300000: Display_L_Eye_Active_Area
+    2300002: Display_R_Eye_Active_Area
+    2300004: Eye_Calibration_Bottom_L
+    2300006: Eye_Calibration_Bottom_R
+    2300008: Eye_Calibration_Top_L
+    2300010: Eye_Calibration_Top_R
+    2300012: Foci_L_Eye_A
+    2300014: Foci_L_Eye_B
+    2300016: Foci_R_Eye_A
+    2300018: Foci_R_Eye_B
+    2300020: Headset_Mesh_001
+    2300022: Part_Studio_1__4_
+    2300024: RIGEL_L_Lens_Location
+    2300026: RIGEL_R_Lens_Location
+    3300000: Display_L_Eye_Active_Area
+    3300002: Display_R_Eye_Active_Area
+    3300004: Eye_Calibration_Bottom_L
+    3300006: Eye_Calibration_Bottom_R
+    3300008: Eye_Calibration_Top_L
+    3300010: Eye_Calibration_Top_R
+    3300012: Foci_L_Eye_A
+    3300014: Foci_L_Eye_B
+    3300016: Foci_R_Eye_A
+    3300018: Foci_R_Eye_B
+    3300020: Headset_Mesh_001
+    3300022: Part_Studio_1__4_
+    3300024: RIGEL_L_Lens_Location
+    3300026: RIGEL_R_Lens_Location
+    4300000: Eye_Calibration_Top_R
+    4300002: Eye_Calibration_Top_L
+    4300004: Eye_Calibration_Bottom_L
+    4300006: Eye_Calibration_Bottom_R
+    4300008: Headset_Mesh_001
+    4300010: Foci_L_Eye_A
+    4300012: Foci_L_Eye_B
+    4300014: Foci_R_Eye_B
+    4300016: Foci_R_Eye_A
+    4300018: RIGEL_L_Lens_Location
+    4300020: RIGEL_R_Lens_Location
+    4300022: Display_L_Eye_Active_Area
+    4300024: Display_R_Eye_Active_Area
+    4300026: Part_Studio_1__4_
+    7400000: Default Take
+    9500000: //RootNode
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

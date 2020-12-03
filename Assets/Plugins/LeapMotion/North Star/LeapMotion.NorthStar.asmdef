@@ -1,0 +1,16 @@
+{
+    "name": "LeapMotion.NorthStar",
+    "references": [
+        "GUID:17a9cd949e870ce4fa3964d9310bec48",
+        "GUID:9d74cff47b8a0f042a4967be20030a2c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

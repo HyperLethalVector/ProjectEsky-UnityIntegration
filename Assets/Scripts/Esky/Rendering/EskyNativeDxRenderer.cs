@@ -109,6 +109,7 @@ namespace ProjectEsky.Rendering{
     }
     public class EskyNativeDxRenderer : MonoBehaviour
     {
+        public static string OpticalCalibrationsFolder = "./OpticalCalibrations/V2/";
         public bool allowsSavingCalibration = true;
         public bool LoadDisplaySettings = true;
         public DisplaySettings displaySettings;
@@ -136,8 +137,8 @@ namespace ProjectEsky.Rendering{
                     displaySettings = JsonUtility.FromJson<DisplaySettings>(File.ReadAllText("DisplaySettings.json"));
                 }
             }            
-            if(File.Exists("DisplayCalibration.json")){
-                calibration = JsonUtility.FromJson<DisplayCalibration>(File.ReadAllText("DisplayCalibration.json")); 
+            if(File.Exists(OpticalCalibrationsFolder+"DisplayCalibration.json")){
+                calibration = JsonUtility.FromJson<DisplayCalibration>(File.ReadAllText(OpticalCalibrationsFolder+"DisplayCalibration.json")); 
                 if(calibration.baseline == 0.0f){
                     Debug.LogError("There was a problem loading the calibration");
                     this.enabled = false;
@@ -186,7 +187,7 @@ namespace ProjectEsky.Rendering{
             DisplaySettings ds = displaySettings;
             ds.Initialized = false;
             string json = JsonUtility.ToJson(calibration,true);
-            System.IO.File.WriteAllText("DisplayCalibration.json", json);
+            System.IO.File.WriteAllText(OpticalCalibrationsFolder+"DisplayCalibration.json", json);
             Debug.Log("Saved Calibration");
             string json2 = JsonUtility.ToJson(ds,true);
             System.IO.File.WriteAllText("DisplaySettings.json",json2);

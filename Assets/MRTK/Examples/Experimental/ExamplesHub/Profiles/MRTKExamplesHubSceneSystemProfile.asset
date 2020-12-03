@@ -38,7 +38,7 @@ MonoBehaviour:
     Tag: Untagged
     Asset: {fileID: 102900000, guid: 63a00118e809c754f9c7911bb85d635f, type: 3}
   - Name: HandInteractionExamples
-    Path: Assets/Scenes/HandInteractionExamples.unity
+    Path: Assets/Scenes/Examples/V2-UniversalRendering/HandInteractionExamples.unity
     Included: 1
     BuildIndex: 0
     Tag: Untagged

@@ -63,10 +63,9 @@ YOU ARE GOSH DARN RIGHT!
 By editing the vertex and fragment shaders, (or heck, even the DirectX instance!) you can use _any_ headset.
 Alternatively you could replace the cameras in the unity scene with any renderer, steamVR, ect. and still utilize the leapmotion MRTK integration esky provides!
 
-THIS CODE IS LICENSED UNDER THE 3 CLAUSE BSD LICENSE.
 
-While I don't really care where and how you use this software, with great power comes great responsibility.
-That being said, using this software comes with one condition, that you please use the following bibtex citation:
+Esky (With the exception of the V1 rendering integration) 
+is licenced under the BSD 3 clause. While I don't really care where and how you use this software, with great power comes great responsibility. Using this software comes with one condition, that you please use the following bibtex citation:
 
 @inproceedings{10.1145/3380867.3426220,
 author = {Constantine, Rompapas Damien and Quiros, Daniel Flores and Rodda, Charlton and Brown, Bryan Christopher and Zerkin, Noah Benjamin and Cassinelli, Alvaro},
@@ -87,6 +86,4 @@ series = {ISS '20}
 }
 
 
-If you're looking to contribute, feel free to fork! 
-
-Finally, I always welcome requests for help/collaborations, especially if you're building fun shit! Seek me out :D 
+If you're looking to contribute, feel free to fork! Finally, I always welcome requests for help/collaborations, especially if you're building fun shit! Seek me out :D 

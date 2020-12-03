@@ -1,0 +1,21 @@
+{
+    "name": "LeapMotion.InteractionEngine.Scripts.UI.Anchors.Editor",
+    "references": [
+        "GUID:17a9cd949e870ce4fa3964d9310bec48",
+        "GUID:7d27038d101d67b458d02c13e2c7fefe",
+        "GUID:d6b5583d39718f741ac1720637880a7a",
+        "GUID:9d74cff47b8a0f042a4967be20030a2c",
+        "GUID:2b9bb2b6bfcafe9449fa1515ed0772b0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
