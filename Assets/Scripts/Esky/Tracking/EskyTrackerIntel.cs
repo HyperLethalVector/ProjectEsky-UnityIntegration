@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ProjectEsky.Tracking{
+
     public enum ComPort{
         COM0 = 0,
         COM1 = 1,
@@ -23,6 +24,7 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTrackerIntel : EskyTracker
     {
+        float rad2Deg = 180.0f/3.141592653589793238463f;
         public Camera previewCamera;
         public RenderTexture tex;
         public UnityEngine.UI.RawImage myImage;
@@ -32,8 +34,10 @@ namespace ProjectEsky.Tracking{
         void Start()
         {
             RegisterDebugCallback(OnDebugCallback);    
+
             LoadCalibration();
             InitializeTrackerObject();
+            RegisterQuaternionConversionCallback(ConvertToQuaternion);            
             RegisterBinaryMapCallback(OnMapCallback);
             RegisterObjectPoseCallback(OnPoseReceivedCallback);
             if(UsesDeckXIntegrator){
@@ -88,12 +92,13 @@ namespace ProjectEsky.Tracking{
         }
         public override void ObtainPose(){
             if(ApplyPoses){
-                IntPtr ptr = GetLatestPose();                
+                IntPtr ptr = GetLatestPose();                 
                 Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-                transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
-                Quaternion q = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);            
-                currentEuler = Vector3.SmoothDamp(transform.rotation.eulerAngles,new Vector3(-q.eulerAngles.x,-q.eulerAngles.y,q.eulerAngles.z),ref velocityRotation,smoothingRotation);
-                transform.rotation = Quaternion.Euler(currentEuler);    
+                transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]);//.Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
+                Vector3 eulerRet = new Vector3(-currentRealsensePose[5],-currentRealsensePose[4],currentRealsensePose[3]); 
+                transform.rotation = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);
+//                transform.rotation = Quaternion.Euler(eulerRet);
+
             }
         } 
         public override void SaveEskyMapInformation(){
@@ -183,6 +188,19 @@ namespace ProjectEsky.Tracking{
                 previewCamera.fieldOfView = (float)(fovy * fovYScale);
             }
         }
+        public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
+        public static float[] quat = {0.0f,0.0f,0.0f,0.0f};
+        public static Quaternion q = new Quaternion();
+        [MonoPInvokeCallback(typeof(ConvertToQuaternionCallback))]
+        public static void ConvertToQuaternion (IntPtr arrayToCopy, float eux, float euy, float euz){
+            q = Quaternion.Euler(-euz,-euy,eux);
+            quat[0] = q.x;
+            quat[1] = q.y;
+            quat[2] = q.z;     
+            quat[3] = q.w;
+            Marshal.Copy(quat,0,arrayToCopy,4);
+        }
+
         [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
         static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
             EskyPoseCallbackData epcd = new EskyPoseCallbackData();
@@ -193,6 +211,8 @@ namespace ProjectEsky.Tracking{
             ((EskyTrackerIntel)instance).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void RegisterQuaternionConversionCallback(ConvertToQuaternionCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void HookDeviceToIntel();
         [DllImport("libProjectEskyLLAPIIntel")]

@@ -202,6 +202,7 @@ namespace ProjectEsky.Tracking{
         public delegate void EventCallback(int Result);
         public delegate void MapDataCallback(IntPtr data, int Length);
         public delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+                
         [HideInInspector]        
         public Vector3 velocity = Vector3.zero;
         [HideInInspector]
@@ -336,12 +337,8 @@ namespace ProjectEsky.Tracking{
             }
             //Ptr to string
         }
-        
-       
-        public delegate void debugCallback(IntPtr request, int color, int size);
-
-
-        
+      
+        public delegate void debugCallback(IntPtr request, int color, int size);        
         byte[] callbackMemoryMapInfo;
         bool ShouldCallBackMap= false;
         [HideInInspector]
