@@ -24,6 +24,7 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTrackerIntel : EskyTracker
     {
+        public bool resetPose = false;
         float rad2Deg = 180.0f/3.141592653589793238463f;
         public Camera previewCamera;
         public RenderTexture tex;
@@ -31,10 +32,12 @@ namespace ProjectEsky.Tracking{
         bool canRenderImages = false;     
         public bool UsesDeckXIntegrator;
         public ComPort comPort;
+        public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
+
         void Start()
         {
+            instance = this;
             RegisterDebugCallback(OnDebugCallback);    
-
             LoadCalibration();
             InitializeTrackerObject();
             RegisterQuaternionConversionCallback(ConvertToQuaternion);            
@@ -43,6 +46,7 @@ namespace ProjectEsky.Tracking{
             if(UsesDeckXIntegrator){
                 SetSerialComPort((int)comPort);
             }
+            RegisterDeltaAffineCallback(AffinePoseUpdate);
             RegisterLocalizationCallback(OnEventCallback);            
             StartTrackerThread(false);        
             AfterInitialization();
@@ -63,11 +67,8 @@ namespace ProjectEsky.Tracking{
             if(hasInitializedTexture){
                 ChangeCameraParam(textureWidth,textureHeight,fx,fy,cx,cy,fovx,fovy);
                 HookDeviceToIntel();
-                Debug.Log("Creating texture with: " + textureChannels + " channels");
                 hasInitializedTexture = false;
                 if(textureChannels == 4){
-//                    previewCamera.fieldOfView = cam_v_fov;
-
                     tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
                     tex.Create();
                     SetRenderTexturePointer(tex.GetNativeTexturePtr());
@@ -89,16 +90,18 @@ namespace ProjectEsky.Tracking{
                     StartCoroutine(WaitEndFrameCameraUpdate());                    
                 }
             }
+            if(resetPose){
+                resetPose = false;
+                PostRenderReset();
+            }
         }
         public override void ObtainPose(){
             if(ApplyPoses){
                 IntPtr ptr = GetLatestPose();                 
                 Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-                transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]);//.Vector3.SmoothDamp(transform.position, new Vector3(currentRealsensePose[0],currentRealsensePose[1],-currentRealsensePose[2]),ref velocity,smoothing); 
-                Vector3 eulerRet = new Vector3(-currentRealsensePose[5],-currentRealsensePose[4],currentRealsensePose[3]); 
-                transform.rotation = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]);
-//                transform.rotation = Quaternion.Euler(eulerRet);
-
+                transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]);
+                Vector3 eulerRet = new Vector3(currentRealsensePose[5],currentRealsensePose[4],currentRealsensePose[3]); 
+                transform.rotation = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]); 
             }
         } 
         public override void SaveEskyMapInformation(){
@@ -189,18 +192,33 @@ namespace ProjectEsky.Tracking{
             }
         }
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
+        public delegate void AffinePoseUpdateCallback (IntPtr affinePointer, int length);
         public static float[] quat = {0.0f,0.0f,0.0f,0.0f};
+        public static double[] affine = {1.0f,0.0f,0.0f,
+                                0.0f,1.0f,0.0f};
         public static Quaternion q = new Quaternion();
         [MonoPInvokeCallback(typeof(ConvertToQuaternionCallback))]
         public static void ConvertToQuaternion (IntPtr arrayToCopy, float eux, float euy, float euz){
-            q = Quaternion.Euler(-euz,-euy,eux);
+            q = Quaternion.Euler(euz,euy,eux);
             quat[0] = q.x;
             quat[1] = q.y;
             quat[2] = q.z;     
             quat[3] = q.w;
             Marshal.Copy(quat,0,arrayToCopy,4);
         }
-
+        [MonoPInvokeCallback(typeof(AffinePoseUpdateCallback))]
+        public static void AffinePoseUpdate (IntPtr affinePointer, int length){
+            Marshal.Copy(affinePointer,affine,0,length);
+            string s = "";
+            for(int i = 0; i < length; i++){
+                s += affine[i] + ",";
+            }
+            if(instance != null){
+                if( ((EskyTrackerIntel)instance).attachedRenderer != null){
+                    ((EskyTrackerIntel)instance).attachedRenderer.SetAffineTransformDelta(affine);
+                }
+            }            
+        }
         [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
         static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
             EskyPoseCallbackData epcd = new EskyPoseCallbackData();
@@ -213,6 +231,8 @@ namespace ProjectEsky.Tracking{
         }
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void RegisterQuaternionConversionCallback(ConvertToQuaternionCallback callback);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void RegisterDeltaAffineCallback(AffinePoseUpdateCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void HookDeviceToIntel();
         [DllImport("libProjectEskyLLAPIIntel")]
@@ -259,6 +279,9 @@ namespace ProjectEsky.Tracking{
         static extern void ObtainMap();
 
         [DllImport("libProjectEskyLLAPIIntel")]
+        static extern IntPtr GetLatestAffine();
+
+        [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetMapData(byte[] inputData, int Length);
 
         [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
@@ -278,6 +301,11 @@ namespace ProjectEsky.Tracking{
                                                                 
             }
         }
+        public void RenderResetFlag(){
+            PostRenderReset();
+        }
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void PostRenderReset();
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetTextureInitializedCallback(RenderTextureInitialized callback);
         [DllImport("libProjectEskyLLAPIIntel")]

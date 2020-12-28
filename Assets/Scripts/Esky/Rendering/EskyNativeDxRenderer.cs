@@ -122,6 +122,7 @@ namespace ProjectEsky.Rendering{
         readonly List<int> windowsOn = new List<int>();
         public DisplayCalibration calibration;
         public GameObject LeapMotionCamera;
+        public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         void Start() {
             Application.targetFrameRate = 90;
             SetupDebugDelegate();
@@ -193,11 +194,12 @@ namespace ProjectEsky.Rendering{
             System.IO.File.WriteAllText("DisplaySettings.json",json2);
         }
         public bool StartRendererAfterInitializing;
+        bool wasDone = false;
         // Update is called once per frame
         void Update() { if(StartRendererAfterInitializing){StartRendererAfterInitializing = false; ShowExternalWindow(0);} if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}}
         IEnumerator CallPluginAtEndOfFrame(int id) {
             if (backgroundRendererCoroutine != null) {
-                Application.runInBackground = true;
+                Application.runInBackground = true;                                
                 StopCoroutine(backgroundRendererCoroutine);
                 backgroundRendererCoroutine = null;
             }
@@ -210,17 +212,25 @@ namespace ProjectEsky.Rendering{
             yield return new WaitForEndOfFrame();
             SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                    
             yield return new WaitForEndOfFrame();
-            if (backgroundRendererCoroutine == null) {
-                Application.runInBackground = true;
-                backgroundRendererCoroutine = CallRenderEvent();
-                StartCoroutine(backgroundRendererCoroutine);
+            if(!wasDone){
+                wasDone = true;
+                if (backgroundRendererCoroutine == null) {
+                    Application.runInBackground = true;
+                    backgroundRendererCoroutine = CallRenderEvent();
+                    Debug.Log("Background Render Coroutine starting render thread");                                    
+                    StartCoroutine(backgroundRendererCoroutine);
+                }
             }
+            yield return new WaitForEndOfFrame();
         }
 
         IEnumerator CallRenderEvent(){
             while (true){
                 yield return new WaitForEndOfFrame();
                 GL.IssuePluginEvent(GetRenderEventFunc(), 0);
+                if(myAttachedTracker != null){
+                    myAttachedTracker.RenderResetFlag();
+                }
             }		
         }
 
@@ -262,10 +272,13 @@ namespace ProjectEsky.Rendering{
         void CloseExternalWindow(int id){
             StartCoroutine(StopWindowCoroutine(id));
         }
-
+        public void SetAffineTransformDelta(double[] affineTransform){
+            SetAffineTransform(0,affineTransform);
+        }
         IEnumerator StopWindowCoroutine(int id) {
             yield return new WaitForEndOfFrame();
             if (windowsOn.Count == 0) {
+                Debug.Log("Stopping window thread");           
                 StopGraphicsCoroutine();
             }
             StopWindowById(id);
@@ -295,13 +308,15 @@ namespace ProjectEsky.Rendering{
         static void CallbackFunction(string message){
             Debug.Log("--PluginCallback--: "+message);
         }
-
+        
         void SetupDebugDelegate(){
             DebugDelegate callbackDelegate = new DebugDelegate(CallbackFunction);
             IntPtr intPtrDelegate = Marshal.GetFunctionPointerForDelegate(callbackDelegate);
             SetDebugFunction(intPtrDelegate);
         }
+        public void SetAffine(IntPtr affine){
 
+        }
         int ColorToInt(Color32 color) {
             return (color.r << 16) + (color.g << 8) + color.b;
         }
@@ -328,6 +343,8 @@ namespace ProjectEsky.Rendering{
         
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetColorFormat(int colorFormat);
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void SetAffineTransform(int windowID, double[] affineTransform);
 
         //DISABLED
         [DllImport("ProjectEskyLLAPIRenderer")]
@@ -349,6 +366,12 @@ namespace ProjectEsky.Rendering{
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern IntPtr GetRenderEventFunc();
+
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void StartRenderThreadById(int windowId);
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void StopRenderThreadById(int windowId);
+
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);
     }
