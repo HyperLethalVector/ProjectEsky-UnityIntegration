@@ -9,13 +9,11 @@ cbuffer ShaderVals : register(b0){
 	float4x4 rightUvToRectY;
     float4x4 cameraMatrixLeft;
     float4x4 cameraMatrixRight;
+    float4x4 affineTransform;            
 	float4 eyeBordersLeft;
 	float4 eyeBordersRight;
 	float4 offsets;
 };
-cbuffer ShaderVals2 : register(b1){
-    float3x3 affineTransform;        
-}
 struct VOut
 {
     float4 position : SV_POSITION;
@@ -66,9 +64,8 @@ float4 PShader(float4 position : SV_POSITION, float2 tex: TEXCOORD) : SV_TARGET
         float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixRight,rectilinear_coordinate); //project back into screen space
         distorted_uv += float2(offsets.z,offsets.w); //apply a screen space UV offset
         //Should do things here for reprojection ....
-        //this should be distorted_uv = float3(distorted_uv,1.0) * affineTransform 
-//        float3 retd = affineMatrix * float3(distorted_uv.x,distorted_uv.y,1.0);
-//        distorted_uv = float2(retd.x,retd.y);
+        float4 retd = mul(float4(distorted_uv.x,distorted_uv.y,1.0,1.0),affineTransform);// * affineTransform;
+        distorted_uv = float2(retd.x,retd.y);
         if(distorted_uv.x < eyeBordersRight.x || distorted_uv.x > eyeBordersRight.y || distorted_uv.y < eyeBordersRight.z || distorted_uv.y > eyeBordersRight.w)//ensure the UVS are within the set bounds for the eye
         return float4(0.0,0.0,0.0,1.0);//if outside, return black (prevent)
         else
@@ -78,8 +75,8 @@ float4 PShader(float4 position : SV_POSITION, float2 tex: TEXCOORD) : SV_TARGET
         float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, leftUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, leftUvToRectY), 1.0);
         float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixLeft,rectilinear_coordinate);
         distorted_uv += float2(offsets.x,offsets.y);
-  //      float3 retd = affineMatrix * float3(distorted_uv.x,distorted_uv.y,1.0);
-   //     distorted_uv = float2(retd.x,retd.y);
+        float4 retd = mul(float4(distorted_uv.x,distorted_uv.y,1.0,1.0),affineTransform);// * affineTransform;
+        distorted_uv = float2(retd.x,retd.y);
         if(distorted_uv.x < eyeBordersLeft.x || distorted_uv.x > eyeBordersLeft.y || distorted_uv.y < eyeBordersLeft.z || distorted_uv.y > eyeBordersLeft.w)
         return float4(0.0,0.0,0.0,1.0);
         else

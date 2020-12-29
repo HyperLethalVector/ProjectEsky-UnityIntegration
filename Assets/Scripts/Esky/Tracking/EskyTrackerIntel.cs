@@ -195,7 +195,8 @@ namespace ProjectEsky.Tracking{
         public delegate void AffinePoseUpdateCallback (IntPtr affinePointer, int length);
         public static float[] quat = {0.0f,0.0f,0.0f,0.0f};
         public static double[] affine = {1.0f,0.0f,0.0f,
-                                0.0f,1.0f,0.0f};
+                                0.0f,1.0f,0.0f,
+                                0.0f,0.0f,1.0f};
         public static Quaternion q = new Quaternion();
         [MonoPInvokeCallback(typeof(ConvertToQuaternionCallback))]
         public static void ConvertToQuaternion (IntPtr arrayToCopy, float eux, float euy, float euz){
