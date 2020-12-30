@@ -47,6 +47,7 @@ namespace ProjectEsky.Tracking{
                 SetSerialComPort((int)comPort);
             }
             RegisterLocalizationCallback(OnEventCallback);            
+            RegisterMatrixDeltaCallback(DeltaMatrixCallback);
             StartTrackerThread(false);        
             AfterInitialization();
             RegisterDeltaAffineCallback(AffinePoseUpdate);            
@@ -232,6 +233,51 @@ namespace ProjectEsky.Tracking{
             ((EskyTrackerIntel)instance).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
+        static Vector3 translateA = new Vector3();
+        static Vector3 translateB = new Vector3();
+        static Quaternion rotationA = new Quaternion();
+        static Quaternion rotationB = new Quaternion();
+        static Matrix4x4 A = new Matrix4x4();
+        static Matrix4x4 B = new Matrix4x4();
+        static Matrix4x4 Delta = new Matrix4x4();
+        static float[] deltaPoseReadback= new float[]{
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1                                    
+        };
+
+        [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
+        static void DeltaMatrixCallback(IntPtr writebackArray,float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
+            //set translations
+            translateA.x = tx_A;translateA.y = ty_A;translateA.z = tz_A;
+            translateB.x = tx_B;translateB.y = ty_B;translateB.z = tz_B; 
+            //set rotations
+            rotationA.x = qx_A;rotationA.y = qy_A; rotationA.z = qz_A; rotationA.w=qw_A;
+            rotationB.x = qx_B;rotationB.y = qy_B; rotationB.z = qz_B; rotationB.w=qw_B;
+            //set matricies
+            A.SetTRS(translateA,rotationA,Vector3.one);
+            B.SetTRS(translateB,rotationB,Vector3.one);              
+            // Relove delta B -> A (final - initial)
+            Delta = B * A.inverse;
+            deltaPoseReadback[0] = Delta.m00;
+            deltaPoseReadback[1] = Delta.m01;
+            deltaPoseReadback[2] = Delta.m02;               
+            deltaPoseReadback[3] = Delta.m03;
+            deltaPoseReadback[4] = Delta.m10;
+            deltaPoseReadback[5] = Delta.m11;
+            deltaPoseReadback[6] = Delta.m12;               
+            deltaPoseReadback[7] = Delta.m13;
+            deltaPoseReadback[8] = Delta.m20;
+            deltaPoseReadback[9] = Delta.m21;
+            deltaPoseReadback[10] = Delta.m22;               
+            deltaPoseReadback[11] = Delta.m23;
+            deltaPoseReadback[12] = Delta.m30;
+            deltaPoseReadback[13] = Delta.m31;
+            deltaPoseReadback[14] = Delta.m32;               
+            deltaPoseReadback[15] = Delta.m33;
+            Marshal.Copy(deltaPoseReadback,0,writebackArray,15);      
+        }
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void RegisterQuaternionConversionCallback(ConvertToQuaternionCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
@@ -274,6 +320,9 @@ namespace ProjectEsky.Tracking{
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetObjectPoseInLocalizedMap(string objectID,float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void RegisterMatrixDeltaCallback(DeltaMatrixConvertCallback callback);
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void ObtainObjectPoseInLocalizedMap(string objectID);

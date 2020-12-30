@@ -83,7 +83,10 @@ namespace ProjectEsky.Rendering{
         public bool RequiresRotation = true;
         public float[] LeftProjectionMatrix;
         public float[] RightProjectionMatrix;
+        public float[] LeftInvProjectionMatrix;
+        public float[] RightInvProjectionMatrix;
         public void UpdateProjectionMatrix(Matrix4x4 input, bool isLeft){
+            Matrix4x4 inv = input.inverse;
             float[] mm = new float[16];
             mm[0] = input.m00;
             mm[1] = input.m01;
@@ -104,7 +107,30 @@ namespace ProjectEsky.Rendering{
             mm[13] = input.m31;
             mm[14] = input.m32;               
             mm[15] = input.m33;                                
+
+            float[] mminv = new float[16];
+            mminv[0] = inv.m00;
+            mminv[1] = inv.m01;
+            mminv[2] = inv.m02;               
+            mminv[3] = inv.m03;
+
+            mminv[4] = inv.m10;
+            mminv[5] = inv.m11;
+            mminv[6] = inv.m12;               
+            mminv[7] = inv.m13;
+
+            mminv[8] = inv.m20;
+            mminv[9] = inv.m21;
+            mminv[10] = inv.m22;               
+            mminv[11] = inv.m23;
+
+            mminv[12] = inv.m30;
+            mminv[13] = inv.m31;
+            mminv[14] = inv.m32;               
+            mminv[15] = inv.m33;                                
+
             if(isLeft)LeftProjectionMatrix =mm; else RightProjectionMatrix=mm;
+            if(isLeft)LeftInvProjectionMatrix =mminv; else RightInvProjectionMatrix=mminv;            
         }
     }
     public class EskyNativeDxRenderer : MonoBehaviour
@@ -210,7 +236,10 @@ namespace ProjectEsky.Rendering{
             SendTextureIdToPluginByIdRight(id, ptrRight);        
             GL.IssuePluginEvent(InitGraphics(), 0);
             yield return new WaitForEndOfFrame();
-            SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                    
+            SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,
+            renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,
+            renderTextureSettings.LeftInvProjectionMatrix,renderTextureSettings.RightInvProjectionMatrix,
+            calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                    
             yield return new WaitForEndOfFrame();
             if(!wasDone){
                 wasDone = true;
@@ -373,6 +402,6 @@ namespace ProjectEsky.Rendering{
         static extern void StopRenderThreadById(int windowId);
 
         [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);
+        static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] InvCameraMatrixLeft,float[] InvCameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);
     }
 }

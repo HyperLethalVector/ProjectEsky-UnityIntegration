@@ -202,7 +202,9 @@ namespace ProjectEsky.Tracking{
         public delegate void EventCallback(int Result);
         public delegate void MapDataCallback(IntPtr data, int Length);
         public delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
-                
+        public delegate void DeltaMatrixConvertCallback(IntPtr writebackArray, 
+                                                        float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A,
+                                                        float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B);
         [HideInInspector]        
         public Vector3 velocity = Vector3.zero;
         [HideInInspector]

@@ -10,6 +10,8 @@ cbuffer ShaderVals : register(b0){
 	float4x4 rightUvToRectY;
     float4x4 cameraMatrixLeft;
     float4x4 cameraMatrixRight;
+    float4x4 invCameraMatrixLeft;
+    float4x4 invCameraMatrixRight;    
 	float4 eyeBordersLeft;
 	float4 eyeBordersRight;
 	float4 offsets;
@@ -56,14 +58,7 @@ float polyval2d(float X, float Y, float4x4 C) {
           );
 }
 float4 resolveWithoutDistortion(float xSettled, float ySettled){
-    float4x4 hardCodedProjectionUnity = {            1.427334, 0,    0.5, 0.0,
-                                                0  , 2.537483, 0.5, 0.0,
-                                                0  , 0   , -1.0, -0.2,
-                                                0  , 0   , -1.0, 1.0};
-    float4x4 hardCodedProjectionUnityInverse = {-3.0449796, 0         ,  -1.2687,               -0.2537483,
-                                                0         , -1.7128008, 0.713667,             -0.1427334,
-                                                0         , 0   , 3.621835760322, 0.7243671520644,
-                                                0         , 0   , 3.621835760322, -3.621835760322};                                                
+
     float4x4 hardCodedBias =        {2,0,0,-1.0,
                                     0,2,0,-1.0,
                                     0,0,2,0,                                    
@@ -78,16 +73,22 @@ float4 resolveWithoutDistortion(float xSettled, float ySettled){
                                     0,0,1,0,                                    
                                     0,0,0,1,                                    
                                     };       
+    float4x4 hardCodedDeltaPose = {1,0,0,0.0,
+                                    0,1,0,0.3,
+                                    0,0,1,0.0,                                    
+                                    0,0,0,1,                                    
+                                    };                                           
     if(xSettled < 0.5){//we render the left eye
         float2 newTex = float2(ySettled,xSettled*2);// input quad UV in world space (should be between 0-1)
         float2 inputUV = newTex;        //store as distorted_uv
-        float4 distorted_uvprior = float4(inputUV.x,inputUV.y,1.0,1.0);
+        float4 distorted_uvprior = float4(inputUV.x,inputUV.y,0.25,1.0);
+
         //doReprojection things
-//        float4 retd = mul(hardCodedBias,distorted_uvprior); //Use Bias 
-         float4 retd = mul(hardCodedProjectionUnityInverse,distorted_uvprior);//multiply by projection
-        retd = mul(DeltaPose,retd);//multiply by deltapose
-        retd = mul(hardCodedProjectionUnity,retd);//Multiply by inverse projection
-  //      retd = mul(hardCodedInverseBias,retd); //Use InverseBias
+        float4 retd = mul(hardCodedBias,distorted_uvprior); //Use Bias 
+        retd = mul(cameraMatrixLeft,retd);//multiply by projection
+        retd = mul(hardCodedDeltaPose,retd);//multiply by deltapose
+        retd = mul(invCameraMatrixLeft,retd);//Multiply by inverse projection
+        retd = mul(hardCodedInverseBias,retd); //Use InverseBias
 
 
         //we need to turn that float4 back into a float2
