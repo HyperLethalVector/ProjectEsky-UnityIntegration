@@ -272,7 +272,7 @@ namespace ProjectEsky.Rendering{
         void CloseExternalWindow(int id){
             StartCoroutine(StopWindowCoroutine(id));
         }
-        public void SetAffineTransformDelta(double[] affineTransform){
+        public void SetAffineTransformDelta(float[] affineTransform){
             SetAffineTransform(0,affineTransform);
         }
         IEnumerator StopWindowCoroutine(int id) {
@@ -344,7 +344,7 @@ namespace ProjectEsky.Rendering{
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetColorFormat(int colorFormat);
         [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetAffineTransform(int windowID, double[] affineTransform);
+        static extern void SetAffineTransform(int windowID, float[] affineTransform);
 
         //DISABLED
         [DllImport("ProjectEskyLLAPIRenderer")]

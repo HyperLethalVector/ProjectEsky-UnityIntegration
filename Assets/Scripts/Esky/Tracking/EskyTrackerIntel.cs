@@ -46,10 +46,10 @@ namespace ProjectEsky.Tracking{
             if(UsesDeckXIntegrator){
                 SetSerialComPort((int)comPort);
             }
-            RegisterDeltaAffineCallback(AffinePoseUpdate);
             RegisterLocalizationCallback(OnEventCallback);            
             StartTrackerThread(false);        
             AfterInitialization();
+            RegisterDeltaAffineCallback(AffinePoseUpdate);            
             SetTextureInitializedCallback(OnTextureInitialized);            
         }
         public override void LoadEskyMap(EskyMap m){
@@ -194,9 +194,10 @@ namespace ProjectEsky.Tracking{
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
         public delegate void AffinePoseUpdateCallback (IntPtr affinePointer, int length);
         public static float[] quat = {0.0f,0.0f,0.0f,0.0f};
-        public static double[] affine = {1.0f,0.0f,0.0f,
-                                0.0f,1.0f,0.0f,
-                                0.0f,0.0f,1.0f};
+        public static float[] affine = {1,0,0,0,
+                                     0,1,0,0, 
+                                     0,0,1,0,
+                                     0,0,0,1};
         public static Quaternion q = new Quaternion();
         [MonoPInvokeCallback(typeof(ConvertToQuaternionCallback))]
         public static void ConvertToQuaternion (IntPtr arrayToCopy, float eux, float euy, float euz){
@@ -210,10 +211,11 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(AffinePoseUpdateCallback))]
         public static void AffinePoseUpdate (IntPtr affinePointer, int length){
             Marshal.Copy(affinePointer,affine,0,length);
-            string s = "";
+/*            string s = "";
             for(int i = 0; i < length; i++){
                 s += affine[i] + ",";
             }
+            Debug.Log(s);*/
             if(instance != null){
                 if( ((EskyTrackerIntel)instance).attachedRenderer != null){
                     ((EskyTrackerIntel)instance).attachedRenderer.SetAffineTransformDelta(affine);
