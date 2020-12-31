@@ -149,6 +149,7 @@ namespace ProjectEsky.Rendering{
         public DisplayCalibration calibration;
         public GameObject LeapMotionCamera;
         public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
+        public GameObject RigCenter;
         void Start() {
             Application.targetFrameRate = 90;
             SetupDebugDelegate();
@@ -239,8 +240,13 @@ namespace ProjectEsky.Rendering{
             SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,
             renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,
             renderTextureSettings.LeftInvProjectionMatrix,renderTextureSettings.RightInvProjectionMatrix,
-            calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                    
+            calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                  
+            if( ((ProjectEsky.Tracking.EskyTrackerIntel)ProjectEsky.Tracking.EskyTracker.instance) != null){
+                ProjectEsky.Tracking.EskyTrackerIntel eti = ((ProjectEsky.Tracking.EskyTrackerIntel)ProjectEsky.Tracking.EskyTracker.instance);
+                SetEyeOffset(eti.EyeTransformLeft,eti.EyeTransformRight,eti.EyeTransformLeftInv,eti.EyeTransformRightInv);
+            }              
             yield return new WaitForEndOfFrame();
+
             if(!wasDone){
                 wasDone = true;
                 if (backgroundRendererCoroutine == null) {
@@ -394,6 +400,8 @@ namespace ProjectEsky.Rendering{
         static extern void StartRenderThreadById(int windowId);
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void StopRenderThreadById(int windowId);
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void SetEyeOffset(float[] eyeOffsetsLeft, float[] eyeOffsetsRight,float[] eyeOffsetsLeftInv, float[] eyeOffsetsRightInv);
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] InvCameraMatrixLeft,float[] InvCameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);

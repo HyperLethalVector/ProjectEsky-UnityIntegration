@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -373,6 +374,8 @@ MonoBehaviour:
     RequiresRotation: 1
     LeftProjectionMatrix: []
     RightProjectionMatrix: []
+    LeftInvProjectionMatrix: []
+    RightInvProjectionMatrix: []
   myEyeBorders:
     minXLeft: 0
     maxXLeft: 1
@@ -405,6 +408,8 @@ MonoBehaviour:
     localPositionLeapMotion: []
     localRotationLeapMotion: []
   LeapMotionCamera: {fileID: 360103426840104886}
+  myAttachedTracker: {fileID: 1708553963508663787}
+  RigCenter: {fileID: 0}
   StartRendererAfterInitializing: 1
 --- !u!114 &1708553963508663787
 MonoBehaviour:
@@ -418,6 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6875b57a49687d5449fb40c72ff82523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TrackerCalibrationFileName: TrackerOffset.json
   ApplyPoses: 1
   myOffsets:
     LocalRigTranslation: {x: 0, y: 0, z: 0}
@@ -431,7 +437,19 @@ MonoBehaviour:
       m_Calls: []
   mapCollectedCallback:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ProjectEsky.Utilities.EskyMapSaverBasic, Assembly-CSharp
+        m_MethodName: ReceiveFile
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   subscribedAnchor: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
   velocityRotation: {x: 0, y: 0, z: 0}
@@ -454,9 +472,15 @@ MonoBehaviour:
   - 0
   - 0
   RigCenter: {fileID: 360103426797230293}
+  EyeLeft: {fileID: 360103428309199679}
+  EyeRight: {fileID: 360103426964646976}
   CameraPreview: {fileID: 1399602289}
   currentEuler: {x: 0, y: 0, z: 0}
   MeshParent: {fileID: 0}
+  EyeTransformLeft: []
+  EyeTransformRight: []
+  EyeTransformLeftInv: []
+  EyeTransformRightInv: []
   hasInitializedTexture: 0
   textureWidth: 0
   textureHeight: 0
@@ -468,11 +492,13 @@ MonoBehaviour:
   fovx: 0
   fovy: 0
   focalLength: 0
+  resetPose: 0
   previewCamera: {fileID: 501714874}
   tex: {fileID: 0}
   myImage: {fileID: 1058463552}
   UsesDeckXIntegrator: 1
   comPort: 5
+  attachedRenderer: {fileID: 208651425}
 --- !u!1 &360103426797230292
 GameObject:
   m_ObjectHideFlags: 0

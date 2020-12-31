@@ -33,7 +33,7 @@ namespace ProjectEsky.Tracking{
         public bool UsesDeckXIntegrator;
         public ComPort comPort;
         public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
-
+ 
         void Start()
         {
             instance = this;

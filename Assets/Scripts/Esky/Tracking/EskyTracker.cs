@@ -216,11 +216,22 @@ namespace ProjectEsky.Tracking{
         [HideInInspector]        
         public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         public Transform RigCenter;
+        public Transform EyeLeft;
+        public Transform EyeRight;
         public Transform CameraPreview;
         [HideInInspector]
         public Vector3 currentEuler = Vector3.zero;
         protected EskyPoseCallbackData callbackEvents = null;
         public GameObject MeshParent;
+        Matrix4x4 matrixEyeLeft = Matrix4x4.identity;
+        Matrix4x4 matrixEyeRight = Matrix4x4.identity;   
+        Matrix4x4 matrixEyeLeftInv = Matrix4x4.identity;
+
+        Matrix4x4 matrixEyeRightInv = Matrix4x4.identity;             
+        public float[] EyeTransformLeft;
+        public float[] EyeTransformRight;
+        public float[] EyeTransformLeftInv;
+        public float[] EyeTransformRightInv;        
         // Start is called before the first frame update
         public virtual void LoadCalibration(){
             if(File.Exists(TrackerCalibrationsFolder + TrackerCalibrationFileName)){
@@ -231,6 +242,38 @@ namespace ProjectEsky.Tracking{
                     RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
                     UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
                 }
+/*                matrixEyeLeft.SetTRS(EyeLeft.transform.localPosition,EyeLeft.transform.localRotation,Vector3.one);
+                matrixEyeRight.SetTRS(EyeRight.transform.localPosition,EyeRight.transform.localRotation,Vector3.one);                */
+//                matrixEyeLeft = EyeLeft.worldToLocalMatrix;
+  //              matrixEyeRight = EyeRight.worldToLocalMatrix;
+    //            matrixEyeLeftInv = matrixEyeLeft.inverse;
+      //          matrixEyeRightInv = matrixEyeRight.inverse;
+                 
+                EyeTransformLeft = new float[16]{
+                    matrixEyeLeft.m00,matrixEyeLeft.m10,matrixEyeLeft.m20,matrixEyeLeft.m30,
+                    matrixEyeLeft.m01,matrixEyeLeft.m11,matrixEyeLeft.m21,matrixEyeLeft.m31,
+                    matrixEyeLeft.m02,matrixEyeLeft.m12,matrixEyeLeft.m22,matrixEyeLeft.m32,                                        
+                    matrixEyeLeft.m03,matrixEyeLeft.m13,matrixEyeLeft.m23,matrixEyeLeft.m33,                    
+                };
+                EyeTransformRight = new float[16]{
+                    matrixEyeRight.m00,matrixEyeRight.m10,matrixEyeRight.m20,matrixEyeRight.m30,
+                    matrixEyeRight.m01,matrixEyeRight.m11,matrixEyeRight.m21,matrixEyeRight.m31,
+                    matrixEyeRight.m02,matrixEyeRight.m12,matrixEyeRight.m22,matrixEyeRight.m32,                                        
+                    matrixEyeRight.m03,matrixEyeRight.m13,matrixEyeRight.m23,matrixEyeRight.m33,                    
+                };  
+
+                EyeTransformLeftInv = new float[16]{
+                    matrixEyeLeftInv.m00,matrixEyeLeftInv.m10,matrixEyeLeftInv.m20,matrixEyeLeftInv.m30,
+                    matrixEyeLeftInv.m01,matrixEyeLeftInv.m11,matrixEyeLeftInv.m21,matrixEyeLeftInv.m31,
+                    matrixEyeLeftInv.m02,matrixEyeLeftInv.m12,matrixEyeLeftInv.m22,matrixEyeLeftInv.m32,                                        
+                    matrixEyeLeftInv.m03,matrixEyeLeftInv.m13,matrixEyeLeftInv.m23,matrixEyeLeftInv.m33,                    
+                };
+                EyeTransformRightInv = new float[16]{
+                    matrixEyeRightInv.m00,matrixEyeRightInv.m10,matrixEyeRightInv.m20,matrixEyeRightInv.m30,
+                    matrixEyeRightInv.m01,matrixEyeRightInv.m11,matrixEyeRightInv.m21,matrixEyeRightInv.m31,
+                    matrixEyeRightInv.m02,matrixEyeRightInv.m12,matrixEyeRightInv.m22,matrixEyeRightInv.m32,                                        
+                    matrixEyeRightInv.m03,matrixEyeRightInv.m13,matrixEyeRightInv.m23,matrixEyeRightInv.m33,                    
+                };                                          
             }else{
                 Debug.LogError("Walp, no tracking calibration was loaded, does the file exist?");
             }
