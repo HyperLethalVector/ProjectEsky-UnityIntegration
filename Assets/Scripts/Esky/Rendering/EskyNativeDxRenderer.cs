@@ -301,8 +301,8 @@ namespace ProjectEsky.Rendering{
         void CloseExternalWindow(int id){
             StartCoroutine(StopWindowCoroutine(id));
         }
-        public void SetAffineTransformDelta(float[] affineTransform){
-            SetAffineTransform(0,affineTransform);
+        public void SetDeltas(float[] delta,float[] deltaInv){
+            SetDeltas(0,delta,deltaInv);
         }
         IEnumerator StopWindowCoroutine(int id) {
             yield return new WaitForEndOfFrame();
@@ -343,12 +343,6 @@ namespace ProjectEsky.Rendering{
             IntPtr intPtrDelegate = Marshal.GetFunctionPointerForDelegate(callbackDelegate);
             SetDebugFunction(intPtrDelegate);
         }
-        public void SetAffine(IntPtr affine){
-
-        }
-        int ColorToInt(Color32 color) {
-            return (color.r << 16) + (color.g << 8) + color.b;
-        }
         delegate void MyDele(string s);
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRenderTextureWidthHeight(int id, int width, int height);
@@ -373,7 +367,7 @@ namespace ProjectEsky.Rendering{
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetColorFormat(int colorFormat);
         [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetAffineTransform(int windowID, float[] affineTransform);
+        static extern void SetDeltas(int windowID, float[] delta,float[] deltaInv);
 
         //DISABLED
         [DllImport("ProjectEskyLLAPIRenderer")]

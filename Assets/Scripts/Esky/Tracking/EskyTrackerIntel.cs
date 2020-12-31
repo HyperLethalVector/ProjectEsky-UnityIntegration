@@ -193,12 +193,16 @@ namespace ProjectEsky.Tracking{
             }
         }
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
-        public delegate void AffinePoseUpdateCallback (IntPtr affinePointer, int length);
+        public delegate void DeltaPoseUpdateCallback (IntPtr delta,IntPtr deltaInv, int length);
         public static float[] quat = {0.0f,0.0f,0.0f,0.0f};
-        public static float[] affine = {1,0,0,0,
+        public static float[] deltaPose = {1,0,0,0,
                                      0,1,0,0, 
                                      0,0,1,0,
                                      0,0,0,1};
+        public static float[] deltaPoseInv = {1,0,0,0,
+                                     0,1,0,0, 
+                                     0,0,1,0,
+                                     0,0,0,1};                                     
         public static Quaternion q = new Quaternion();
         [MonoPInvokeCallback(typeof(ConvertToQuaternionCallback))]
         public static void ConvertToQuaternion (IntPtr arrayToCopy, float eux, float euy, float euz){
@@ -209,17 +213,13 @@ namespace ProjectEsky.Tracking{
             quat[3] = q.w;
             Marshal.Copy(quat,0,arrayToCopy,4);
         }
-        [MonoPInvokeCallback(typeof(AffinePoseUpdateCallback))]
-        public static void AffinePoseUpdate (IntPtr affinePointer, int length){
-            Marshal.Copy(affinePointer,affine,0,length);
-/*            string s = "";
-            for(int i = 0; i < length; i++){
-                s += affine[i] + ",";
-            }
-            Debug.Log(s);*/
+        [MonoPInvokeCallback(typeof(DeltaPoseUpdateCallback))]
+        public static void AffinePoseUpdate (IntPtr delta,IntPtr deltaInv, int length){
+            Marshal.Copy(delta,deltaPose,0,length);
+            Marshal.Copy(deltaInv,deltaPoseInv,0,length);            
             if(instance != null){
                 if( ((EskyTrackerIntel)instance).attachedRenderer != null){
-                    ((EskyTrackerIntel)instance).attachedRenderer.SetAffineTransformDelta(affine);
+                    ((EskyTrackerIntel)instance).attachedRenderer.SetDeltas(deltaPose,deltaPoseInv);
                 }
             }            
         }
@@ -235,31 +235,51 @@ namespace ProjectEsky.Tracking{
         }
         static Vector3 translateA = new Vector3();
         static Vector3 translateB = new Vector3();
-        static Quaternion rotationA = new Quaternion();
-        static Quaternion rotationB = new Quaternion();
+        static Quaternion rotationA = Quaternion.identity;
+        static Quaternion rotationB = Quaternion.identity;
         static Matrix4x4 A = new Matrix4x4();
         static Matrix4x4 B = new Matrix4x4();
         static Matrix4x4 Delta = new Matrix4x4();
+        static Matrix4x4 DeltaInv = new Matrix4x4();
         static float[] deltaPoseReadback= new float[]{
             1,0,0,0,
             0,1,0,0,
             0,0,1,0,
             0,0,0,1                                    
         };
-
+        static float[] deltaPoseInvReadback= new float[]{
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1                                    
+        };
         [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
-        static void DeltaMatrixCallback(IntPtr writebackArray,float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
+        static void DeltaMatrixCallback(IntPtr writebackArray,IntPtr writebackArrayInv,float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
             //set translations
-            translateA.x = tx_A;translateA.y = ty_A;translateA.z = tz_A;
-            translateB.x = tx_B;translateB.y = ty_B;translateB.z = tz_B; 
+            translateA.x = ty_A;            
+            translateA.y = -tx_A;
+            translateA.z = -tz_A;
+            
+            translateB.x = ty_B;
+            translateB.y = -tx_B;
+            translateB.z = -tz_B; 
             //set rotations
-            rotationA.x = qx_A;rotationA.y = qy_A; rotationA.z = qz_A; rotationA.w=qw_A;
-            rotationB.x = qx_B;rotationB.y = qy_B; rotationB.z = qz_B; rotationB.w=qw_B;
+            rotationA.x = qy_A;
+            rotationA.y = -qx_A; 
+            rotationA.z = -qz_A; 
+            rotationA.w = qw_A;
+            rotationA.Normalize();
+            //
+            rotationB.x = qy_B;
+            rotationB.y = -qx_B; 
+            rotationB.z = -qz_B; 
+            rotationB.w = qw_B;
+            rotationB.Normalize();
             //set matricies
             A.SetTRS(translateA,rotationA,Vector3.one);
             B.SetTRS(translateB,rotationB,Vector3.one);              
             // Relove delta B -> A (final - initial)
-            Delta = B * A.inverse;
+            Delta = A * B.inverse;
             deltaPoseReadback[0] = Delta.m00;
             deltaPoseReadback[1] = Delta.m01;
             deltaPoseReadback[2] = Delta.m02;               
@@ -276,12 +296,32 @@ namespace ProjectEsky.Tracking{
             deltaPoseReadback[13] = Delta.m31;
             deltaPoseReadback[14] = Delta.m32;               
             deltaPoseReadback[15] = Delta.m33;
+            DeltaInv = Delta.inverse;
+
+            deltaPoseInvReadback[0] = DeltaInv.m00;
+            deltaPoseInvReadback[1] = DeltaInv.m01;
+            deltaPoseInvReadback[2] = DeltaInv.m02;               
+            deltaPoseInvReadback[3] = DeltaInv.m03;
+            deltaPoseInvReadback[4] = DeltaInv.m10;
+            deltaPoseInvReadback[5] = DeltaInv.m11;
+            deltaPoseInvReadback[6] = DeltaInv.m12;               
+            deltaPoseInvReadback[7] = DeltaInv.m13;
+            deltaPoseInvReadback[8] = DeltaInv.m20;
+            deltaPoseInvReadback[9] = DeltaInv.m21;
+            deltaPoseInvReadback[10] = DeltaInv.m22;               
+            deltaPoseInvReadback[11] = DeltaInv.m23;
+            deltaPoseInvReadback[12] = DeltaInv.m30;
+            deltaPoseInvReadback[13] = DeltaInv.m31;
+            deltaPoseInvReadback[14] = DeltaInv.m32;               
+            deltaPoseInvReadback[15] = DeltaInv.m33;
+
             Marshal.Copy(deltaPoseReadback,0,writebackArray,15);      
+            Marshal.Copy(deltaPoseInvReadback,0,writebackArrayInv,15);                
         }
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void RegisterQuaternionConversionCallback(ConvertToQuaternionCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void RegisterDeltaAffineCallback(AffinePoseUpdateCallback callback);
+        static extern void RegisterDeltaAffineCallback(DeltaPoseUpdateCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void HookDeviceToIntel();
         [DllImport("libProjectEskyLLAPIIntel")]
