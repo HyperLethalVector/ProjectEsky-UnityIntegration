@@ -67,32 +67,32 @@ namespace ProjectEsky.Tracking{
         {
             base.AfterUpdate();
             if(UseExternalCameraPreview){
-                if(hasInitializedTexture){
-                    ChangeCameraParam(textureWidth,textureHeight,fx,fy,cx,cy,fovx,fovy);
-                    HookDeviceToIntel();
-                    hasInitializedTexture = false;
-                    if(textureChannels == 4){
-                        tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
-                        tex.Create();
-                        SetRenderTexturePointer(tex.GetNativeTexturePtr());
-                        if(myImage != null){
-                            myImage.texture = tex;
-                            myImage.gameObject.SetActive(true);
-                        }
-                        canRenderImages = true;
-                        StartCoroutine(WaitEndFrameCameraUpdate());
-                    }else{
-                        tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.R16);
-                        tex.Create();
-                        SetRenderTexturePointer(tex.GetNativeTexturePtr());
-                        if(myImage != null){
-                            myImage.texture = tex;
-                            myImage.gameObject.SetActive(true);
-                        }
-                        canRenderImages = true;
-                        StartCoroutine(WaitEndFrameCameraUpdate());                    
+            if(hasInitializedTexture){
+                ChangeCameraParam(textureWidth,textureHeight,fx,fy,cx,cy,fovx,fovy);
+                HookDeviceToIntel();
+                hasInitializedTexture = false;
+                if(textureChannels == 4){
+                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
+                    tex.Create();
+                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
+                    if(myImage != null){
+                        myImage.texture = tex;
+                        myImage.gameObject.SetActive(true);
                     }
+                    canRenderImages = true;
+                    StartCoroutine(WaitEndFrameCameraUpdate());
+                }else{
+                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.R16);
+                    tex.Create();
+                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
+                    if(myImage != null){
+                        myImage.texture = tex;
+                        myImage.gameObject.SetActive(true);
+                    }
+                    canRenderImages = true;
+                    StartCoroutine(WaitEndFrameCameraUpdate());                    
                 }
+            }
             }
             if(resetPose){
                 resetPose = false;
@@ -276,21 +276,19 @@ namespace ProjectEsky.Tracking{
             rotationA.y = -qx_A; 
             rotationA.z = -qz_A; 
             rotationA.w = qw_A;
-            rotationA.Normalize();
             //
             rotationB.x = qy_B;
             rotationB.y = -qx_B; 
             rotationB.z = -qz_B; 
             rotationB.w = qw_B;
-            rotationB.Normalize();
             //set matricies
             A.SetTRS(translateA,rotationA,Vector3.one);
             B.SetTRS(translateB,rotationB,Vector3.one);              
             // Relove delta B -> A (final - initial)
             if(isLeft){
-                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform * A * B.inverse * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse;
+                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A * B.inverse * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
             }else{
-                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform * A * B.inverse * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse;
+                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A * B.inverse * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
             }
             DeltaInv = Delta.inverse;                        
             for(int y = 0; y < 4; y++){

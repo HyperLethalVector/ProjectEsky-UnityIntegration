@@ -153,7 +153,7 @@ namespace ProjectEsky.Rendering{
         public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
         void Awake() {
-            Application.targetFrameRate = 120;
+            Application.targetFrameRate = 60;
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
