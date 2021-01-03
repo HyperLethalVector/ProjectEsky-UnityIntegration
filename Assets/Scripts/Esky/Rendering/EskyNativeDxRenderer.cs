@@ -141,6 +141,8 @@ namespace ProjectEsky.Rendering{
         public DisplaySettings displaySettings;
         public RenderTextureSettings renderTextureSettings;
         public EyeBorders myEyeBorders;
+        public static Matrix4x4 leftEyeTransform = Matrix4x4.identity;
+        public static Matrix4x4 rightEyeTransform = Matrix4x4.identity;
         IEnumerator backgroundRendererCoroutine;
         public bool loadLeapCalibration = false;
         public bool runInBackgroundInitial;
@@ -150,8 +152,8 @@ namespace ProjectEsky.Rendering{
         public GameObject LeapMotionCamera;
         public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
-        void Start() {
-            Application.targetFrameRate = 90;
+        void Awake() {
+            Application.targetFrameRate = 120;
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
@@ -185,6 +187,7 @@ namespace ProjectEsky.Rendering{
 
                 renderTextureSettings.LeftCamera.transform.localPosition=new Vector3(-(calibration.baseline/2.0f),0,0);
                 renderTextureSettings.RightCamera.transform.localPosition=new Vector3((calibration.baseline/2.0f),0,0);
+
                 if(renderTextureSettings.RequiresRotation){
                     renderTextureSettings.LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
                     renderTextureSettings.RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
@@ -241,10 +244,6 @@ namespace ProjectEsky.Rendering{
             renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,
             renderTextureSettings.LeftInvProjectionMatrix,renderTextureSettings.RightInvProjectionMatrix,
             calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                  
-            if( ((ProjectEsky.Tracking.EskyTrackerIntel)ProjectEsky.Tracking.EskyTracker.instance) != null){
-                ProjectEsky.Tracking.EskyTrackerIntel eti = ((ProjectEsky.Tracking.EskyTrackerIntel)ProjectEsky.Tracking.EskyTracker.instance);
-                SetEyeOffset(eti.EyeTransformLeft,eti.EyeTransformRight,eti.EyeTransformLeftInv,eti.EyeTransformRightInv);
-            }              
             yield return new WaitForEndOfFrame();
 
             if(!wasDone){
@@ -307,8 +306,8 @@ namespace ProjectEsky.Rendering{
         void CloseExternalWindow(int id){
             StartCoroutine(StopWindowCoroutine(id));
         }
-        public void SetDeltas(float[] delta,float[] deltaInv){
-            SetDeltas(0,delta,deltaInv);
+        public void SetDeltas(float[] deltaLeft,float[] deltaInvLeft, float[] deltaRight, float[] deltaInvRight){
+            SetDeltas(0,deltaLeft,deltaInvLeft,deltaRight, deltaInvRight);
         }
         IEnumerator StopWindowCoroutine(int id) {
             yield return new WaitForEndOfFrame();
@@ -373,7 +372,7 @@ namespace ProjectEsky.Rendering{
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetColorFormat(int colorFormat);
         [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetDeltas(int windowID, float[] delta,float[] deltaInv);
+        static extern void SetDeltas(int windowID, float[] deltaLeft,float[] deltaInvLeft, float[] deltaRight, float[] deltaInvRight);
 
         //DISABLED
         [DllImport("ProjectEskyLLAPIRenderer")]
@@ -400,8 +399,7 @@ namespace ProjectEsky.Rendering{
         static extern void StartRenderThreadById(int windowId);
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void StopRenderThreadById(int windowId);
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetEyeOffset(float[] eyeOffsetsLeft, float[] eyeOffsetsRight,float[] eyeOffsetsLeftInv, float[] eyeOffsetsRightInv);
+
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] InvCameraMatrixLeft,float[] InvCameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);

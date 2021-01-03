@@ -697,7 +697,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 0.5
-  m_Depth: -1
+  m_Depth: 52
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 2
@@ -2366,7 +2366,7 @@ GameObject:
   - component: {fileID: 389244684749947626}
   m_Layer: 0
   m_Name: LEyeCamera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2571,8 +2571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05c34f681030bfe4dab8959b627a1239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xShift: 1920
-  yShift: 0
+  xShift: 0
+  yShift: 1080
 --- !u!114 &389244684760253792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2692,6 +2692,8 @@ MonoBehaviour:
   - 0
   - 0
   RigCenter: {fileID: 389244684740936348}
+  EyeLeft: {fileID: 389244684749947630}
+  EyeRight: {fileID: 389244684203303315}
   CameraPreview: {fileID: 3523941829900700131}
   currentEuler: {x: 0, y: 0, z: 0}
   MeshParent: {fileID: 0}
@@ -2706,11 +2708,14 @@ MonoBehaviour:
   fovx: 0
   fovy: 0
   focalLength: 0
+  UseExternalCameraPreview: 0
+  resetPose: 0
   previewCamera: {fileID: 4719905793845033865}
   tex: {fileID: 0}
   myImage: {fileID: 7024810221448632409}
   UsesDeckXIntegrator: 1
   comPort: 5
+  attachedRenderer: {fileID: 0}
 --- !u!1 &389244684778888928
 GameObject:
   m_ObjectHideFlags: 0
