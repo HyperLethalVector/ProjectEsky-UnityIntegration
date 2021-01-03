@@ -138,6 +138,8 @@ namespace ProjectEsky.Rendering{
         public static string OpticalCalibrationsFolder = "./OpticalCalibrations/V2/";
         public bool allowsSavingCalibration = true;
         public bool LoadDisplaySettings = true;
+        public bool use2DTemporalWarping = true;
+        bool usesTemporalWarping = true;
         public DisplaySettings displaySettings;
         public RenderTextureSettings renderTextureSettings;
         public EyeBorders myEyeBorders;
@@ -153,7 +155,7 @@ namespace ProjectEsky.Rendering{
         public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
         void Awake() {
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = 120;
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
@@ -226,7 +228,15 @@ namespace ProjectEsky.Rendering{
         public bool StartRendererAfterInitializing;
         bool wasDone = false;
         // Update is called once per frame
-        void Update() { if(StartRendererAfterInitializing){StartRendererAfterInitializing = false; ShowExternalWindow(0);} if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}}
+        void Update() { 
+            if(StartRendererAfterInitializing){StartRendererAfterInitializing = false; ShowExternalWindow(0);} if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}
+            if(use2DTemporalWarping != usesTemporalWarping){
+            usesTemporalWarping = use2DTemporalWarping; 
+            Debug.Log("Setting Temporal Warping");
+            SetEnableFlagWarping(0,use2DTemporalWarping);
+            }
+
+        }
         IEnumerator CallPluginAtEndOfFrame(int id) {
             if (backgroundRendererCoroutine != null) {
                 Application.runInBackground = true;                                
@@ -400,6 +410,8 @@ namespace ProjectEsky.Rendering{
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void StopRenderThreadById(int windowId);
 
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void SetEnableFlagWarping(int id, bool enabled);
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] InvCameraMatrixLeft,float[] InvCameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);
