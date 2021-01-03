@@ -154,8 +154,9 @@ namespace ProjectEsky.Rendering{
         public GameObject LeapMotionCamera;
         public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
+        public int TargetRendererRate = 120;
         void Awake() {
-            Application.targetFrameRate = 120;
+            Application.targetFrameRate = TargetRendererRate;
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
