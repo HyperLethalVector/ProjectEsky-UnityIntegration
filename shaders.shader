@@ -64,7 +64,7 @@ float polyval2d(float X, float Y, float4x4 C) {
 float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose, float4x4 DeltaPoseInv){
         float4x4 hardCodedBias = {2,0,0,-1.0,0,2,0,-1.0,0,0,2,0,0,0,0,1};  
         float4x4 hardCodedInverseBias = {0.5,0,0, 0.5,0,0.5,0,0.5,0,0,0.5,0,0,0,0,1};               
-        float4 depthProbe = float4(0.0,0.0,1.0,1.0); // Point in initial screen space 1, depth 1
+        float4 depthProbe = float4(0.0,0.0,0.25,1.0); // Point in initial screen space 1, depth 1
         float4 d = mul(cameraMatrixLeft,depthProbe); // Point in initial world space      
         float4 O = mul(DeltaPoseInv,float4(0.0,0.0,0.0,1.0)); //Origin of future pose        
         float4 viewRay = float4(inputUV.x,inputUV.y,1.0,1.0); // point in final screen space
@@ -77,7 +77,8 @@ float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose, float4x4 Delta
         float4 OX = V * t; //get the vector to the plane reprojected
         float4 retd = mul(cameraMatrixLeft,OX);
         retd = mul(hardCodedInverseBias,retd);
-        return float2( (retd.x/retd.w),(retd.y/retd.w));
+        float3 retdd = float3(retd.x/retd.w,retd.y/retd.w,retd.z/retd.w);
+        return float2( (retdd.x),(retdd.y));
 }
 float4 resolveWithoutDistortion(float xSettled, float ySettled){            
     if(xSettled < 0.5){//we render the left eye

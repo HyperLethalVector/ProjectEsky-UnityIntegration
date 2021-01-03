@@ -264,31 +264,31 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
         static void DeltaMatrixCallback(IntPtr writebackArray,IntPtr writebackArrayInv,bool isLeft, float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
             //set translations
-            translateA.x = ty_A;            
-            translateA.y = -tx_A;
-            translateA.z = -tz_A;
+            translateA.x = -ty_A;            
+            translateA.y = tx_A;
+            translateA.z = tz_A;
             
-            translateB.x = ty_B;
-            translateB.y = -tx_B;
-            translateB.z = -tz_B; 
+            translateB.x = -ty_B;
+            translateB.y = tx_B;
+            translateB.z = tz_B; 
             //set rotations
-            rotationA.x = qy_A;
-            rotationA.y = -qx_A; 
-            rotationA.z = -qz_A; 
+            rotationA.x = -qy_A;
+            rotationA.y = qx_A; 
+            rotationA.z = qz_A; 
             rotationA.w = qw_A;
             //
-            rotationB.x = qy_B;
-            rotationB.y = -qx_B; 
-            rotationB.z = -qz_B; 
+            rotationB.x = -qy_B;
+            rotationB.y = qx_B; 
+            rotationB.z = qz_B; 
             rotationB.w = qw_B;
             //set matricies
             A.SetTRS(translateA,rotationA,Vector3.one);
             B.SetTRS(translateB,rotationB,Vector3.one);              
             // Relove delta B -> A (final - initial)
             if(isLeft){
-                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A * B.inverse * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
+                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
             }else{
-                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A * B.inverse * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
+                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
             }
             DeltaInv = Delta.inverse;                        
             for(int y = 0; y < 4; y++){
