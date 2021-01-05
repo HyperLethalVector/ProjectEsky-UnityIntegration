@@ -138,6 +138,7 @@ namespace ProjectEsky.Rendering{
         public static string OpticalCalibrationsFolder = "./OpticalCalibrations/V2/";
         public bool allowsSavingCalibration = true;
         public bool LoadDisplaySettings = true;
+
         public bool use2DTemporalWarping = true;
         bool usesTemporalWarping = true;
         public DisplaySettings displaySettings;

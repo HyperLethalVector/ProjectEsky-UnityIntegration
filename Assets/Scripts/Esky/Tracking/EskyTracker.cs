@@ -79,6 +79,7 @@ namespace ProjectEsky.Tracking{
         public byte[] mapBLOB;
         public byte[] meshDataArray;        
         public Dictionary<string,EskyAnchorContentInfo> contentLocations;
+                
         public byte[] GetBytes(){
             MemoryStream ms = new MemoryStream();
             SurrogateSelector surrogateSelector = new SurrogateSelector();
@@ -187,7 +188,7 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTracker : MonoBehaviour
     {
-        
+        public bool applyDisplayTransform = true;
         public static string TrackerCalibrationsFolder = "./TrackingCalibrations/";
         public string TrackerCalibrationFileName = "TrackerOffset.json";
         public bool ApplyPoses = true;
@@ -229,10 +230,12 @@ namespace ProjectEsky.Tracking{
             if(File.Exists(TrackerCalibrationsFolder + TrackerCalibrationFileName)){
                 myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText(TrackerCalibrationsFolder + TrackerCalibrationFileName));
                 myOffsets.SetCalibrationLoaded();
-                if(RigCenter != null){
-                    RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
-                    RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
-                    UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
+                if(applyDisplayTransform){
+                    if(RigCenter != null){
+                        RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
+                        RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
+                        UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
+                    }
                 }
                 ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
                 ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
@@ -309,23 +312,11 @@ namespace ProjectEsky.Tracking{
         public virtual void AfterUpdate(){
 
         }
-
-        public (Vector3,Quaternion) IntelPoseToUnity(float[] inputPose){
-            Quaternion q = new Quaternion(inputPose[3],inputPose[4],inputPose[5],inputPose[6]);
-            Vector3 p = new Vector3(inputPose[0],inputPose[1],-inputPose[2]);
-            q = Quaternion.Euler(-q.eulerAngles.x,-q.eulerAngles.y,q.eulerAngles.z);
-            return (p,q);
-        }
         public (Vector3,Quaternion) IntelPoseToUnity(float tx, float ty, float tz, float qx, float qy, float qz, float qw){
             Quaternion q = new Quaternion(qx,qy,qz,qw);
             Vector3 p = new Vector3(tx,ty,-tz);
             q = Quaternion.Euler(-q.eulerAngles.x,-q.eulerAngles.y,q.eulerAngles.z);
             return (p,q);
-        }
-        public (Vector3,Quaternion) UnityPoseToIntel(Vector3 position, Quaternion orientation){
-            Quaternion qq = Quaternion.Euler(-orientation.eulerAngles.x,-orientation.eulerAngles.y,orientation.eulerAngles.z);
-            Vector3 pp = new Vector3(position.x,position.y,-position.z);
-            return (pp,qq);
         }
         bool UpdateLocalizationCallback = false;
         [MonoPInvokeCallback(typeof(EventCallback))]

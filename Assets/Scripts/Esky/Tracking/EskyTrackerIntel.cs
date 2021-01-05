@@ -26,7 +26,6 @@ namespace ProjectEsky.Tracking{
     {
         public bool UseExternalCameraPreview = false;
         public bool resetPose = false;
-        float rad2Deg = 180.0f/3.141592653589793238463f;
         public Camera previewCamera;
         public RenderTexture tex;
         public UnityEngine.UI.RawImage myImage;
@@ -34,7 +33,7 @@ namespace ProjectEsky.Tracking{
         public bool UsesDeckXIntegrator;
         public ComPort comPort;
         public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
- 
+
         void Start()
         {
             instance = this;
@@ -264,21 +263,21 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
         static void DeltaMatrixCallback(IntPtr writebackArray,IntPtr writebackArrayInv,bool isLeft, float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
             //set translations
-            translateA.x = -ty_A;            
-            translateA.y = tx_A;
-            translateA.z = tz_A;
+            translateA.x = ty_A;            
+            translateA.y = -tx_A;
+            translateA.z = -tz_A;
             
-            translateB.x = -ty_B;
-            translateB.y = tx_B;
-            translateB.z = tz_B; 
+            translateB.x = ty_B;
+            translateB.y = -tx_B;
+            translateB.z = -tz_B; 
             //set rotations
-            rotationA.x = -qy_A;
-            rotationA.y = qx_A; 
+            rotationA.x = qy_A;
+            rotationA.y = -qx_A; 
             rotationA.z = qz_A; 
             rotationA.w = qw_A;
             //
-            rotationB.x = -qy_B;
-            rotationB.y = qx_B; 
+            rotationB.x = qy_B;
+            rotationB.y = -qx_B; 
             rotationB.z = qz_B; 
             rotationB.w = qw_B;
             //set matricies

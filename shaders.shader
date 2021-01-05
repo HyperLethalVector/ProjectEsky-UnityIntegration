@@ -63,11 +63,13 @@ float polyval2d(float X, float Y, float4x4 C) {
 }
 float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose, float4x4 DeltaPoseInv){
         float4x4 hardCodedBias = {2,0,0,-1.0,0,2,0,-1.0,0,0,2,0,0,0,0,1};  
-        float4x4 hardCodedInverseBias = {0.5,0,0, 0.5,0,0.5,0,0.5,0,0,0.5,0,0,0,0,1};               
-        float4 depthProbe = float4(0.0,0.0,0.25,1.0); // Point in initial screen space 1, depth 1
+        float4x4 hardCodedInverseBias = {0.5,0,0, 0.5,0,0.5,0,0.5,0,0,0.5,0,0,0,0,1};          
+        float planeDepth = 0.25;     
+        float4 depthProbe = float4(0.0,0.0,planeDepth,1.0); // Point in initial screen space 1, depth 1
+        float4 viewRay = float4(inputUV.x,inputUV.y,planeDepth,1.0); // point in final screen space
+        
         float4 d = mul(cameraMatrixLeft,depthProbe); // Point in initial world space      
-        float4 O = mul(DeltaPoseInv,float4(0.0,0.0,0.0,1.0)); //Origin of future pose        
-        float4 viewRay = float4(inputUV.x,inputUV.y,1.0,1.0); // point in final screen space
+        float4 O = mul(DeltaPose,float4(0.0,0.0,0.0,1.0)); //Origin of future pose        
         float4 P = mul(hardCodedBias,viewRay); P = mul(invCameraMatrixLeft,P);  // point in final world space
         P = mul(DeltaPose,P); //point in final world space
         float4 V = normalize(P - O);
