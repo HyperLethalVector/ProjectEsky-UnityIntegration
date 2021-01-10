@@ -3,8 +3,8 @@
     "DisplayYLoc": 1080,
     "DisplayWidth": 2880,
     "DisplayHeight": 1600,
-    "EyeTextureWidth": 3840,
-    "EyeTextureHeight": 2160,
+    "EyeTextureWidth": 2880,
+    "EyeTextureHeight": 1600,
     "RendererWindowID": 1,
     "Initialized": false
 }

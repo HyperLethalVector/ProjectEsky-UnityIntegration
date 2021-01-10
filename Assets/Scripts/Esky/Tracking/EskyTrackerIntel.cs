@@ -51,7 +51,8 @@ namespace ProjectEsky.Tracking{
             StartTrackerThread(false);        
             AfterInitialization();
             RegisterDeltaAffineCallback(AffinePoseUpdate);            
-            SetTextureInitializedCallback(OnTextureInitialized);            
+            SetTextureInitializedCallback(OnTextureInitialized);     
+            SubscribeCallback(ReceiveSensorImageCallbackWithInstanceID);       
         }
         public override void LoadEskyMap(EskyMap m){
             retEskyMap = m;
@@ -67,7 +68,7 @@ namespace ProjectEsky.Tracking{
             base.AfterUpdate();
             if(UseExternalCameraPreview){
             if(hasInitializedTexture){
-                ChangeCameraParam(textureWidth,textureHeight,fx,fy,cx,cy,fovx,fovy);
+                ChangeCameraParam(textureWidth,textureHeight);
                 HookDeviceToIntel();
                 hasInitializedTexture = false;
                 if(textureChannels == 4){
@@ -175,24 +176,34 @@ namespace ProjectEsky.Tracking{
             }
             //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
         }
-        delegate void RenderTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx, float fy, float cx, float cy, float fovx, float fovy, float focalLength);
+        delegate void RenderTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx, float fy, float cx, float cy, float fovx, float fovy, float focalLength, float d1, float d2, float d3, float d4, float d5);
         public void AddPoseFromCallback(EskyPoseCallbackData epcd){
             callbackEvents = epcd;
         }
         void OnDestroy(){
             StopTrackers();
         }
-        public void ChangeCameraParam(float width, float height, float fx, float fy, float cx, float cy, float fovx, float fovy)
+        public void ChangeCameraParam(float width, float height)
         {    
-            float widthScale = (float)Screen.width / width;
-            float heightScale = (float)Screen.height / height;
-            double fovXScale = (2.0 * Mathf.Atan ((float)(width / (2.0 * fx)))) / (Mathf.Atan2 ((float)cx, (float)fx) + Mathf.Atan2 ((float)(width - cx), (float)fx));
-            double fovYScale = (2.0 * Mathf.Atan ((float)(height / (2.0 * fy)))) / (Mathf.Atan2 ((float)cy, (float)fy) + Mathf.Atan2 ((float)(height - cy), (float)fy));
-            if (widthScale < heightScale) {
-                previewCamera.fieldOfView = (float)(fovx* fovXScale);
-            } else {
-                previewCamera.fieldOfView = (float)(fovy * fovYScale);
-            }
+            float f = 35.0f;            
+            float ax, ay, sizeX, sizeY;
+            float x0, y0, shiftX, shiftY;
+            ax = myCalibrations.fx; 
+            ay = myCalibrations.fy;
+            x0 = myCalibrations.cx;
+            y0 = myCalibrations.cy;
+
+            sizeX = f * width / ax;
+            sizeY = f * height / ay;
+
+            //PlayerSettings.defaultScreenWidth = width;
+            //PlayerSettings.defaultScreenHeight = height;
+
+            shiftX = -(x0 - width / 2.0f) / width;
+            shiftY = (y0 - height / 2.0f) / height;
+            previewCamera.sensorSize = new Vector2(sizeX, sizeY);     // in mm, mx = 1000/x, my = 1000/y
+            previewCamera.focalLength = f;                            // in mm, ax = f * mx, ay = f * my
+            previewCamera.lensShift = new Vector2(shiftX, shiftY);    // W/2,H/w for (0,0), 1.0 shift in full W/H in image plane
         }
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
         public delegate void DeltaPoseUpdateCallback (IntPtr deltaLeft,IntPtr deltaInvLeft,IntPtr deltaRight, IntPtr deltaInvRight, int length);
@@ -370,17 +381,22 @@ namespace ProjectEsky.Tracking{
         static extern void SetMapData(byte[] inputData, int Length);
 
         [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
-        static void OnTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio){
+        static void OnTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio, float d1, float d2, float d3, float d4, float d5){
             if(instance != null){
                 Debug.Log("Received the texture initializaed callback");
                 instance.textureWidth = textureWidth;
                 instance.textureHeight = textureHeight;
                 instance.textureChannels = textureChannels;
                 instance.hasInitializedTexture = true;
-                instance.fx = fx;
-                instance.fx = fy;
-                instance.cx = cx;
-                instance.cy = cy;
+                instance.myCalibrations.fx = fx;
+                instance.myCalibrations.fy = fy;
+                instance.myCalibrations.cx = cx;
+                instance.myCalibrations.cy = cy;
+                instance.myCalibrations.d1 = d1;
+                instance.myCalibrations.d2 = d2;
+                instance.myCalibrations.d3 = d3;
+                instance.myCalibrations.d4 = d4;
+                instance.d5 = d5;
                 instance.fovx = fovx;
                 instance.fovy = fovy;
                                                                 
@@ -404,6 +420,21 @@ namespace ProjectEsky.Tracking{
                     GL.IssuePluginEvent(GetRenderEventFunc(), 1);
                 }
             }
+        }
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SubscribeCallbackImage(int camID,ReceiveSensorImageCallback callback);        
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SubscribeCallbackImageWithID(int InstanceID, int camID,ReceiveSensorImageCallbackWithInstanceID callback);        
+        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallback))]
+        public static void ReceiveSensorImageCallbackWithInstanceID(IntPtr info, int lengthofarray, int width, int height, int pixelCount){
+//            Debug.Log("Receiving Texture Callback");
+        }
+        public override void SubscribeCallback(ReceiveSensorImageCallback callback)
+        {
+            SubscribeCallbackImage(myCalibrations.camID,callback);
+        }
+        public override void SubscribeCallback(int instanceID, ReceiveSensorImageCallbackWithInstanceID callbackWithInstanceID){
+            SubscribeCallbackImageWithID(instanceID,myCalibrations.camID,callbackWithInstanceID);
         }
     }
 }

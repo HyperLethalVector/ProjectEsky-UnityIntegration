@@ -186,7 +186,7 @@ namespace ProjectEsky.Tracking{
     public class MapSavedCallback : UnityEngine.Events.UnityEvent<EskyMap>{
 
     }
-    public class EskyTracker : MonoBehaviour
+    public class EskyTracker : SensorImageSource
     {
         public bool applyDisplayTransform = true;
         public static string TrackerCalibrationsFolder = "./TrackingCalibrations/";
@@ -348,7 +348,7 @@ namespace ProjectEsky.Tracking{
         [HideInInspector]        
         public int textureChannels;
         [HideInInspector]
-        public float fx,fy,cx,cy,fovx,fovy,focalLength;
+        public float fx,fy,cx,cy,fovx,fovy,focalLength,d1,d2,d3,d4,d5;
 
         
         #region TrackerSpecific

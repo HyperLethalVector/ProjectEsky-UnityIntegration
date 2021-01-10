@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_WSA_10_0 || WINDOWS_UWP
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_WSA || UNITY_WSA_10_0 || WINDOWS_UWP
 #define UNITY_WINDOWS  
 #endif
 
@@ -161,6 +161,7 @@ namespace ProjectEsky.Rendering{
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
+            ShowExternalWindow(0);
         }
         void LoadCalibration(){
             calibration = new DisplayCalibration();
@@ -231,11 +232,11 @@ namespace ProjectEsky.Rendering{
         bool wasDone = false;
         // Update is called once per frame
         void Update() { 
-            if(StartRendererAfterInitializing){StartRendererAfterInitializing = false; ShowExternalWindow(0);} if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}
+            if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}
             if(use2DTemporalWarping != usesTemporalWarping){
-            usesTemporalWarping = use2DTemporalWarping; 
-            Debug.Log("Setting Temporal Warping");
-            SetEnableFlagWarping(0,use2DTemporalWarping);
+                usesTemporalWarping = use2DTemporalWarping; 
+                Debug.Log("Setting Temporal Warping");
+                SetEnableFlagWarping(0,use2DTemporalWarping);
             }
 
         }
