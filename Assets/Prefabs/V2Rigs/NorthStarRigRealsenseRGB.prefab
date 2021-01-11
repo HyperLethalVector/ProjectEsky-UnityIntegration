@@ -76,7 +76,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myCalibrations:
-    camID: 1
+    camID: 2
     fx: 843.1592
     fy: 845.2608
     cx: 656.91766
