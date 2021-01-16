@@ -8,6 +8,7 @@ namespace ProjectEsky.Calibrator
 {
     public class TrackerAligner : MonoBehaviour
     {
+        public int HookedTrackerID;
         public CoordinateAlignerStates myCurrentState;
         public bool useThumbtip = false;
         public bool useIndex = false;
@@ -15,7 +16,7 @@ namespace ProjectEsky.Calibrator
         public bool useRing = false;
         public bool usePinky = false;
         public bool usePalm = true;
-
+        
 
         Vector3 initialPosition;
         Quaternion initialRotation;
@@ -64,7 +65,7 @@ namespace ProjectEsky.Calibrator
             finalPoints = new List<Vector3>();
             if (Tracker == null)
             {
-                Tracker = ProjectEsky.Tracking.EskyTracker.instance;
+                Tracker = ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
             }
             CreateLineMaterial();
             initialPosition = transform.position;
@@ -107,7 +108,7 @@ namespace ProjectEsky.Calibrator
         }
         void SetAllEnabledHandReferencePointsInitial()
         {
-
+ 
             if (useThumbtip)
             {
                 referenceInitialPoints[0] = referenceTracker[0].position;

@@ -155,12 +155,17 @@ namespace ProjectEsky.Rendering{
         public GameObject LeapMotionCamera;
         public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
+        [Range(0,1)]
+        public float RenderedGraphicsBrightness = 1.0f;
+        float CurrentBrightness = 1.0f;
         public int TargetRendererRate = 120;
         void Awake() {
             Application.targetFrameRate = TargetRendererRate;
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
+        }
+        void Start(){            
             ShowExternalWindow(0);
         }
         void LoadCalibration(){
@@ -181,7 +186,7 @@ namespace ProjectEsky.Rendering{
                 }          
                 if(loadLeapCalibration){
                     if(LeapMotionCamera == null)          
-                    LeapMotionCamera = GameObject.Find("LeapMotion");    
+                        LeapMotionCamera = GameObject.Find("LeapMotion");    
                     if(LeapMotionCamera != null){
                         LeapMotionCamera.transform.localPosition = new Vector3(calibration.localPositionLeapMotion[0],calibration.localPositionLeapMotion[1],calibration.localPositionLeapMotion[2]);
                         LeapMotionCamera.transform.localRotation = new Quaternion(calibration.localRotationLeapMotion[0],calibration.localRotationLeapMotion[1],calibration.localRotationLeapMotion[2],calibration.localRotationLeapMotion[3]);                                
@@ -189,10 +194,8 @@ namespace ProjectEsky.Rendering{
                         Debug.LogError("Couldn't find the leapmotion object, did you modify the rig???");
                     }
                 }            
-
                 renderTextureSettings.LeftCamera.transform.localPosition=new Vector3(-(calibration.baseline/2.0f),0,0);
                 renderTextureSettings.RightCamera.transform.localPosition=new Vector3((calibration.baseline/2.0f),0,0);
-
                 if(renderTextureSettings.RequiresRotation){
                     renderTextureSettings.LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
                     renderTextureSettings.RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
@@ -211,7 +214,6 @@ namespace ProjectEsky.Rendering{
             }else{
                 Debug.LogError("Waah! My display calibration file is missing :(");
             }
-
         }
         public void SaveCalibration(){
             if(LeapMotionCamera != null){
@@ -238,14 +240,8 @@ namespace ProjectEsky.Rendering{
                 Debug.Log("Setting Temporal Warping");
                 SetEnableFlagWarping(0,use2DTemporalWarping);
             }
-
         }
         IEnumerator CallPluginAtEndOfFrame(int id) {
-            if (backgroundRendererCoroutine != null) {
-                Application.runInBackground = true;                                
-                StopCoroutine(backgroundRendererCoroutine);
-                backgroundRendererCoroutine = null;
-            }
             yield return new WaitForEndOfFrame();
             IntPtr ptrLeft = renderTextureSettings.RightRenderTexture.GetNativeTexturePtr();
             SendTextureIdToPluginByIdLeft(id, ptrLeft);
@@ -256,15 +252,14 @@ namespace ProjectEsky.Rendering{
             SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,
             renderTextureSettings.LeftProjectionMatrix,renderTextureSettings.RightProjectionMatrix,
             renderTextureSettings.LeftInvProjectionMatrix,renderTextureSettings.RightInvProjectionMatrix,
-            calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);                  
+            calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);    
+            SetBrightness(0,1.0f);              
             yield return new WaitForEndOfFrame();
-
             if(!wasDone){
                 wasDone = true;
                 if (backgroundRendererCoroutine == null) {
                     Application.runInBackground = true;
                     backgroundRendererCoroutine = CallRenderEvent();
-                    Debug.Log("Background Render Coroutine starting render thread");                                    
                     StartCoroutine(backgroundRendererCoroutine);
                 }
             }
@@ -274,6 +269,10 @@ namespace ProjectEsky.Rendering{
         IEnumerator CallRenderEvent(){
             while (true){
                 yield return new WaitForEndOfFrame();
+                if(CurrentBrightness != RenderedGraphicsBrightness){
+                    CurrentBrightness = RenderedGraphicsBrightness;
+                    SetBrightness(0,CurrentBrightness);
+                }
                 GL.IssuePluginEvent(GetRenderEventFunc(), 0);
                 if(myAttachedTracker != null){
                     myAttachedTracker.RenderResetFlag();
@@ -292,12 +291,10 @@ namespace ProjectEsky.Rendering{
                     ErrorMessage = "Only Direct3D11 is supported."+graphicsNotSuported+" for Windows."+restartUnity;
                 }
             } else {
-                ErrorMessage = "Only Windows and MacOSX are suported!";
+                ErrorMessage = "Only Windows supported!";
             }
 
             if(ErrorMessage.Length == 0){
-                //when the external window is created, it is preferable for the texture size to match the window's size
-                //the size shouldn't be greater than the screen's size
                 if(!displaySettings.Initialized){
                     displaySettings.Initialized = true;
                     if (renderTextureFormat == RenderTextureFormat.ARGB32) {
@@ -309,7 +306,6 @@ namespace ProjectEsky.Rendering{
                     SetRenderTextureWidthHeight(id,displaySettings.EyeTextureWidth,displaySettings.EyeTextureHeight);                
                     SetWindowRectById(id,displaySettings.DisplayXLoc,displaySettings.DisplayYLoc,displaySettings.DisplayWidth,displaySettings.DisplayHeight);
                     windowsOn.Add(id);            
-
                     StartCoroutine (CallPluginAtEndOfFrame(id));                
                 }
             } else {
@@ -319,16 +315,16 @@ namespace ProjectEsky.Rendering{
         void CloseExternalWindow(int id){
             StartCoroutine(StopWindowCoroutine(id));
         }
-        public void SetDeltas(float[] deltaLeft,float[] deltaInvLeft, float[] deltaRight, float[] deltaInvRight){
-            SetDeltas(0,deltaLeft,deltaInvLeft,deltaRight, deltaInvRight);
+        public void SetDeltas(IntPtr deltaLeft,IntPtr deltaRight){
+            SetDeltas(0,deltaLeft,deltaRight);
         }
         IEnumerator StopWindowCoroutine(int id) {
             yield return new WaitForEndOfFrame();
             if (windowsOn.Count == 0) {
-                Debug.Log("Stopping window thread");           
                 StopGraphicsCoroutine();
+            }else{
+                StopWindowById(id);
             }
-            StopWindowById(id);
         }
 
         void OnApplicationQuit (){
@@ -351,17 +347,17 @@ namespace ProjectEsky.Rendering{
         public delegate void DebugDelegate(string message);
 
 
-        [MonoPInvokeCallback(typeof(MyDele))]
+        [MonoPInvokeCallback(typeof(DebugLogDelegate))]
         static void CallbackFunction(string message){
             Debug.Log("--PluginCallback--: "+message);
         }
         
         void SetupDebugDelegate(){
-            DebugDelegate callbackDelegate = new DebugDelegate(CallbackFunction);
+            DebugLogDelegate callbackDelegate = new DebugLogDelegate(CallbackFunction);
             IntPtr intPtrDelegate = Marshal.GetFunctionPointerForDelegate(callbackDelegate);
             SetDebugFunction(intPtrDelegate);
         }
-        delegate void MyDele(string s);
+        delegate void DebugLogDelegate(string s);
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRenderTextureWidthHeight(int id, int width, int height);
         [DllImport ("ProjectEskyLLAPIRenderer")]
@@ -379,28 +375,11 @@ namespace ProjectEsky.Rendering{
         static extern void SendTextureIdToPluginByIdLeft(int windowId, IntPtr texId);
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SendTextureIdToPluginByIdRight(int windowId, IntPtr texId);
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetWindowAttributesById(int windowId, int color, byte alpha, int flags);
         
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetColorFormat(int colorFormat);
         [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetDeltas(int windowID, float[] deltaLeft,float[] deltaInvLeft, float[] deltaRight, float[] deltaInvRight);
-
-        //DISABLED
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetQualitySettings(int count, int quality);
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void StartWindow([MarshalAs(UnmanagedType.LPWStr)] string title, int width, int height, bool borderless = false);//if borderless is true,there's no border and title bar
-
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern IntPtr StopWindow();
-
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SetWindowRect(int left, int top, int width, int height);
-
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void SendTextureIdToPlugin(IntPtr texId);
+        static extern void SetDeltas(int windowID, IntPtr deltaLeft, IntPtr deltaRight);
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern IntPtr InitGraphics();
@@ -409,14 +388,11 @@ namespace ProjectEsky.Rendering{
         static extern IntPtr GetRenderEventFunc();
 
         [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void StartRenderThreadById(int windowId);
-        [DllImport("ProjectEskyLLAPIRenderer")]
-        static extern void StopRenderThreadById(int windowId);
-
-        [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetEnableFlagWarping(int id, bool enabled);
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] InvCameraMatrixLeft,float[] InvCameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void SetBrightness(int ID, float brightness);
     }
 }

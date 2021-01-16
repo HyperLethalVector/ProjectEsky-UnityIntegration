@@ -24,6 +24,9 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTrackerIntel : EskyTracker
     {
+        public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
+        public delegate void DeltaPoseUpdateCallback (int TrackerID, IntPtr deltaLeft, IntPtr deltaRight);        
+        delegate void RenderTextureInitialized(int TrackerID, int textureWidth, int textureHeight, int textureChannels,float fx, float fy, float cx, float cy, float fovx, float fovy, float focalLength, float d1, float d2, float d3, float d4, float d5);
         public bool UseExternalCameraPreview = false;
         public bool resetPose = false;
         public Camera previewCamera;
@@ -34,74 +37,75 @@ namespace ProjectEsky.Tracking{
         public ComPort comPort;
         public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
 
-        void Start()
+        public override void AfterAwake()
         {
-            instance = this;
             RegisterDebugCallback(OnDebugCallback);    
             LoadCalibration();
-            InitializeTrackerObject();
-            RegisterQuaternionConversionCallback(ConvertToQuaternion);            
-            RegisterBinaryMapCallback(OnMapCallback);
-            RegisterObjectPoseCallback(OnPoseReceivedCallback);
+            InitializeTrackerObject(TrackerID);
+            RegisterQuaternionConversionCallback(TrackerID,ConvertToQuaternion);            
+            RegisterBinaryMapCallback(TrackerID,OnMapCallback);
+            RegisterObjectPoseCallback(TrackerID, OnLocalizationPoseReceivedCallback);
             if(UsesDeckXIntegrator){
-                SetSerialComPort((int)comPort);
+                SetSerialComPort(TrackerID, (int)comPort);
             }
-            RegisterLocalizationCallback(OnEventCallback);            
-            RegisterMatrixDeltaCallback(DeltaMatrixCallback);
-            StartTrackerThread(false);        
-            AfterInitialization();
-            RegisterDeltaAffineCallback(AffinePoseUpdate);            
-            SetTextureInitializedCallback(OnTextureInitialized);     
-            SubscribeCallback(ReceiveSensorImageCallbackWithInstanceID);       
+            RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
+            RegisterLocalizationCallback(TrackerID, OnLocalization);            
+            RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
+            StartTrackerThread(TrackerID, false);    
+            AfterInitialization();     
+            SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
         }
         public override void LoadEskyMap(EskyMap m){
             retEskyMap = m;
             if(File.Exists("temp.raw"))File.Delete("temp.raw");
             System.IO.File.WriteAllBytes("temp.raw",m.mapBLOB);
-            SetMapData(new byte[]{},0);
+            SetMapData(TrackerID,new byte[]{},0);
         }
         public override void ObtainObjectPoses(){             
-            ObtainObjectPoseInLocalizedMap("origin_of_map");
+            ObtainOriginInLocalizedMap(TrackerID);
         }
+        bool doesSubscribe = true;
         public override void AfterUpdate()
         {
+
             base.AfterUpdate();
             if(UseExternalCameraPreview){
-            if(hasInitializedTexture){
-                ChangeCameraParam(textureWidth,textureHeight);
-                HookDeviceToIntel();
-                hasInitializedTexture = false;
-                if(textureChannels == 4){
-                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
-                    tex.Create();
-                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
-                    if(myImage != null){
-                        myImage.texture = tex;
-                        myImage.gameObject.SetActive(true);
+                if(hasInitializedTexture){
+                    ChangeCameraParam(textureWidth,textureHeight);
+                    HookDeviceToIntel(TrackerID);
+                    hasInitializedTexture = false;
+                    hasInitializedTracker = true;
+                    if(textureChannels == 4){
+                        tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
+                        tex.Create();
+                        SetRenderTexturePointer(TrackerID, tex.GetNativeTexturePtr());
+                        if(myImage != null){
+                            myImage.texture = tex;
+                            myImage.gameObject.SetActive(true);
+                        }
+                        canRenderImages = true;
+                        StartCoroutine(WaitEndFrameCameraUpdate());
+                    }else{
+                        tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.R16);
+                        tex.Create();
+                        SetRenderTexturePointer(TrackerID, tex.GetNativeTexturePtr());
+                        if(myImage != null){
+                            myImage.texture = tex;
+                            myImage.gameObject.SetActive(true);
+                        }
+                        canRenderImages = true;
+                        StartCoroutine(WaitEndFrameCameraUpdate());                    
                     }
-                    canRenderImages = true;
-                    StartCoroutine(WaitEndFrameCameraUpdate());
-                }else{
-                    tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.R16);
-                    tex.Create();
-                    SetRenderTexturePointer(tex.GetNativeTexturePtr());
-                    if(myImage != null){
-                        myImage.texture = tex;
-                        myImage.gameObject.SetActive(true);
+                    if(doesSubscribe){
+                        doesSubscribe = false;
+                        SubscribeCallback(TrackerID,GetImage);  
                     }
-                    canRenderImages = true;
-                    StartCoroutine(WaitEndFrameCameraUpdate());                    
                 }
-            }
-            }
-            if(resetPose){
-                resetPose = false;
-                PostRenderReset();
             }
         }
         public override void ObtainPose(){
             if(ApplyPoses){
-                IntPtr ptr = GetLatestPose();                 
+                IntPtr ptr = GetLatestPose(TrackerID);                 
                 Marshal.Copy(ptr, currentRealsensePose, 0, 7);
                 transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]);
                 Vector3 eulerRet = new Vector3(currentRealsensePose[5],currentRealsensePose[4],currentRealsensePose[3]); 
@@ -109,7 +113,7 @@ namespace ProjectEsky.Tracking{
             }
         } 
         public override void SaveEskyMapInformation(){
-            ObtainMap();
+            ObtainMap(TrackerID);
         }
         [MonoPInvokeCallback(typeof(debugCallback))]
         static void OnDebugCallback(IntPtr request, int color, int size)
@@ -134,7 +138,7 @@ namespace ProjectEsky.Tracking{
         }
        
         [MonoPInvokeCallback(typeof(MapDataCallback))]
-        static void OnMapCallback(IntPtr receivedData, int Length)
+        static void OnMapCallback(int TrackerID, IntPtr receivedData, int Length)
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -147,41 +151,33 @@ namespace ProjectEsky.Tracking{
             byte[] received = null;
             while(!didComplete){//this sucks, but it's the only way to wait til the zed has actually _finished_ writing the file
                 try{
-                    #if ZED_SDK
-                    received = System.IO.File.ReadAllBytes("temp.raw.area");
-                    #else
                     received = System.IO.File.ReadAllBytes("temp.raw");            
-                    #endif
-
-                didComplete = true;//will flag the pass is complete                    
+                    didComplete = true;//will flag the pass is complete                    
                 }catch(System.Exception e){
                     Debug.LogError(e);
                     TimeSpan ts = sw.Elapsed;
-                    if(ts.TotalSeconds > 4)break; 
-                    
+                    if(ts.TotalSeconds > 4)break;                     
                 }
             }
             if(didComplete){
                 UnityEngine.Debug.Log("Received map data of length: " + received.Length);
-                if(instance != null){
+                if(instances[TrackerID] != null){
                     EskyMap retEskyMap = new EskyMap();
                     retEskyMap.mapBLOB = received;
-                    instance.SetEskyMapInstance(retEskyMap);
-                    //I should collect the mesh data here
+                    instances[TrackerID].SetEskyMapInstance(retEskyMap);
                 }else{
                     UnityEngine.Debug.LogError("The instance of the tracker was null, cancelling data map export");
                 }
             }else{
                 UnityEngine.Debug.LogError("Problem exporting the map, *shrug*");
             }
-            //System.IO.File.WriteAllBytes("Assets/Resources/Maps/mapdata.txt",received);
         }
-        delegate void RenderTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx, float fy, float cx, float cy, float fovx, float fovy, float focalLength, float d1, float d2, float d3, float d4, float d5);
+
         public void AddPoseFromCallback(EskyPoseCallbackData epcd){
             callbackEvents = epcd;
         }
         void OnDestroy(){
-            StopTrackers();
+            StopTrackers(TrackerID);
         }
         public void ChangeCameraParam(float width, float height)
         {    
@@ -205,8 +201,7 @@ namespace ProjectEsky.Tracking{
             previewCamera.focalLength = f;                            // in mm, ax = f * mx, ay = f * my
             previewCamera.lensShift = new Vector2(shiftX, shiftY);    // W/2,H/w for (0,0), 1.0 shift in full W/H in image plane
         }
-        public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
-        public delegate void DeltaPoseUpdateCallback (IntPtr deltaLeft,IntPtr deltaInvLeft,IntPtr deltaRight, IntPtr deltaInvRight, int length);
+
         public static float[] quat = {0.0f,0.0f,0.0f,0.0f};
         public static float[] deltaPoseLeft = {1,0,0,0,
                                      0,1,0,0, 
@@ -234,27 +229,14 @@ namespace ProjectEsky.Tracking{
             quat[3] = q.w;
             Marshal.Copy(quat,0,arrayToCopy,4);
         }
-        [MonoPInvokeCallback(typeof(DeltaPoseUpdateCallback))]
-        public static void AffinePoseUpdate (IntPtr deltaLeft,IntPtr deltaInvLeft,IntPtr deltaRight, IntPtr deltaInvRight, int length){
-            Marshal.Copy(deltaLeft,deltaPoseLeft,0,length);
-            Marshal.Copy(deltaInvLeft,deltaPoseInvLeft,0,length);            
-            Marshal.Copy(deltaRight,deltaPoseRight,0,length);
-            Marshal.Copy(deltaInvRight,deltaPoseInvRight,0,length);            
-                        
-            if(instance != null){
-                if( ((EskyTrackerIntel)instance).attachedRenderer != null){
-                    ((EskyTrackerIntel)instance).attachedRenderer.SetDeltas(deltaPoseLeft,deltaPoseInvLeft,deltaPoseRight,deltaPoseInvRight);
-                }
-            }            
-        }
-        [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
-        static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
+        [MonoPInvokeCallback(typeof(LocalizationPoseReceivedCallback))]
+        static void OnLocalizationPoseReceivedCallback(int TrackerID, string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
             EskyPoseCallbackData epcd = new EskyPoseCallbackData();
-            (Vector3, Quaternion) vq = instance.IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
+            (Vector3, Quaternion) vq = instances[TrackerID].IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
             epcd.PoseID = ObjectID;
             epcd.position = vq.Item1;
             epcd.rotation = vq.Item2;
-            ((EskyTrackerIntel)instance).AddPoseFromCallback(epcd);
+            ((EskyTrackerIntel)instances[TrackerID]).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
         static Vector3 translateA = new Vector3();
@@ -266,21 +248,20 @@ namespace ProjectEsky.Tracking{
         static Matrix4x4 Delta = new Matrix4x4();
         static Matrix4x4 DeltaInv = new Matrix4x4();
         static float[] deltaPoseReadbackLeft= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-        static float[] deltaPoseInvReadbackLeft= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 
         static float[] deltaPoseReadbackRight= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-        static float[] deltaPoseInvReadbackRight= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 
         [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
-        static void DeltaMatrixCallback(IntPtr writebackArray,IntPtr writebackArrayInv,bool isLeft, float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
+        static void DeltaMatrixConvCallback(int TrackerID, IntPtr writebackArray,bool isLeft, float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
+            
             //set translations
             translateA.x = ty_A;            
             translateA.y = -tx_A;
-            translateA.z = -tz_A;
+            translateA.z = tz_A;
             
             translateB.x = ty_B;
             translateB.y = -tx_B;
-            translateB.z = -tz_B; 
+            translateB.z = tz_B; 
             //set rotations
             rotationA.x = qy_A;
             rotationA.y = -qx_A; 
@@ -291,148 +272,141 @@ namespace ProjectEsky.Tracking{
             rotationB.y = -qx_B; 
             rotationB.z = qz_B; 
             rotationB.w = qw_B;
+
+            if(qw_A != 0 && qw_B != 0){
             //set matricies
-            A.SetTRS(translateA,rotationA,Vector3.one);
-            B.SetTRS(translateB,rotationB,Vector3.one);              
-            // Relove delta B -> A (final - initial)
-            if(isLeft){
-                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
-            }else{
-                Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
-            }
-            DeltaInv = Delta.inverse;                        
-            for(int y = 0; y < 4; y++){
-                for(int x = 0; x < 4; x++){
+                try{
+                    A.SetTRS(translateA,rotationA,Vector3.one);
+                    B.SetTRS(translateB,rotationB,Vector3.one);              
+                    // Relove delta B -> A (final - initial)
                     if(isLeft){
-                        deltaPoseReadbackLeft[y * 4 + x] = Delta[y,x];
-                        deltaPoseInvReadbackLeft[y * 4 + x] = DeltaInv[y,x];                    
+                        Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
                     }else{
-                        deltaPoseReadbackRight[y * 4 + x] = Delta[y,x];
-                        deltaPoseInvReadbackRight[y * 4 + x] = DeltaInv[y,x];                    
+                        Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
                     }
+                    DeltaInv = Delta.inverse;                        
+                    for(int y = 0; y < 4; y++){
+                        for(int x = 0; x < 4; x++){
+                            if(isLeft){
+                                deltaPoseReadbackLeft[y * 4 + x] = Delta[y,x];  
+                            }else{
+                                deltaPoseReadbackRight[y * 4 + x] = Delta[y,x];
+                            }
+                        }
+                    }
+                    if(isLeft){
+                        Marshal.Copy(deltaPoseReadbackLeft,0,writebackArray,15);                   
+                    }else{
+                        Marshal.Copy(deltaPoseReadbackRight,0,writebackArray,15);                     
+                    }
+                }catch(System.Exception e){
+
                 }
             }
-            if(isLeft){
-                Marshal.Copy(deltaPoseReadbackLeft,0,writebackArray,15);      
-                Marshal.Copy(deltaPoseInvReadbackLeft,0,writebackArrayInv,15);                
-            }else{
-                Marshal.Copy(deltaPoseReadbackRight,0,writebackArray,15);      
-                Marshal.Copy(deltaPoseInvReadbackRight,0,writebackArrayInv,15);                
+        }
+        [MonoPInvokeCallback(typeof(DeltaPoseUpdateCallback))]
+        static void DeltaMatrixCallback(int TrackerID, IntPtr deltaPoseLeft, IntPtr deltaPoseRight){
+            if( ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer != null){         
+                ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer.SetDeltas(deltaPoseLeft,deltaPoseRight);
             }
-
-
         }
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void RegisterQuaternionConversionCallback(ConvertToQuaternionCallback callback);
+        static extern void RegisterQuaternionConversionCallback(int TrackerID, ConvertToQuaternionCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void RegisterDeltaAffineCallback(DeltaPoseUpdateCallback callback);
+        static extern void RegisterDeltaPoseUpdate(int TrackerID, DeltaPoseUpdateCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void HookDeviceToIntel();
-        [DllImport("libProjectEskyLLAPIIntel")]
-        public static extern void SaveOriginPose();
+        static extern void HookDeviceToIntel(int TrackerID);
  
         [DllImport("libProjectEskyLLAPIIntel")]
-        public static extern IntPtr GetLatestPose();
+        public static extern IntPtr GetLatestPose(int TrackerID);
  
         [DllImport("libProjectEskyLLAPIIntel")]
-        public static extern void InitializeTrackerObject();
+        public static extern void InitializeTrackerObject(int TrackerID);
         
  
         [DllImport("libProjectEskyLLAPIIntel")]
-        public static extern void SetSerialComPort(int port);
+        public static extern void SetSerialComPort(int TrackerID, int port);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        public static extern void StartTrackerThread(bool useLocalization);
+        public static extern void StartTrackerThread(int TrackerID, bool useLocalization);
  
         [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
         static extern void RegisterDebugCallback(debugCallback cb);
  
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void StopTrackers();
+        static extern void StopTrackers(int TrackerID);
 
         [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        static extern void RegisterObjectPoseCallback(PoseReceivedCallback poseReceivedCallback);
+        static extern void RegisterObjectPoseCallback(int TrackerID, LocalizationPoseReceivedCallback poseReceivedCallback);
 
         [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        static extern void RegisterLocalizationCallback(EventCallback cb);
+        static extern void RegisterLocalizationCallback(int TrackerID, LocalizationEventCallback cb);
 
         [DllImport("libProjectEskyLLAPIIntel", CallingConvention = CallingConvention.Cdecl)]        
-        static extern void RegisterBinaryMapCallback(MapDataCallback cb);
+        static extern void RegisterBinaryMapCallback(int TrackerID, MapDataCallback cb);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SetBinaryMapData(string inputBytesLocation);
+        static extern void SetBinaryMapData(int TrackerID, string inputBytesLocation);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SetObjectPoseInLocalizedMap(string objectID,float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+        static extern void RegisterMatrixDeltaConvCallback(int TrackerID, DeltaMatrixConvertCallback callback);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void RegisterMatrixDeltaCallback(DeltaMatrixConvertCallback callback);
+        static extern void ObtainOriginInLocalizedMap(int TrackerID);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void ObtainObjectPoseInLocalizedMap(string objectID);
+        static extern void ObtainMap(int TrackerID);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void ObtainMap();
-
-        [DllImport("libProjectEskyLLAPIIntel")]
-        static extern IntPtr GetLatestAffine();
-
-        [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SetMapData(byte[] inputData, int Length);
+        static extern void SetMapData(int TrackerID,byte[] inputData, int Length);
 
         [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
-        static void OnTextureInitialized(int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio, float d1, float d2, float d3, float d4, float d5){
-            if(instance != null){
-                Debug.Log("Received the texture initializaed callback");
-                instance.textureWidth = textureWidth;
-                instance.textureHeight = textureHeight;
-                instance.textureChannels = textureChannels;
-                instance.hasInitializedTexture = true;
-                instance.myCalibrations.fx = fx;
-                instance.myCalibrations.fy = fy;
-                instance.myCalibrations.cx = cx;
-                instance.myCalibrations.cy = cy;
-                instance.myCalibrations.d1 = d1;
-                instance.myCalibrations.d2 = d2;
-                instance.myCalibrations.d3 = d3;
-                instance.myCalibrations.d4 = d4;
-                instance.d5 = d5;
-                instance.fovx = fovx;
-                instance.fovy = fovy;
-                                                                
+        static void OnTextureInitialized(int TrackerID, int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio, float d1, float d2, float d3, float d4, float d5){
+            if(instances[TrackerID] != null){
+                instances[TrackerID].textureWidth = textureWidth;
+                instances[TrackerID].textureHeight = textureHeight;
+                instances[TrackerID].textureChannels = textureChannels;
+                instances[TrackerID].myCalibrations.fx = fx; 
+                instances[TrackerID].myCalibrations.fy = fy;
+                instances[TrackerID].myCalibrations.cx = cx;
+                instances[TrackerID].myCalibrations.cy = cy;
+                instances[TrackerID].myCalibrations.d1 = d1;
+                instances[TrackerID].myCalibrations.d2 = d2;
+                instances[TrackerID].myCalibrations.d3 = d3;
+                instances[TrackerID].myCalibrations.d4 = d4;
+                instances[TrackerID].d5 = d5;
+                instances[TrackerID].fovx = fovx;
+                instances[TrackerID].fovy = fovy;
+                instances[TrackerID].hasInitializedTexture = true;                                                                
             }
         }
         public void RenderResetFlag(){
-            PostRenderReset();
+            if(hasInitializedTracker){
+                PostRenderReset(TrackerID);
+            }
         }
-        [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void PostRenderReset();
-        [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SetTextureInitializedCallback(RenderTextureInitialized callback);
-        [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SetRenderTexturePointer(IntPtr texPointer);
-        [DllImport("libProjectEskyLLAPIIntel")]
-        public static extern IntPtr GetRenderEventFunc();        
         IEnumerator WaitEndFrameCameraUpdate(){
             while(true){
                 yield return new WaitForEndOfFrame();
                 if(canRenderImages){
-                    GL.IssuePluginEvent(GetRenderEventFunc(), 1);
+                    GL.IssuePluginEvent(GetRenderEventFunc(), TrackerID);
                 }
             }
         }
+        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
+        public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
+        }
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SubscribeCallbackImage(int camID,ReceiveSensorImageCallback callback);        
+        static extern void PostRenderReset(int ID);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetTextureInitializedCallback(int TrackerID, RenderTextureInitialized callback);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetRenderTexturePointer(int TrackerID, IntPtr texPointer);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        public static extern IntPtr GetRenderEventFunc();        
+           
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SubscribeCallbackImageWithID(int InstanceID, int camID,ReceiveSensorImageCallbackWithInstanceID callback);        
-        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallback))]
-        public static void ReceiveSensorImageCallbackWithInstanceID(IntPtr info, int lengthofarray, int width, int height, int pixelCount){
-//            Debug.Log("Receiving Texture Callback");
-        }
-        public override void SubscribeCallback(ReceiveSensorImageCallback callback)
-        {
-            SubscribeCallbackImage(myCalibrations.camID,callback);
-        }
         public override void SubscribeCallback(int instanceID, ReceiveSensorImageCallbackWithInstanceID callbackWithInstanceID){
             SubscribeCallbackImageWithID(instanceID,myCalibrations.camID,callbackWithInstanceID);
         }

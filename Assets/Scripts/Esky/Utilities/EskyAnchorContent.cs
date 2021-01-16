@@ -5,10 +5,11 @@ namespace ProjectEsky.Tracking{
     public class EskyAnchorContent : MonoBehaviour
     {
         public string ContentID;
+        public int AnchorIDToSubscribe;
         // Start is called before the first frame update
         void Start()
         {
-            EskyAnchor.Subscribe(this);
+            EskyAnchor.Subscribe(AnchorIDToSubscribe, this);
 
         }
 

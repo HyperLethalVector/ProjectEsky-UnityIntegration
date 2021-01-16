@@ -33,15 +33,11 @@ namespace ProjectEsky{
         [SerializeField]
         public float SensorFoV;
     }
-    public delegate void ReceiveSensorImageCallback(IntPtr info, int lengthofarray, int width, int height, int pixelCount);
     public delegate void ReceiveSensorImageCallbackWithInstanceID(int instanceID, IntPtr info, int lengthofarray, int width, int height, int pixelCount);
 
     
     public abstract class SensorImageSource : MonoBehaviour{
         public RGBSensorModuleCalibrations myCalibrations;
-        public virtual void SubscribeCallback(ReceiveSensorImageCallback callback){
-
-        }
         public virtual void SubscribeCallback(int instanceID, ReceiveSensorImageCallbackWithInstanceID callback){
 
         }

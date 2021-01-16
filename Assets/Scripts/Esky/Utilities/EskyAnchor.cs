@@ -4,19 +4,27 @@ using UnityEngine;
 namespace ProjectEsky.Tracking{
     public class EskyAnchor : MonoBehaviour
     {
+        public int AnchorID;
         [HideInInspector]
         public Dictionary<string,EskyAnchorContent> myContent = new Dictionary<string, EskyAnchorContent>();
         public Transform contentOrigin;
-        public static EskyAnchor instance;
+        public static Dictionary<int,EskyAnchor> instances = new Dictionary<int, EskyAnchor>();
         public GameObject meshRoot;
         public bool loadMapMesh = false;
         public Material meshMaterial;
+
+        public int HookedTrackerID;
         private void Awake() {
-            instance = this;
+            if(!instances.ContainsKey(AnchorID)){
+                instances.Add(AnchorID,this);
+            }else{
+                Debug.LogWarning("WARNING: Multiple Anchor IDs in the scene: " + AnchorID);
+            }
         }
         private void Start(){
-            if(EskyTracker.instance != null){
-                EskyTracker.instance.MeshParent = meshRoot;
+            if(EskyTracker.instances.ContainsKey(HookedTrackerID)){
+                EskyTracker.instances[HookedTrackerID].MeshParent = meshRoot;
+                EskyTracker.instances[HookedTrackerID].SubscribeAnchor(this);
             }
         }
         public (Dictionary<string,EskyAnchorContentInfo>, byte[] meshData) GetEskyMapInfo(){
@@ -75,11 +83,11 @@ namespace ProjectEsky.Tracking{
             ProjectEsky.Utilities.EskyMeshSerializer.Deserialize(information.meshDataArray);
             
         }
-        public static void Subscribe(EskyAnchorContent contenttosubscribe){
-            if(instance != null){
-                if(!instance.myContent.ContainsKey(contenttosubscribe.ContentID)){
-                    instance.myContent.Add(contenttosubscribe.ContentID,contenttosubscribe);
-                    contenttosubscribe.transform.parent = instance.transform;                   
+        public static void Subscribe(int ID, EskyAnchorContent contenttosubscribe){
+            if(instances[ID] != null){
+                if(!instances[ID].myContent.ContainsKey(contenttosubscribe.ContentID)){
+                    instances[ID].myContent.Add(contenttosubscribe.ContentID,contenttosubscribe);
+                    contenttosubscribe.transform.parent = instances[ID].transform;                   
                 }else{
                     Debug.LogError("ID " + contenttosubscribe.ContentID + " already exists, gameobject " + contenttosubscribe.gameObject.name + " will not be subscribed");
                 }
@@ -90,11 +98,5 @@ namespace ProjectEsky.Tracking{
                 kvpeac.Value.OnLocalizedCallback();
             }
         }
-//        public void SetAnchorData(byte[] metaData){
-//            BinaryFormatter bf = new BinaryFormatter();
-//            EskyMap myCurrentMap;            
-//            MemoryStream ms = new MemoryStream(eskyMapInfo);
-//            myCurrentMap  = (EskyMap)bf.Deserialize(ms);
-//        }
     }
 }

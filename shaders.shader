@@ -18,9 +18,7 @@ cbuffer ShaderVals : register(b0){
 };
 cbuffer ShaderVals2 : register(b1){
     float4x4 DeltaPoseLeft;  
-    float4x4 DeltaPoseLeftInv;
     float4x4 DeltaPoseRight;  
-    float4x4 DeltaPoseRightInv;
     float4 toggleConfigs;
 }
 struct VOut
@@ -61,7 +59,7 @@ float polyval2d(float X, float Y, float4x4 C) {
           ((C[3][0] * X3) + (C[3][1] * X3 * Y) + (C[3][2] * X3 * Y2) + (C[3][3] * X3 * Y3))
           );
 }
-float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose, float4x4 DeltaPoseInv){
+float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose){
         float4x4 hardCodedBias = {2,0,0,-1.0,0,2,0,-1.0,0,0,2,0,0,0,0,1};  
         float4x4 hardCodedInverseBias = {0.5,0,0, 0.5,0,0.5,0,0.5,0,0,0.5,0,0,0,0,1};          
         float planeDepth = 0.25;     
@@ -85,23 +83,23 @@ float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose, float4x4 Delta
 float4 resolveWithoutDistortion(float xSettled, float ySettled){            
     if(xSettled < 0.5){//we render the left eye
         float2 newTex = float2(ySettled,xSettled*2);// input quad UV in world space (should be between 0-1)                
-        float2 distorted_uv = resolveTemporalWarping(newTex,DeltaPoseLeft, DeltaPoseLeftInv); // perform the temporal warping
+        float2 distorted_uv = resolveTemporalWarping(newTex,DeltaPoseLeft); // perform the temporal warping
         if(toggleConfigs.x != 0.0){
             distorted_uv = newTex;
         }
         if(distorted_uv.x < eyeBordersRight.x || distorted_uv.x > eyeBordersRight.y || distorted_uv.y < eyeBordersRight.z || distorted_uv.y > eyeBordersRight.w){//ensure the UVS are within the set bounds for the eye
             return float4(0.0,0.0,0.0,1.0);//if outside, return black (prevent)
         }else{
-            return txDiffuseLeft.Sample(samLinear, distorted_uv);
+            return txDiffuseLeft.Sample(samLinear, distorted_uv)* toggleConfigs.y;
         }
     }else{//we render the right eye        
         float2 newTex = float2(ySettled,(xSettled-0.5)*2); //input quad UV in world space (should be between 0-1)          
-        float2 distorted_uv = resolveTemporalWarping(newTex,DeltaPoseRight,DeltaPoseRightInv); // perform the temporal warping
+        float2 distorted_uv = resolveTemporalWarping(newTex,DeltaPoseRight); // perform the temporal warping
 
         if(distorted_uv.x < eyeBordersLeft.x || distorted_uv.x > eyeBordersLeft.y || distorted_uv.y < eyeBordersLeft.z || distorted_uv.y > eyeBordersLeft.w){
             return float4(0.0,0.0,0.0,1.0);
         }else{
-            return txDiffuseRight.Sample(samLinear, distorted_uv);        
+            return txDiffuseRight.Sample(samLinear, distorted_uv) * toggleConfigs.y;        
         }
     }
     return float4(0.0,0.0,0.0,1.0);
@@ -113,24 +111,24 @@ float4 resolveWithDistortion(float xSettled, float ySettled){
         float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixRight,rectilinear_coordinate); //project back into screen space
         distorted_uv += float2(offsets.z,offsets.w); //apply a screen space UV offset
         if(toggleConfigs.x == 0.0){
-            distorted_uv = resolveTemporalWarping(distorted_uv,DeltaPoseLeft, DeltaPoseLeftInv);        //Should do things here for reprojection ....
+            distorted_uv = resolveTemporalWarping(distorted_uv,DeltaPoseLeft);        //Should do things here for reprojection ....
         }
         if(distorted_uv.x < eyeBordersRight.x || distorted_uv.x > eyeBordersRight.y || distorted_uv.y < eyeBordersRight.z || distorted_uv.y > eyeBordersRight.w)//ensure the UVS are within the set bounds for the eye
         return float4(0.0,0.0,0.0,1.0);//if outside, return black (prevent)
         else
-        return txDiffuseLeft.Sample(samLinear, distorted_uv);
+        return txDiffuseLeft.Sample(samLinear, distorted_uv)* toggleConfigs.y;
     }else{//we render the right eye
         float2 newTex = float2((xSettled-0.5)*2,ySettled);  
         float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, leftUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, leftUvToRectY), 1.0);
         float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixLeft,rectilinear_coordinate);
         distorted_uv += float2(offsets.x,offsets.y);
         if(toggleConfigs.x == 0.0){
-            distorted_uv = resolveTemporalWarping(distorted_uv,DeltaPoseRight,DeltaPoseRightInv);        
+            distorted_uv = resolveTemporalWarping(distorted_uv,DeltaPoseRight);        
         }
         if(distorted_uv.x < eyeBordersLeft.x || distorted_uv.x > eyeBordersLeft.y || distorted_uv.y < eyeBordersLeft.z || distorted_uv.y > eyeBordersLeft.w)
         return float4(0.0,0.0,0.0,1.0);
         else
-        return txDiffuseRight.Sample(samLinear, distorted_uv);        
+        return txDiffuseRight.Sample(samLinear, distorted_uv)* toggleConfigs.y;        
     }
     return float4(0.0,0.0,0.0,1.0);
 }

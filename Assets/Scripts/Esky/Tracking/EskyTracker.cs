@@ -188,6 +188,7 @@ namespace ProjectEsky.Tracking{
     }
     public class EskyTracker : SensorImageSource
     {
+        public bool hasInitializedTracker = false;
         public bool applyDisplayTransform = true;
         public static string TrackerCalibrationsFolder = "./TrackingCalibrations/";
         public string TrackerCalibrationFileName = "TrackerOffset.json";
@@ -198,12 +199,11 @@ namespace ProjectEsky.Tracking{
         [SerializeField] 
         public MapSavedCallback mapCollectedCallback;
         protected EskyMap retEskyMap;
-        public GameObject subscribedAnchor;// = new Dictionary<string, GameObject>();
-        public static EskyTracker instance;
-        public delegate void EventCallback(int Result);
-        public delegate void MapDataCallback(IntPtr data, int Length);
-        public delegate void PoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
-        public delegate void DeltaMatrixConvertCallback(IntPtr writebackArray, IntPtr writeBackInvArray, bool isLeft,
+        public static Dictionary<int,EskyTracker> instances = new Dictionary<int,EskyTracker>();
+        public delegate void LocalizationEventCallback(int TrackerID, int Result);
+        public delegate void MapDataCallback(int TrackerID, IntPtr data, int Length);
+        public delegate void LocalizationPoseReceivedCallback(int TrackerID, string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw);
+        public delegate void DeltaMatrixConvertCallback(int TrackerID, IntPtr writebackArray, bool isLeft,
                                                         float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A,
                                                         float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B);
         [HideInInspector]        
@@ -216,6 +216,7 @@ namespace ProjectEsky.Tracking{
         public float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         [HideInInspector]        
         public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+        public int TrackerID;
         public Transform RigCenter;
         public Transform EyeLeft;
         public Transform EyeRight;
@@ -224,7 +225,10 @@ namespace ProjectEsky.Tracking{
         public Vector3 currentEuler = Vector3.zero;
         protected EskyPoseCallbackData callbackEvents = null;
         public GameObject MeshParent;
-
+        EskyAnchor subscribedAnchor = null;
+        public void SubscribeAnchor(EskyAnchor anchor){
+            subscribedAnchor = anchor;
+        }
         // Start is called before the first frame update
         public virtual void LoadCalibration(){
             if(File.Exists(TrackerCalibrationsFolder + TrackerCalibrationFileName)){
@@ -264,7 +268,11 @@ namespace ProjectEsky.Tracking{
            
         }    
         void Awake(){
-            instance = this;
+            instances.Add(TrackerID,this);
+            AfterAwake();
+        }
+        public virtual void AfterAwake(){
+
         }
         public virtual void ObtainObjectPoses(){
 
@@ -281,29 +289,26 @@ namespace ProjectEsky.Tracking{
             if(UpdateLocalizationCallback){
                 UpdateLocalizationCallback = false;
                 ObtainObjectPoses();
-                if(instance.ReLocalizationCallback != null){
-                    instance.ReLocalizationCallback.Invoke();
+                if(instances[TrackerID].ReLocalizationCallback != null){
+                    instances[TrackerID].ReLocalizationCallback.Invoke();
                 }                
             }
-            if(ShouldCallBackMap){                
-                if(EskyAnchor.instance != null){
-                    (Dictionary<string,EskyAnchorContentInfo>,byte[]) returnvals = EskyAnchor.instance.GetEskyMapInfo();
+            if(ShouldCallBackMap){
+                if(subscribedAnchor != null){  // we only return the first instance when saving map info for now, in theory we only subscribe one anchor to one tracker;           
+                    (Dictionary<string,EskyAnchorContentInfo>,byte[]) returnvals = subscribedAnchor.GetEskyMapInfo();
                     retEskyMap.contentLocations = returnvals.Item1;
                     retEskyMap.meshDataArray = returnvals.Item2;
-                }                
-                if(instance.mapCollectedCallback != null){
-                    #if ZED_SDK
-                    instance.mapCollectedCallback.Invoke(retEskyMap);
-                    #else
-                    instance.mapCollectedCallback.Invoke(retEskyMap);                    
-                    #endif
                 }
+                if(instances[TrackerID].mapCollectedCallback != null){
+                    instances[TrackerID].mapCollectedCallback.Invoke(retEskyMap);                    
+                }
+                                
                 ShouldCallBackMap = false;
             }
             if(callbackEvents != null){
-                if(EskyAnchor.instance != null){
-                    EskyAnchor.instance.transform.position = callbackEvents.position;
-                    EskyAnchor.instance.transform.rotation = callbackEvents.rotation;                        
+                if(subscribedAnchor != null){
+                        subscribedAnchor.transform.position = callbackEvents.position;
+                        subscribedAnchor.transform.rotation = callbackEvents.rotation;                        
                 }
                 callbackEvents = null;                
             }
@@ -319,14 +324,14 @@ namespace ProjectEsky.Tracking{
             return (p,q);
         }
         bool UpdateLocalizationCallback = false;
-        [MonoPInvokeCallback(typeof(EventCallback))]
-        public static void OnEventCallback(int Response)
+        [MonoPInvokeCallback(typeof(LocalizationEventCallback))]
+        public static void OnLocalization(int TrackerID, int Response)
         {
             switch(Response){
                 case 1:
                 UnityEngine.Debug.Log("We received the localization event!!");
-                if(instance != null){
-                    instance.UpdateLocalizationCallback = true;
+                if(instances[TrackerID] != null){
+                    instances[TrackerID].UpdateLocalizationCallback = true;
                 }
                 break;
                 default:

@@ -146,8 +146,9 @@ namespace ProjectEsky.Extras.Modules{
             activateMe = false;
             StopCamera(myCalibrations.camID);
         }
-        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallback))]
-        public void ReceiveImageCallback(IntPtr info, int lengthofarray, int width, int height, int pixelCount){
+        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]
+        public static void ReceiveImageCallback(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
+            Debug.Log("Received Normal Texture Callback");
         }
         [DllImport("libProjectEskyRGBSensorModule")]
         static extern void StartCamera(int camID, float fx, float fy, float cx, float cy, float d1, float d2, float d3, float d4);
@@ -155,8 +156,6 @@ namespace ProjectEsky.Extras.Modules{
         static extern void StopCamera(int camID);
         [DllImport("libProjectEskyRGBSensorModule")]
         static extern void StopCameras();        
-        [DllImport("libProjectEskyRGBSensorModule")]
-        static extern void SubscribeCallback(int camID,ReceiveSensorImageCallback callback);        
         [DllImport("libProjectEskyRGBSensorModule")]
         static extern void SubscribeCallbackWithID(int InstanceID, int camID,ReceiveSensorImageCallbackWithInstanceID callback);        
 
@@ -172,11 +171,6 @@ namespace ProjectEsky.Extras.Modules{
         public static extern void InitializeCameraObject(int camID);
         [DllImport("libProjectEskyRGBSensorModule")]
         public static extern void RegisterDebugCallback(FuncCallBack callback);
-
-        public override void SubscribeCallback(ReceiveSensorImageCallback callback)
-        {
-            SubscribeCallback(myCalibrations.camID,callback);
-        }
         public override void SubscribeCallback(int instanceID, ReceiveSensorImageCallbackWithInstanceID callbackWithInstanceID){
             SubscribeCallbackWithID(instanceID,myCalibrations.camID,callbackWithInstanceID);
         }

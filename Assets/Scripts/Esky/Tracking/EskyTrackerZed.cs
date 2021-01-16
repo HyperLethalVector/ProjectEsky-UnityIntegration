@@ -38,8 +38,7 @@ namespace ProjectEsky.Tracking{
             InitializeTrackerObject();
             RegisterBinaryMapCallback(OnMapCallback);
             RegisterObjectPoseCallback(OnPoseReceivedCallback);
-
-            RegisterLocalizationCallback(OnEventCallback);            
+            RegisterLocalizationCallback(OnLocalization);            
             StartTrackerThread(false);        
             AfterInitialization();
         }
@@ -62,7 +61,7 @@ namespace ProjectEsky.Tracking{
             StopTrackers();
         }
         [MonoPInvokeCallback(typeof(MapDataCallback))]
-        static void OnMapCallback(IntPtr receivedData, int Length)
+        static void OnMapCallback(int TrackerID, IntPtr receivedData, int Length)
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -91,10 +90,10 @@ namespace ProjectEsky.Tracking{
             }
             if(didComplete){
                 UnityEngine.Debug.Log("Received map data of length: " + received.Length);
-                if(instance != null){
+                if(instances[TrackerID] != null){
                     EskyMap retEskyMap = new EskyMap();
                     retEskyMap.mapBLOB = received;
-                    instance.SetEskyMapInstance(retEskyMap);
+                    instances[TrackerID].SetEskyMapInstance(retEskyMap);
                     //I should collect the mesh data here
                 }else{
                     UnityEngine.Debug.LogError("The instance of the tracker was null, cancelling data map export");
@@ -107,14 +106,14 @@ namespace ProjectEsky.Tracking{
         public void AddPoseFromCallback(EskyPoseCallbackData epcd){
             callbackEvents = epcd;
         }
-        [MonoPInvokeCallback(typeof(PoseReceivedCallback))]
-        static void OnPoseReceivedCallback(string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
+        [MonoPInvokeCallback(typeof(LocalizationPoseReceivedCallback))]
+        static void OnPoseReceivedCallback(int TrackerID, string ObjectID, float tx, float ty, float tz, float qx, float qy, float qz, float qw){
             EskyPoseCallbackData epcd = new EskyPoseCallbackData();
-            (Vector3, Quaternion) vq = instance.IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
+            (Vector3, Quaternion) vq = instances[TrackerID].IntelPoseToUnity(tx,ty,tz,qx,qy,qz,qw);            
             epcd.PoseID = ObjectID;
             epcd.position = vq.Item1;
             epcd.rotation = vq.Item2;
-            ((EskyTrackerZed)instance).AddPoseFromCallback(epcd);
+            ((EskyTrackerZed)instances[TrackerID]).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
         [MonoPInvokeCallback(typeof(MeshChunksReceivedCallback))]
@@ -323,10 +322,10 @@ namespace ProjectEsky.Tracking{
 
 
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
-        static extern void RegisterObjectPoseCallback(PoseReceivedCallback poseReceivedCallback);
+        static extern void RegisterObjectPoseCallback(LocalizationPoseReceivedCallback poseReceivedCallback);
 
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
-        static extern void RegisterLocalizationCallback(EventCallback cb);
+        static extern void RegisterLocalizationCallback(LocalizationEventCallback cb);
 
         [DllImport("libProjectEskyLLAPIZED", CallingConvention = CallingConvention.Cdecl)]
         static extern void RegisterBinaryMapCallback(MapDataCallback cb);
