@@ -888,7 +888,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _leapProvider: {fileID: 6075467950660893040}
   ModelPool:
-  - GroupName: NetworkedHands
+  - GroupName: DefaultHands
     _handModelManager: {fileID: 0}
     LeftModel: {fileID: 0}
     IsLeftToBeSpawned: 0
