@@ -216,6 +216,10 @@ namespace ProjectEsky.Tracking{
         public float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         [HideInInspector]        
         public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+        [HideInInspector]
+        public float[] leftEyeTransform = new float[16]{1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f};
+        [HideInInspector]
+        public float[] rightEyeTransform = new float[16]{1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f};
         public int TrackerID;
         public Transform RigCenter;
         public Transform EyeLeft;
@@ -271,7 +275,13 @@ namespace ProjectEsky.Tracking{
             instances.Add(TrackerID,this);
             AfterAwake();
         }
+        void Start(){
+            AfterStart();
+        }
         public virtual void AfterAwake(){
+
+        }
+        public virtual void AfterStart(){
 
         }
         public virtual void ObtainObjectPoses(){

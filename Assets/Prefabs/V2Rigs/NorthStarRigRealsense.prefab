@@ -274,7 +274,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1399602288}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.032, y: 0, z: 0}
+  m_LocalPosition: {x: -0.032, y: -0.032, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 501714872}
@@ -506,6 +506,7 @@ MonoBehaviour:
   LeapMotionCamera: {fileID: 360103426840104886}
   myAttachedTracker: {fileID: 1708553963508663787}
   RigCenter: {fileID: 0}
+  RenderedGraphicsBrightness: 1
   TargetRendererRate: 120
   StartRendererAfterInitializing: 1
 --- !u!114 &1708553963508663787
@@ -534,6 +535,7 @@ MonoBehaviour:
     SensorHeight: 0
     SensorChannels: 0
     SensorFoV: 0
+  hasInitializedTracker: 0
   applyDisplayTransform: 0
   TrackerCalibrationFileName: TrackerOffset.json
   ApplyPoses: 1
@@ -562,7 +564,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  subscribedAnchor: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
   velocityRotation: {x: 0, y: 0, z: 0}
   smoothing: 0.000001
@@ -583,6 +584,41 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  leftEyeTransform:
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  rightEyeTransform:
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  TrackerID: 0
   RigCenter: {fileID: 360103426797230293}
   EyeLeft: {fileID: 322961179}
   EyeRight: {fileID: 963817664}

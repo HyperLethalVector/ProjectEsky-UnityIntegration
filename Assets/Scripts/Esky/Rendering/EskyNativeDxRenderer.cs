@@ -213,7 +213,7 @@ namespace ProjectEsky.Rendering{
                 }
             }else{
                 Debug.LogError("Waah! My display calibration file is missing :(");
-            }
+            } 
         }
         public void SaveCalibration(){
             if(LeapMotionCamera != null){
@@ -255,6 +255,7 @@ namespace ProjectEsky.Rendering{
             calibration.left_eye_offset,calibration.right_eye_offset,myEyeBorders.myBorders);    
             SetBrightness(0,1.0f);              
             yield return new WaitForEndOfFrame();
+            SetEnableFlagWarping(id,use2DTemporalWarping);            
             if(!wasDone){
                 wasDone = true;
                 if (backgroundRendererCoroutine == null) {
@@ -263,6 +264,8 @@ namespace ProjectEsky.Rendering{
                     StartCoroutine(backgroundRendererCoroutine);
                 }
             }
+            
+
             yield return new WaitForEndOfFrame();
         }
 
@@ -274,7 +277,8 @@ namespace ProjectEsky.Rendering{
                     SetBrightness(0,CurrentBrightness);
                 }
                 GL.IssuePluginEvent(GetRenderEventFunc(), 0);
-                if(myAttachedTracker != null){
+                if(myAttachedTracker != null){ 
+                    Debug.Log("Resetting the tracker delta");
                     myAttachedTracker.RenderResetFlag();
                 }
             }		

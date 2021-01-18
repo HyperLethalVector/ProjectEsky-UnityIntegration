@@ -55,6 +55,16 @@ namespace ProjectEsky.Tracking{
             AfterInitialization();     
             SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
         }
+        public override void AfterStart()
+        {
+            if(attachedRenderer != null){
+                for(int i = 0; i < 16; i++){
+                        leftEyeTransform[i] = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform[i];
+                        rightEyeTransform[i] = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform[i];                                                
+                }
+                SetLeftRightEyeTransform(TrackerID,leftEyeTransform,rightEyeTransform);
+            }
+        }
         public override void LoadEskyMap(EskyMap m){
             retEskyMap = m;
             if(File.Exists("temp.raw"))File.Delete("temp.raw");
@@ -310,6 +320,43 @@ namespace ProjectEsky.Tracking{
                 ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer.SetDeltas(deltaPoseLeft,deltaPoseRight);
             }
         }
+
+        [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
+        static void OnTextureInitialized(int TrackerID, int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio, float d1, float d2, float d3, float d4, float d5){
+            if(instances[TrackerID] != null){
+                instances[TrackerID].textureWidth = textureWidth;
+                instances[TrackerID].textureHeight = textureHeight;
+                instances[TrackerID].textureChannels = textureChannels;
+                instances[TrackerID].myCalibrations.fx = fx; 
+                instances[TrackerID].myCalibrations.fy = fy;
+                instances[TrackerID].myCalibrations.cx = cx;
+                instances[TrackerID].myCalibrations.cy = cy;
+                instances[TrackerID].myCalibrations.d1 = d1;
+                instances[TrackerID].myCalibrations.d2 = d2;
+                instances[TrackerID].myCalibrations.d3 = d3;
+                instances[TrackerID].myCalibrations.d4 = d4;
+                instances[TrackerID].d5 = d5;
+                instances[TrackerID].fovx = fovx;
+                instances[TrackerID].fovy = fovy;
+                instances[TrackerID].hasInitializedTexture = true;                                                                
+            }
+        }
+        public void RenderResetFlag(){
+            //if(hasInitializedTracker){
+                PostRenderReset(TrackerID);
+           // }
+        }
+        IEnumerator WaitEndFrameCameraUpdate(){
+            while(true){
+                yield return new WaitForEndOfFrame();
+                if(canRenderImages){
+                    GL.IssuePluginEvent(GetRenderEventFunc(), TrackerID);
+                }
+            }
+        }
+        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
+        public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
+        }        
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void RegisterQuaternionConversionCallback(int TrackerID, ConvertToQuaternionCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
@@ -360,42 +407,6 @@ namespace ProjectEsky.Tracking{
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetMapData(int TrackerID,byte[] inputData, int Length);
 
-        [MonoPInvokeCallback(typeof(RenderTextureInitialized))]
-        static void OnTextureInitialized(int TrackerID, int textureWidth, int textureHeight, int textureChannels,float fx,float fy, float cx, float cy, float fovx, float fovy, float aspectRatio, float d1, float d2, float d3, float d4, float d5){
-            if(instances[TrackerID] != null){
-                instances[TrackerID].textureWidth = textureWidth;
-                instances[TrackerID].textureHeight = textureHeight;
-                instances[TrackerID].textureChannels = textureChannels;
-                instances[TrackerID].myCalibrations.fx = fx; 
-                instances[TrackerID].myCalibrations.fy = fy;
-                instances[TrackerID].myCalibrations.cx = cx;
-                instances[TrackerID].myCalibrations.cy = cy;
-                instances[TrackerID].myCalibrations.d1 = d1;
-                instances[TrackerID].myCalibrations.d2 = d2;
-                instances[TrackerID].myCalibrations.d3 = d3;
-                instances[TrackerID].myCalibrations.d4 = d4;
-                instances[TrackerID].d5 = d5;
-                instances[TrackerID].fovx = fovx;
-                instances[TrackerID].fovy = fovy;
-                instances[TrackerID].hasInitializedTexture = true;                                                                
-            }
-        }
-        public void RenderResetFlag(){
-            if(hasInitializedTracker){
-                PostRenderReset(TrackerID);
-            }
-        }
-        IEnumerator WaitEndFrameCameraUpdate(){
-            while(true){
-                yield return new WaitForEndOfFrame();
-                if(canRenderImages){
-                    GL.IssuePluginEvent(GetRenderEventFunc(), TrackerID);
-                }
-            }
-        }
-        [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
-        public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
-        }
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void PostRenderReset(int ID);
         [DllImport("libProjectEskyLLAPIIntel")]
@@ -404,6 +415,8 @@ namespace ProjectEsky.Tracking{
         static extern void SetRenderTexturePointer(int TrackerID, IntPtr texPointer);
         [DllImport("libProjectEskyLLAPIIntel")]
         public static extern IntPtr GetRenderEventFunc();        
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetLeftRightEyeTransform(int iD, float[] leftEyeTransform, float[] rightEyeTransform);
            
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SubscribeCallbackImageWithID(int InstanceID, int camID,ReceiveSensorImageCallbackWithInstanceID callback);        
