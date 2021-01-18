@@ -159,8 +159,9 @@ namespace ProjectEsky.Rendering{
         public float RenderedGraphicsBrightness = 1.0f;
         float CurrentBrightness = 1.0f;
         public int TargetRendererRate = 120;
+        int myFrameRate = 0;
         void Awake() {
-            Application.targetFrameRate = TargetRendererRate;
+
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
             LoadCalibration();
@@ -234,6 +235,10 @@ namespace ProjectEsky.Rendering{
         bool wasDone = false;
         // Update is called once per frame
         void Update() { 
+            if(TargetRendererRate != myFrameRate){
+                Application.targetFrameRate = TargetRendererRate;
+                myFrameRate = TargetRendererRate;
+            }
             if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}
             if(use2DTemporalWarping != usesTemporalWarping){
                 usesTemporalWarping = use2DTemporalWarping; 
