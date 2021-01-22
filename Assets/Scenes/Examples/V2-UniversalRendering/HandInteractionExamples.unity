@@ -30641,6 +30641,16 @@ PrefabInstance:
       propertyPath: ModelPool.Array.data[0].RightModel
       value: 
       objectReference: {fileID: 1294576182}
+    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
+        type: 3}
+      propertyPath: mapCollectedCallback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1718449040}
+    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
+        type: 3}
+      propertyPath: mapCollectedCallback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReceiveFile
+      objectReference: {fileID: 0}
     - target: {fileID: 5813933545504253021, guid: 3ad8f91bdedd98544b02c8cee2184bef,
         type: 3}
       propertyPath: m_IsActive
