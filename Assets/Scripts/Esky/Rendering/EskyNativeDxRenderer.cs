@@ -281,11 +281,12 @@ namespace ProjectEsky.Rendering{
                     CurrentBrightness = RenderedGraphicsBrightness;
                     SetBrightness(0,CurrentBrightness);
                 }
-                GL.IssuePluginEvent(GetRenderEventFunc(), 0);
                 if(myAttachedTracker != null){ 
                     Debug.Log("Resetting the tracker delta");
                     myAttachedTracker.RenderResetFlag();
-                }
+                }                
+                GL.IssuePluginEvent(GetRenderEventFunc(), 0);
+
             }		
         }
 
