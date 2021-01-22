@@ -48,6 +48,7 @@ namespace ProjectEsky.Tracking{
             if(UsesDeckXIntegrator){
                 SetSerialComPort(TrackerID, (int)comPort);
             }
+            if(attachedRenderer != null)
             RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
             RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
@@ -342,9 +343,9 @@ namespace ProjectEsky.Tracking{
             }
         }
         public void RenderResetFlag(){
-            //if(hasInitializedTracker){
+            if(hasInitializedTracker){
                 PostRenderReset(TrackerID);
-           // }
+            }
         }
         IEnumerator WaitEndFrameCameraUpdate(){
             while(true){
