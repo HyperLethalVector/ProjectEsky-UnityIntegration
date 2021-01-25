@@ -9,7 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Examples/V2-UniversalRendering/HandInteractionExamples.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 1ad257b4cc44a2b43921db308f6efb2b,
+      type: 2}
     Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: fa2f561e1eda4f8498f1cb26567a31b7,
       type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 3a53cd3b6bfeece4ab551b1f358b7a11,
+    Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 319ad04777f2b71438e11ff700fb2129,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 2a463f9177d856b43a128d198511bf1c,
       type: 2}
