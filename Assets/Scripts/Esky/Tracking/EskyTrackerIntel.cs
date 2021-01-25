@@ -41,8 +41,7 @@ namespace ProjectEsky.Tracking{
         {
             RegisterDebugCallback(OnDebugCallback);    
             LoadCalibration();
-            InitializeTrackerObject(TrackerID);
-            RegisterQuaternionConversionCallback(TrackerID,ConvertToQuaternion);            
+            InitializeTrackerObject(TrackerID);       
             RegisterBinaryMapCallback(TrackerID,OnMapCallback);
             RegisterObjectPoseCallback(TrackerID, OnLocalizationPoseReceivedCallback);
             if(UsesDeckXIntegrator){
@@ -358,8 +357,6 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
         public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
         }        
-        [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void RegisterQuaternionConversionCallback(int TrackerID, ConvertToQuaternionCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void RegisterDeltaPoseUpdate(int TrackerID, DeltaPoseUpdateCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
