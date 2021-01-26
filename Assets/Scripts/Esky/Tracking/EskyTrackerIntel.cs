@@ -53,7 +53,7 @@ namespace ProjectEsky.Tracking{
             RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();     
-//            SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
+            SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
         }
         public override void AfterStart()
         {
@@ -357,7 +357,7 @@ namespace ProjectEsky.Tracking{
         [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
         public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
         }        
-        [DllImport("libProjectEskyLLAPIIntel")]
+        [DllImport("libProjectEskyLLAPIIntel")] 
         static extern void RegisterDeltaPoseUpdate(int TrackerID, DeltaPoseUpdateCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void HookDeviceToIntel(int TrackerID);
