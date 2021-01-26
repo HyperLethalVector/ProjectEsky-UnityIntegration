@@ -53,7 +53,7 @@ namespace ProjectEsky.Tracking{
             RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();     
-            SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
+//            SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
         }
         public override void AfterStart()
         {
@@ -69,7 +69,7 @@ namespace ProjectEsky.Tracking{
             retEskyMap = m;
             if(File.Exists("temp.raw"))File.Delete("temp.raw");
             System.IO.File.WriteAllBytes("temp.raw",m.mapBLOB);
-            SetMapData(TrackerID,new byte[]{},0);
+            FlagMapImport(TrackerID);
         }
         public override void ObtainObjectPoses(){             
             ObtainOriginInLocalizedMap(TrackerID);
@@ -205,7 +205,7 @@ namespace ProjectEsky.Tracking{
             //PlayerSettings.defaultScreenWidth = width;
             //PlayerSettings.defaultScreenHeight = height;
 
-            shiftX = -(x0 - width / 2.0f) / width;
+            shiftX = -(x0 - width / 2.0f) / width; 
             shiftY = (y0 - height / 2.0f) / height;
             previewCamera.sensorSize = new Vector2(sizeX, sizeY);     // in mm, mx = 1000/x, my = 1000/y
             previewCamera.focalLength = f;                            // in mm, ax = f * mx, ay = f * my
@@ -403,7 +403,7 @@ namespace ProjectEsky.Tracking{
         static extern void ObtainMap(int TrackerID);
 
         [DllImport("libProjectEskyLLAPIIntel")]
-        static extern void SetMapData(int TrackerID,byte[] inputData, int Length);
+        static extern void FlagMapImport(int TrackerID); 
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void PostRenderReset(int ID);
