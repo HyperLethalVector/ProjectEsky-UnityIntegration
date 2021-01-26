@@ -208,10 +208,10 @@ namespace ProjectEsky.Rendering{
                 myEyeBorders.UpdateBorders();
                 renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.LeftCamera.projectionMatrix,true);// = renderTextureSettings..renderTextureSettings.LeftCamera.projectionMatrix,renderTextureSettings.RightCamera.projectionMatrix;
                 renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.RightCamera.projectionMatrix,false);//
-                if(renderTextureSettings.RequiresRotation){
-                    renderTextureSettings.LeftCamera.fieldOfView = 43.01793f;//52.75 for 1.5 weighting
-                    renderTextureSettings.RightCamera.fieldOfView = 43.01793f;//Pre-CALCULATED                
-                }
+      //          if(renderTextureSettings.RequiresRotation){
+    //                renderTextureSettings.LeftCamera.fieldOfView = 43.01793f;//52.75 for 1.5 weighting
+  //                  renderTextureSettings.RightCamera.fieldOfView = 43.01793f;//Pre-CALCULATED                
+//                }
             }else{
                 Debug.LogError("Waah! My display calibration file is missing :(");
             } 

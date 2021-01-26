@@ -763,6 +763,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 360103426964646978, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: field of view
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 360103426964646978, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: m_FOVAxisMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 360103428309199808, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: field of view
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 360103428309199808, guid: 731011d86797ce64d80a69e8db74e3fc,
+        type: 3}
+      propertyPath: m_FOVAxisMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1708553963508663787, guid: 731011d86797ce64d80a69e8db74e3fc,
         type: 3}
       propertyPath: ApplyPoses
