@@ -42,7 +42,7 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
                     if (cameras.Length == 0)
                     {
                         Debug.LogWarning("No cameras found. Creating a \"MainCamera\".");
-                        mainCamera = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)) { tag = "MainCamera" }.GetComponent<Camera>();
+                        mainCamera = GameObject.Find("LeapMotion").GetComponent<Camera>();//new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)) { tag = "MainCamera" }.GetComponent<Camera>();
                     }
                     else
                     {
