@@ -1108,6 +1108,16 @@ MonoBehaviour:
   UsesDeckXIntegrator: 1
   comPort: 5
   attachedRenderer: {fileID: 5813933546723799654}
+  TranslationFilterParameters:
+    Frequency: 120
+    MinimumCutoff: 1
+    Beta: 11
+    DCutoff: 0
+  RotationFilterParameters:
+    Frequency: 1
+    MinimumCutoff: 1
+    Beta: 12
+    DCutoff: 0
 --- !u!1 &6075467950620110355
 GameObject:
   m_ObjectHideFlags: 0
