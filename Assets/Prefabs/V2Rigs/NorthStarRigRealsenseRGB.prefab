@@ -1108,10 +1108,11 @@ MonoBehaviour:
   UsesDeckXIntegrator: 1
   comPort: 5
   attachedRenderer: {fileID: 5813933546723799654}
+  FilterEnabled: 1
   TranslationFilterParameters:
-    Frequency: 120
-    MinimumCutoff: 1
-    Beta: 11
+    Frequency: 200
+    MinimumCutoff: 0.1
+    Beta: 45
     DCutoff: 0
   RotationFilterParameters:
     Frequency: 1
