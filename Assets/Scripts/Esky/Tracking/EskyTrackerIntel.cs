@@ -84,6 +84,7 @@ namespace ProjectEsky.Tracking{
             RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
             RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
+            EnablePassthrough(TrackerID,UseExternalCameraPreview);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();     
             SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
@@ -147,6 +148,9 @@ namespace ProjectEsky.Tracking{
                         SubscribeCallback(TrackerID,GetImage);  
                     }
                 }
+            }
+            else{
+                hasInitializedTracker = true;
             }
             if(TranslationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
                 UpdateFilterTranslationParams(TrackerID,TranslationFilterParameters.Frequency,TranslationFilterParameters.MinimumCutoff,TranslationFilterParameters.Beta,TranslationFilterParameters.DCutoff);
@@ -454,6 +458,9 @@ namespace ProjectEsky.Tracking{
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void FlagMapImport(int TrackerID); 
+        
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void EnablePassthrough(int iD, bool enabled);
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void PostRenderReset(int ID);
