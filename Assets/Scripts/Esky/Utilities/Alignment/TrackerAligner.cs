@@ -426,6 +426,7 @@ namespace ProjectEsky.Calibrator
             Debug.Log("Trying solve...");
             if (finalPoints.Count >= minSamplePointsNeeded)
             {
+#if UNITY_EDITOR && !UNITY_ANDROID                
                     KabschSolver solver = new KabschSolver();
                     Matrix4x4 deviceToOriginDeviceMatrix;
                     if (!inverseSolve)
@@ -447,6 +448,7 @@ namespace ProjectEsky.Calibrator
                 Tracker.RigCenter.localRotation = Tracker.myOffsets.LocalRigRotation;
                 SendMessage("StoredSample", 0, SendMessageOptions.DontRequireReceiver);
                 myCurrentState = CoordinateAlignerStates.PostAlignment;                
+#endif                
             }
             else { 
                 Debug.Log("FAIL: Not enough samples, need at least "+ minSamplePointsNeeded.ToString()); 

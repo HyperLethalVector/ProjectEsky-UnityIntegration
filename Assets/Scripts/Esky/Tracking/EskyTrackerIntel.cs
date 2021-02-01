@@ -22,6 +22,34 @@ namespace ProjectEsky.Tracking{
         COM9 = 9,
         COM10 = 10
     }
+    [System.Serializable]
+    public class DollaryDooFilterParams{
+        [SerializeField]
+
+        public double Frequency;
+        [SerializeField]
+        public double MinimumCutoff;
+        [SerializeField]        
+        public double Beta;
+        [SerializeField]        
+        public double DCutoff;
+
+        double _freq = 20.0;
+        double _mincutoff = 1.0;//double _freq, double _mincutoff = 1.0, double _beta = 0.0, double _dcutoff = 1.0
+        double _beta = 0.0;
+        double _dcutoff = 1.0;
+        bool changedFirstTime = false;
+        public bool CheckUpdate(){
+            
+            bool didChange = false;
+            if(Frequency!= _freq){_freq = Frequency; didChange = true;}
+            if(MinimumCutoff != _mincutoff){_mincutoff = MinimumCutoff; didChange = true;}
+            if(Beta != _beta){_beta = Beta; didChange = true;}            
+            if(DCutoff != _dcutoff){_dcutoff = DCutoff; didChange = true;}        
+            return didChange;    
+        }
+        
+    }
     public class EskyTrackerIntel : EskyTracker
     {
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
@@ -36,7 +64,12 @@ namespace ProjectEsky.Tracking{
         public bool UsesDeckXIntegrator;
         public ComPort comPort;
         public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
+        public bool FilterEnabled = true;
+        bool _filterEnabled;
+        public DollaryDooFilterParams TranslationFilterParameters;
 
+        public DollaryDooFilterParams RotationFilterParameters;        
+        bool setParametersFilterFirstTime = false;
         public override void AfterAwake()
         {
             RegisterDebugCallback(OnDebugCallback);    
@@ -51,6 +84,7 @@ namespace ProjectEsky.Tracking{
             RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
             RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
+            EnablePassthrough(TrackerID,UseExternalCameraPreview);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();     
             SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
@@ -64,6 +98,9 @@ namespace ProjectEsky.Tracking{
                 }
                 SetLeftRightEyeTransform(TrackerID,leftEyeTransform,rightEyeTransform);
             }
+            UpdateFilterTranslationParams(TrackerID,TranslationFilterParameters.Frequency,TranslationFilterParameters.MinimumCutoff,TranslationFilterParameters.Beta,TranslationFilterParameters.DCutoff);
+            UpdateFilterRotationParams(TrackerID, RotationFilterParameters.Frequency,RotationFilterParameters.MinimumCutoff,RotationFilterParameters.Beta,RotationFilterParameters.DCutoff);            
+            if(_filterEnabled != FilterEnabled){_filterEnabled = FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
         }
         public override void LoadEskyMap(EskyMap m){
             retEskyMap = m;
@@ -112,6 +149,17 @@ namespace ProjectEsky.Tracking{
                     }
                 }
             }
+            else{
+                hasInitializedTracker = true;
+            }
+            if(TranslationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
+                UpdateFilterTranslationParams(TrackerID,TranslationFilterParameters.Frequency,TranslationFilterParameters.MinimumCutoff,TranslationFilterParameters.Beta,TranslationFilterParameters.DCutoff);
+            }
+            if(RotationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
+                UpdateFilterRotationParams(TrackerID,RotationFilterParameters.Frequency,RotationFilterParameters.MinimumCutoff,RotationFilterParameters.Beta,RotationFilterParameters.DCutoff);
+            } 
+            if(_filterEnabled != FilterEnabled){_filterEnabled = FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
+            if(!setParametersFilterFirstTime)setParametersFilterFirstTime = true;
         }
         public override void ObtainPose(){
             if(ApplyPoses){
@@ -354,6 +402,7 @@ namespace ProjectEsky.Tracking{
                 }
             }
         }
+        
         [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
         public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
         }        
@@ -361,7 +410,12 @@ namespace ProjectEsky.Tracking{
         static extern void RegisterDeltaPoseUpdate(int TrackerID, DeltaPoseUpdateCallback callback);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void HookDeviceToIntel(int TrackerID);
- 
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetFilterEnabled(int iD, bool value); 
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateFilterTranslationParams(int iD, double _freq, double _mincutoff, double _beta, double _dcutoff);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateFilterRotationParams(int iD, double _freq, double _mincutoff, double _beta, double _dcutoff);        
         [DllImport("libProjectEskyLLAPIIntel")]
         public static extern IntPtr GetLatestPose(int TrackerID);
  
@@ -404,6 +458,9 @@ namespace ProjectEsky.Tracking{
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void FlagMapImport(int TrackerID); 
+        
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void EnablePassthrough(int iD, bool enabled);
 
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void PostRenderReset(int ID);
