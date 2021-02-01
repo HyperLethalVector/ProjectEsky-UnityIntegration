@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 //
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections.Generic;
@@ -296,10 +296,10 @@ namespace Microsoft.MixedReality.Toolkit.UI
         {
             get
             {
-                return ResolveTipState(masterTipState, groupTipState, tipState, HasFocus);              
+                return ResolveTipState(masterTipState, groupTipState, tipState, HasFocus);
             }
         }
-        
+
         public static bool ResolveTipState(DisplayMode masterTipState, DisplayMode groupTipState, DisplayMode tipState, bool hasFocus)
         {
             switch (masterTipState)
@@ -377,13 +377,13 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 toolTipText = " ";
 
             backgrounds.Clear();
-            foreach (IToolTipBackground background in GetComponents(typeof(IToolTipBackground)))
+            foreach (IToolTipBackground background in GetComponents<IToolTipBackground>())
             {
                 backgrounds.Add(background);
             }
 
             highlights.Clear();
-            foreach (IToolTipHighlight highlight in GetComponents(typeof(IToolTipHighlight)))
+            foreach (IToolTipHighlight highlight in GetComponents<IToolTipHighlight>())
             {
                 highlights.Add(highlight);
             }

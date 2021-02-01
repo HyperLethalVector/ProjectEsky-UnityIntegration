@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using TMPro;
@@ -12,8 +12,8 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
     /// (MixedRealityKeyboard) or Unity's TouchScreenKeyboard API depending on the platform.
     /// </summary>
     /// <remarks>
-    /// Note that like Unity's TouchScreenKeyboard API, this script only supports WSA, iOS,
-    /// and Android.
+    /// <para>Note that like Unity's TouchScreenKeyboard API, this script only supports WSA, iOS,
+    /// and Android.</para>
     /// </remarks>
     [AddComponentMenu("Scripts/MRTK/Examples/SystemKeyboardExample")]
     public class SystemKeyboardExample : MonoBehaviour
@@ -30,6 +30,8 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 #pragma warning disable 0414
         [SerializeField]
         private MixedRealityKeyboardPreview mixedRealityKeyboardPreview = null;
+        [SerializeField, Tooltip("Whether disable user's interaction with other UI elements while typing. Use this option to decrease the chance of keyboard getting accidentally closed.")]
+        private bool disableUIInteractionWhenTyping = false;
 #pragma warning restore 0414
 
         /// <summary>
@@ -57,7 +59,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 #if WINDOWS_UWP
             // Windows mixed reality keyboard initialization goes here
             wmrKeyboard = gameObject.AddComponent<MixedRealityKeyboard>();
-
+            wmrKeyboard.DisableUIInteractionWhenTyping = disableUIInteractionWhenTyping;
             if (wmrKeyboard.OnShowKeyboard != null)
             {
                 wmrKeyboard.OnShowKeyboard.AddListener(() =>
