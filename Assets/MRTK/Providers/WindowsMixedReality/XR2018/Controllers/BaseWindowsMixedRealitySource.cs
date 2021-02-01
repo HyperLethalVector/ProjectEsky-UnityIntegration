@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -62,8 +62,7 @@ namespace Microsoft.MixedReality.Toolkit.WindowsMixedReality.Input
             {
                 if (!Enabled) { return; }
 
-                UpdateSourceData(interactionSourceState);
-                UpdateVelocity(interactionSourceState);
+                UpdateSixDofData(interactionSourceState);
 
                 if (Interactions == null)
                 {
@@ -77,22 +76,38 @@ namespace Microsoft.MixedReality.Toolkit.WindowsMixedReality.Input
                     {
                         case DeviceInputType.None:
                             break;
-                        case DeviceInputType.SpatialPointer:
-                            UpdatePointerData(interactionSourceState, Interactions[i]);
-                            break;
                         case DeviceInputType.Select:
                         case DeviceInputType.Trigger:
                         case DeviceInputType.TriggerTouch:
                         case DeviceInputType.TriggerPress:
+                        case DeviceInputType.GripPress:
                             UpdateTriggerData(interactionSourceState, Interactions[i]);
-                            break;
-                        case DeviceInputType.SpatialGrip:
-                            UpdateGripData(interactionSourceState, Interactions[i]);
                             break;
                     }
                 }
 
                 LastSourceStateReading = interactionSourceState;
+            }
+        }
+
+        protected void UpdateSixDofData(InteractionSourceState interactionSourceState)
+        {
+            UpdateSourceData(interactionSourceState);
+            UpdateVelocity(interactionSourceState);
+
+            for (int i = 0; i < Interactions?.Length; i++)
+            {
+                switch (Interactions[i].InputType)
+                {
+                    case DeviceInputType.None:
+                        break;
+                    case DeviceInputType.SpatialPointer:
+                        UpdatePointerData(interactionSourceState, Interactions[i]);
+                        break;
+                    case DeviceInputType.SpatialGrip:
+                        UpdateGripData(interactionSourceState, Interactions[i]);
+                        break;
+                }
             }
         }
 
@@ -269,6 +284,7 @@ namespace Microsoft.MixedReality.Toolkit.WindowsMixedReality.Input
                 switch (interactionMapping.InputType)
                 {
                     case DeviceInputType.TriggerPress:
+                    case DeviceInputType.GripPress:
                         {
                             // Update the interaction data source
                             interactionMapping.BoolData = interactionSourceState.grasped;
@@ -351,10 +367,10 @@ namespace Microsoft.MixedReality.Toolkit.WindowsMixedReality.Input
         /// Gets whether or not 'select' has been pressed.
         /// </summary>
         /// <remarks>
-        /// This includes a workaround to fix air-tap gestures in HoloLens 1 remoting, to work around the following Unity issue:
-        /// https://issuetracker.unity3d.com/issues/hololens-interactionsourcestate-dot-selectpressed-is-false-when-air-tap-and-hold
-        /// Bug was discovered May 2018 and still exists as of May 2019 in version 2018.3.11f1. This workaround is scoped to only
-        /// cases where remoting is active.
+        /// <para>This includes a workaround to fix air-tap gestures in HoloLens 1 remoting, to work around the following Unity issue:
+        /// https://issuetracker.unity3d.com/issues/hololens-interactionsourcestate-dot-selectpressed-is-false-when-air-tap-and-hold </para>
+        /// <para>Bug was discovered May 2018 and still exists as of May 2019 in version 2018.3.11f1. This workaround is scoped to only
+        /// cases where remoting is active.</para>
         /// </remarks>
         private bool GetSelectPressedWorkaround(InteractionSourceState interactionSourceState)
         {

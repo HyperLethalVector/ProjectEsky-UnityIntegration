@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using UnityEngine;
 
@@ -42,7 +42,7 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
                     if (cameras.Length == 0)
                     {
                         Debug.LogWarning("No cameras found. Creating a \"MainCamera\".");
-                        mainCamera = GameObject.Find("LeapMotion").GetComponent<Camera>();//new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)) { tag = "MainCamera" }.GetComponent<Camera>();
+                        mainCamera = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)) { tag = "MainCamera" }.GetComponent<Camera>();
                     }
                     else
                     {
@@ -52,9 +52,16 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
 
                 // Cache the main camera
                 cachedCamera = mainCamera;
-
                 return cachedCamera;
             }
+        }
+
+        /// <summary>
+        /// Manually update the cached main camera 
+        /// </summary>
+        public static void UpdateCachedMainCamera(Camera camera)
+        {
+            cachedCamera = camera;
         }
     }
 }

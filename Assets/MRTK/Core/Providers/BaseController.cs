@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
@@ -219,7 +219,6 @@ namespace Microsoft.MixedReality.Toolkit.Input
             // If a specific controller template wants to override the global model, assign that instead.
             if (IsControllerMappingEnabled() &&
                 GetControllerVisualizationProfile() != null &&
-                inputSourceType == InputSourceType.Controller &&
                 !(GetControllerVisualizationProfile().GetUseDefaultModelsOverride(controllerType, ControllerHandedness)))
             {
                 controllerModel = GetControllerVisualizationProfile().GetControllerModelOverride(controllerType, ControllerHandedness);

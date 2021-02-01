@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
@@ -24,14 +24,15 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             {
                 if (newPointer != null)
                 {
-                    GameObject gameObjectReference = newPointer.BaseCursor?.GameObjectReference;
-                    Transform parentTransform = (gameObjectReference != null) ? gameObjectReference.transform : null;
+                    Transform parentTransform = newPointer.BaseCursor.TryGetMonoBehaviour(out MonoBehaviour baseCursor) ? baseCursor.transform : null;
 
                     // If there's no cursor try using the controller pointer transform instead
                     if (parentTransform == null)
                     {
-                        var controllerPointer = newPointer as BaseControllerPointer;
-                        parentTransform = controllerPointer?.transform;
+                        if (newPointer.TryGetMonoBehaviour(out MonoBehaviour controllerPointer))
+                        {
+                            parentTransform = controllerPointer.transform;
+                        }
                     }
 
                     if (parentTransform != null)

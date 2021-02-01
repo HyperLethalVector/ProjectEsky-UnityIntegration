@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Unity.Profiling;
@@ -120,8 +120,8 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
         /// Update an Interaction Bool data type from a Bool input
         /// </summary>
         /// <remarks>
-        /// Raises an Input System "Input Down" event when the key is down, and raises an "Input Up" when it is released (e.g. a Button)
-        /// Also raises a "Pressed" event while pressed
+        /// <para>Raises an Input System "Input Down" event when the key is down, and raises an "Input Up" when it is released (e.g. a Button).
+        /// Also raises a "Pressed" event while pressed.</para>
         /// </remarks>
         protected void UpdateButtonData(MixedRealityInteractionMapping interactionMapping)
         {
@@ -135,13 +135,16 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
                     case DeviceInputType.TriggerPress:
                         interactionMapping.BoolData = UInput.GetAxisRaw(interactionMapping.AxisCodeX).Equals(1);
                         break;
+                    case DeviceInputType.TriggerTouch:
                     case DeviceInputType.TriggerNearTouch:
                     case DeviceInputType.ThumbNearTouch:
                     case DeviceInputType.IndexFingerNearTouch:
                     case DeviceInputType.MiddleFingerNearTouch:
                     case DeviceInputType.RingFingerNearTouch:
                     case DeviceInputType.PinkyFingerNearTouch:
-                        interactionMapping.BoolData = !UInput.GetAxisRaw(interactionMapping.AxisCodeX).Equals(0);
+                        interactionMapping.BoolData = interactionMapping.KeyCode == KeyCode.None ?
+                            !UInput.GetAxisRaw(interactionMapping.AxisCodeX).Equals(0) :
+                            UInput.GetKey(interactionMapping.KeyCode);
                         break;
                     default:
                         interactionMapping.BoolData = UInput.GetKey(interactionMapping.KeyCode);
@@ -180,7 +183,7 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
 
                 var singleAxisValue = UInput.GetAxisRaw(interactionMapping.AxisCodeX);
 
-                if (interactionMapping.InputType == DeviceInputType.TriggerPress)
+                if (interactionMapping.InputType == DeviceInputType.TriggerPress || interactionMapping.InputType == DeviceInputType.GripPress)
                 {
                     interactionMapping.BoolData = singleAxisValue.Equals(1);
 

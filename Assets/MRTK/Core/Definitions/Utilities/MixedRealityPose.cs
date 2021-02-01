@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections;
@@ -68,6 +68,14 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
             return new MixedRealityPose(left.Position + right.Position, left.Rotation * right.Rotation);
         }
 
+        /// <summary>
+        /// Returns right-hand MixedRealityPose transformed by left-hand MixedRealityPose.
+        /// </summary>
+        public static MixedRealityPose operator *(MixedRealityPose left, MixedRealityPose right)
+        {
+            return new MixedRealityPose(left.Position + (left.Rotation * right.Position), left.Rotation * right.Rotation);
+        }
+
         public static bool operator ==(MixedRealityPose left, MixedRealityPose right)
         {
             return left.Equals(right);
@@ -100,6 +108,7 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
 
         #region IEqualityComparer Implementation
 
+        /// <inheritdoc />
         bool IEqualityComparer.Equals(object left, object right)
         {
             if (ReferenceEquals(null, left) || ReferenceEquals(null, right)) { return false; }
@@ -116,15 +125,15 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) { return false; }
-            return obj is MixedRealityPose && Equals((MixedRealityPose)obj);
-        }
-
-        int IEqualityComparer.GetHashCode(object obj)
-        {
-            return obj is MixedRealityPose ? ((MixedRealityPose)obj).GetHashCode() : 0;
+            return obj is MixedRealityPose pose && Equals(pose);
         }
 
         /// <inheritdoc />
+        int IEqualityComparer.GetHashCode(object obj)
+        {
+            return obj is MixedRealityPose pose ? pose.GetHashCode() : 0;
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
