@@ -1060,7 +1060,7 @@ MonoBehaviour:
   myAttachedTracker: {fileID: 5123193150828458796}
   RigCenter: {fileID: 0}
   RenderedGraphicsBrightness: 1
-  TargetRendererRate: 30
+  TargetRendererRate: 120
   StartRendererAfterInitializing: 1
 --- !u!114 &5123193150828458796
 MonoBehaviour:
