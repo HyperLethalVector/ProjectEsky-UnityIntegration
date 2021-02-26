@@ -698,6 +698,10 @@ PrefabInstance:
       propertyPath: use2DTemporalWarping
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1399602288, guid: 731011d86797ce64d80a69e8db74e3fc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 360103426504287295, guid: 731011d86797ce64d80a69e8db74e3fc,
         type: 3}
       propertyPath: m_Name

@@ -50,8 +50,14 @@ namespace ProjectEsky.Tracking{
         }
         
     }
+    [System.Serializable]
+    public class HeadPosePredictionSettings{
+        [Range(0,1000),SerializeField]
+        public float HeadPosePredictionOffset = 0f;
+    }
     public class EskyTrackerIntel : EskyTracker
     {
+        float currentHeadPosePredict = -1;
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
         public delegate void DeltaPoseUpdateCallback (int TrackerID, IntPtr deltaLeft, IntPtr deltaRight);        
         delegate void RenderTextureInitialized(int TrackerID, int textureWidth, int textureHeight, int textureChannels,float fx, float fy, float cx, float cy, float fovx, float fovy, float focalLength, float d1, float d2, float d3, float d4, float d5);
@@ -69,6 +75,7 @@ namespace ProjectEsky.Tracking{
         public DollaryDooFilterParams TranslationFilterParameters;
 
         public DollaryDooFilterParams RotationFilterParameters;        
+        public HeadPosePredictionSettings HeadPosePredictionOffsets;
         bool setParametersFilterFirstTime = false;
         public override void AfterAwake()
         {
@@ -160,6 +167,10 @@ namespace ProjectEsky.Tracking{
             } 
             if(_filterEnabled != FilterEnabled){_filterEnabled = FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
             if(!setParametersFilterFirstTime)setParametersFilterFirstTime = true;
+            if(currentHeadPosePredict != HeadPosePredictionOffsets.HeadPosePredictionOffset){
+                currentHeadPosePredict = HeadPosePredictionOffsets.HeadPosePredictionOffset;
+                SetTimeOffset(TrackerID,currentHeadPosePredict);
+            }
         }
         public override void ObtainPose(){
             if(ApplyPoses){
@@ -478,5 +489,7 @@ namespace ProjectEsky.Tracking{
         public override void SubscribeCallback(int instanceID, ReceiveSensorImageCallbackWithInstanceID callbackWithInstanceID){
             SubscribeCallbackImageWithID(instanceID,myCalibrations.camID,callbackWithInstanceID);
         }
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetTimeOffset(int Id, float value);
     }
 }
