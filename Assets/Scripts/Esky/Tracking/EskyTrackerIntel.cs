@@ -250,7 +250,7 @@ namespace ProjectEsky.Tracking{
         }
         public void ChangeCameraParam(float width, float height)
         {    
-            float f = 35.0f;            
+            float f = 70;            
             float ax, ay, sizeX, sizeY;
             float x0, y0, shiftX, shiftY;
             ax = myCalibrations.fx; 
