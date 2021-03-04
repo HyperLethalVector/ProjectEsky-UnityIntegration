@@ -1016,6 +1016,10 @@ MonoBehaviour:
     RightProjectionMatrix: []
     LeftInvProjectionMatrix: []
     RightInvProjectionMatrix: []
+  LookUpTextureSettings:
+    LeftLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25, type: 3}
+    RightLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25,
+      type: 3}
   myEyeBorders:
     minXLeft: 0
     maxXLeft: 1
@@ -1274,7 +1278,7 @@ GameObject:
   - component: {fileID: 6075467950660893040}
   - component: {fileID: 799816792993756083}
   - component: {fileID: 799816792993756080}
-  - component: {fileID: 5813933546523768954}
+  - component: {fileID: 5813933545898561970}
   m_Layer: 0
   m_Name: LeapMotion
   m_TagString: MainCamera
@@ -1305,7 +1309,7 @@ Camera:
   m_GameObject: {fileID: 6075467950660893041}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -1399,7 +1403,7 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
---- !u!114 &5813933546523768954
+--- !u!114 &5813933545898561970
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

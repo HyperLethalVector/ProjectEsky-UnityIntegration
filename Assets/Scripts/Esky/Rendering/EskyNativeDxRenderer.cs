@@ -36,6 +36,14 @@ namespace ProjectEsky.Rendering{
         public float[] localRotationLeapMotion;
     }
     [System.Serializable]
+    public class DisplayLookUpTextureSettings{
+        [SerializeField]
+        public Texture2D LeftLookUpTexture;
+
+        [SerializeField]
+        public Texture2D RightLookUpTexture;
+    }
+    [System.Serializable]
     public class EyeBorders{
         public float minXLeft;
         public float maxXLeft;
@@ -143,6 +151,7 @@ namespace ProjectEsky.Rendering{
         bool usesTemporalWarping = true;
         public DisplaySettings displaySettings;
         public RenderTextureSettings renderTextureSettings;
+        public DisplayLookUpTextureSettings LookUpTextureSettings;
         public EyeBorders myEyeBorders;
         public static Matrix4x4 leftEyeTransform = Matrix4x4.identity;
         public static Matrix4x4 rightEyeTransform = Matrix4x4.identity;
@@ -246,12 +255,21 @@ namespace ProjectEsky.Rendering{
                 SetEnableFlagWarping(0,use2DTemporalWarping);
             }
         }
+        public void FlagUpdateLookUpTextures(){
+            UpdateLookUpTextures = true;
+        }
+        bool UpdateLookUpTextures = false;
         IEnumerator CallPluginAtEndOfFrame(int id) {
             yield return new WaitForEndOfFrame();
             IntPtr ptrLeft = renderTextureSettings.RightRenderTexture.GetNativeTexturePtr();
             SendTextureIdToPluginByIdLeft(id, ptrLeft);
             IntPtr ptrRight = renderTextureSettings.LeftRenderTexture.GetNativeTexturePtr();
             SendTextureIdToPluginByIdRight(id, ptrRight);        
+            IntPtr ptrRightLuT = LookUpTextureSettings.RightLookUpTexture.GetNativeTexturePtr();
+            IntPtr ptrLeftLuT = LookUpTextureSettings.LeftLookUpTexture.GetNativeTexturePtr();                        
+            SetRenderTexturePointerLuT(id, ptrLeftLuT, ptrRightLuT,LookUpTextureSettings.RightLookUpTexture.width,LookUpTextureSettings.LeftLookUpTexture.height);
+
+
             GL.IssuePluginEvent(InitGraphics(), 0);
             yield return new WaitForEndOfFrame();
             SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,
@@ -398,6 +416,9 @@ namespace ProjectEsky.Rendering{
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetEnableFlagWarping(int id, bool enabled);
+
+        [DllImport("ProjectEskyLLAPIRenderer")]
+        static extern void SetRenderTexturePointerLuT(int id, IntPtr texLeft, IntPtr texRight, int LuTWidth, int LuTHeight);
 
         [DllImport("ProjectEskyLLAPIRenderer")]
         static extern void SetRequiredValuesById(int windowID,float[] leftUvToRectX,float[] leftUvToRectY,float[] rightUvToRectX,float[] rightUvToRectY,float[] CameraMatrixLeft,float[] CameraMatrixRight,float[] InvCameraMatrixLeft,float[] InvCameraMatrixRight,float[] leftOffset,float[] rightOffset,float[] eyeBorders);
