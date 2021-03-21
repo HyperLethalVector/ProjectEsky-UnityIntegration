@@ -15,12 +15,12 @@ C:/UnityProjects/ProjectEsky-UnityIntegration
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-52560
+63599
 Successfully changed project path to: C:/UnityProjects/ProjectEsky-UnityIntegration
 C:/UnityProjects/ProjectEsky-UnityIntegration
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 83.15 ms, found 17 plugins.
-Preloading 2 native plugins for Editor in 2.00 ms.
+Refreshing native plugins compatible for Editor in 84.42 ms, found 17 plugins.
+Preloading 2 native plugins for Editor in 2.27 ms.
 Initialize engine version: 2020.2.7f1 (c53830e277f1)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.2.7f1/Editor/Data/Resources/UnitySubsystems
 [Subsystems] Discovering subsystems at path C:/UnityProjects/ProjectEsky-UnityIntegration/Assets
@@ -35,26 +35,26 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.2.7f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.2.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.2.7f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56296
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56844
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.2.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.002657 seconds.
+Registered in 0.002664 seconds.
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 61.96 ms, found 17 plugins.
-Preloading 2 native plugins for Editor in 0.20 ms.
+Refreshing native plugins compatible for Editor in 63.75 ms, found 17 plugins.
+Preloading 2 native plugins for Editor in 0.21 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.944 seconds
+- Completed reload, in  1.890 seconds
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.012863 seconds.
+Registered in 0.012759 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 63.44 ms, found 17 plugins.
-Preloading 2 native plugins for Editor in 0.19 ms.
+Refreshing native plugins compatible for Editor in 63.42 ms, found 17 plugins.
+Preloading 2 native plugins for Editor in 0.20 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
@@ -68,67 +68,67 @@ NullReferenceException: Object reference not set to an instance of an object
 
 (Filename: Library/PackageCache/com.unity.xr.oculus@1.8.1/Runtime/OculusLoader.cs Line: 243)
 
-Find all reader and writers took 179 milliseconds
+Find all reader and writers took 190 milliseconds
 Script Module: UnityEngine.UI.dll
-Weave sync objects took 6 milliseconds
-Weave behaviours and messages took86 milliseconds
-Find all reader and writers took 173 milliseconds
+Weave sync objects took 8 milliseconds
+Weave behaviours and messages took101 milliseconds
+Find all reader and writers took 164 milliseconds
 Script Module: UnityEngine.SpatialTracking.dll
-Weave sync objects took 4 milliseconds
-Weave behaviours and messages took6 milliseconds
+Weave sync objects took 8 milliseconds
+Weave behaviours and messages took9 milliseconds
 Find all reader and writers took 169 milliseconds
 Script Module: LeapMotion.dll
-Weave sync objects took 24 milliseconds
-Weave behaviours and messages took158 milliseconds
-Find all reader and writers took 156 milliseconds
+Weave sync objects took 26 milliseconds
+Weave behaviours and messages took168 milliseconds
+Find all reader and writers took 166 milliseconds
 Script Module: UnityEngine.TestRunner.dll
 Weave sync objects took 6 milliseconds
-Weave behaviours and messages took32 milliseconds
-Find all reader and writers took 177 milliseconds
+Weave behaviours and messages took28 milliseconds
+Find all reader and writers took 195 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.dll
-Weave sync objects took 8 milliseconds
-Weave behaviours and messages took107 milliseconds
-Find all reader and writers took 167 milliseconds
+Weave sync objects took 13 milliseconds
+Weave behaviours and messages took123 milliseconds
+Find all reader and writers took 175 milliseconds
 Script Module: Unity.XR.WindowsMixedReality.dll
 Weave sync objects took 7 milliseconds
-Weave behaviours and messages took14 milliseconds
-Find all reader and writers took 167 milliseconds
+Weave behaviours and messages took11 milliseconds
+Find all reader and writers took 164 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.SDK.dll
-Weave sync objects took 30 milliseconds
-Weave behaviours and messages took190 milliseconds
-Find all reader and writers took 169 milliseconds
+Weave sync objects took 35 milliseconds
+Weave behaviours and messages took181 milliseconds
+Find all reader and writers took 167 milliseconds
 Script Module: Unity.XR.ARSubsystems.dll
-Weave sync objects took 6 milliseconds
-Weave behaviours and messages took38 milliseconds
-Find all reader and writers took 174 milliseconds
+Weave sync objects took 7 milliseconds
+Weave behaviours and messages took39 milliseconds
+Find all reader and writers took 170 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Async.dll
 Weave sync objects took 4 milliseconds
 Weave behaviours and messages took7 milliseconds
-Find all reader and writers took 166 milliseconds
+Find all reader and writers took 170 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Services.InputSystem.dll
-Weave sync objects took 10 milliseconds
+Weave sync objects took 9 milliseconds
 Weave behaviours and messages took27 milliseconds
-Find all reader and writers took 167 milliseconds
+Find all reader and writers took 166 milliseconds
 Script Module: UnityEngine.XR.LegacyInputHelpers.dll
-Weave sync objects took 7 milliseconds
+Weave sync objects took 8 milliseconds
 Weave behaviours and messages took10 milliseconds
-Find all reader and writers took 172 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Providers.OpenXR.dll
-Weave sync objects took 1 milliseconds
-Weave behaviours and messages took4 milliseconds
-Find all reader and writers took 174 milliseconds
+Weave sync objects took 4 milliseconds
+Weave behaviours and messages took6 milliseconds
+Find all reader and writers took 168 milliseconds
 Script Module: Unity.XR.Oculus.dll
 Weave sync objects took 7 milliseconds
 Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 171 milliseconds
-Script Module: LeapMotion.InteractionEngine.dll
-Weave sync objects took 13 milliseconds
-Weave behaviours and messages took43 milliseconds
-Find all reader and writers took 168 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Tests.PlayModeTests.dll
-Weave sync objects took 13 milliseconds
-Weave behaviours and messages took138 milliseconds
 Find all reader and writers took 172 milliseconds
+Script Module: LeapMotion.InteractionEngine.dll
+Weave sync objects took 8 milliseconds
+Weave behaviours and messages took42 milliseconds
+Find all reader and writers took 181 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Tests.PlayModeTests.dll
+Weave sync objects took 10 milliseconds
+Weave behaviours and messages took138 milliseconds
+Find all reader and writers took 159 milliseconds
 Script Module: Mirror.Components.dll
 Weave sync objects took 5 milliseconds
 [NetworkAnimator] NetworkBehaviourProcessor
@@ -170,68 +170,68 @@ Weave sync objects took 5 milliseconds
 [ServerResponse]   GenerateSerialization
 [ServerResponse]   GenerateDeserialization
 [ServerResponse] MessageClassProcessor Done
-Weave behaviours and messages took31 milliseconds
-  ProcessSitesModule Mirror.Components.dll elapsed time:00:00:00.0079787
-Find all reader and writers took 169 milliseconds
+Weave behaviours and messages took30 milliseconds
+  ProcessSitesModule Mirror.Components.dll elapsed time:00:00:00.0086748
+Find all reader and writers took 181 milliseconds
 Script Module: Unity.TextMeshPro.dll
-Weave sync objects took 26 milliseconds
-Weave behaviours and messages took102 milliseconds
-Find all reader and writers took 169 milliseconds
+Weave sync objects took 31 milliseconds
+Weave behaviours and messages took108 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Examples.dll
-Weave sync objects took 9 milliseconds
-Weave behaviours and messages took53 milliseconds
-Find all reader and writers took 175 milliseconds
+Weave sync objects took 7 milliseconds
+Weave behaviours and messages took48 milliseconds
+Find all reader and writers took 172 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Providers.UnityAR.dll
 Weave sync objects took 5 milliseconds
 Weave behaviours and messages took6 milliseconds
-Find all reader and writers took 172 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: LeapMotion.NorthStar.dll
-Weave sync objects took 14 milliseconds
+Weave sync objects took 15 milliseconds
 Weave behaviours and messages took44 milliseconds
-Find all reader and writers took 169 milliseconds
+Find all reader and writers took 179 milliseconds
 Script Module: Unity.Timeline.dll
-Weave sync objects took 7 milliseconds
+Weave sync objects took 4 milliseconds
 Weave behaviours and messages took33 milliseconds
-Find all reader and writers took 169 milliseconds
+Find all reader and writers took 180 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Services.CameraSystem.dll
-Weave sync objects took 3 milliseconds
-Weave behaviours and messages took4 milliseconds
-Find all reader and writers took 326 milliseconds
+Weave sync objects took 1 milliseconds
+Weave behaviours and messages took2 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Services.SceneSystem.dll
-Weave sync objects took 25 milliseconds
-Weave behaviours and messages took36 milliseconds
-Find all reader and writers took 171 milliseconds
+Weave sync objects took 26 milliseconds
+Weave behaviours and messages took33 milliseconds
+Find all reader and writers took 175 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Gltf.dll
-Weave sync objects took 10 milliseconds
-Weave behaviours and messages took20 milliseconds
-Find all reader and writers took 174 milliseconds
+Weave sync objects took 4 milliseconds
+Weave behaviours and messages took14 milliseconds
+Find all reader and writers took 179 milliseconds
 Script Module: Telepathy.dll
 Weave sync objects took 0 milliseconds
-Weave behaviours and messages took2 milliseconds
+Weave behaviours and messages took4 milliseconds
 Find all reader and writers took 175 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Providers.LeapMotion.dll
 Weave sync objects took 10 milliseconds
-Weave behaviours and messages took12 milliseconds
-Find all reader and writers took 176 milliseconds
+Weave behaviours and messages took11 milliseconds
+Find all reader and writers took 197 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Services.InputSimulation.dll
-Weave sync objects took 8 milliseconds
-Weave behaviours and messages took19 milliseconds
-Find all reader and writers took 173 milliseconds
+Weave sync objects took 13 milliseconds
+Weave behaviours and messages took29 milliseconds
+Find all reader and writers took 222 milliseconds
 Script Module: Ninja.WebSockets.dll
 Weave sync objects took 0 milliseconds
-Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 170 milliseconds
+Weave behaviours and messages took10 milliseconds
+Find all reader and writers took 176 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Providers.XRSDK.WindowsMixedReality.dll
-Weave sync objects took 5 milliseconds
-Weave behaviours and messages took7 milliseconds
-Find all reader and writers took 166 milliseconds
+Weave sync objects took 8 milliseconds
+Weave behaviours and messages took10 milliseconds
+Find all reader and writers took 183 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Services.InputAnimation.dll
 Weave sync objects took 8 milliseconds
 Weave behaviours and messages took14 milliseconds
-Find all reader and writers took 170 milliseconds
+Find all reader and writers took 176 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Tests.Utilities.dll
 Weave sync objects took 0 milliseconds
-Weave behaviours and messages took16 milliseconds
+Weave behaviours and messages took6 milliseconds
 Find all reader and writers took 171 milliseconds
 Script Module: Assembly-CSharp.dll
 [SceneGraphNetwork] SyncObjectProcessor Start item:System.Int32
@@ -250,66 +250,66 @@ Script Module: Assembly-CSharp.dll
 [HandSceneGraph]   GenerateSerialization
 [HandSceneGraph]   GenerateDeserialization
 [HandSceneGraph] SyncObjectProcessor Done
-Weave sync objects took 10 milliseconds
+Weave sync objects took 9 milliseconds
 [EskyNetworkEntity] NetworkBehaviourProcessor
 [EskyClient] NetworkBehaviourProcessor
 [EskyNetworkEntity] NetworkBehaviourProcessor
 [EskySceneGraphSync] NetworkBehaviourProcessor
-Weave behaviours and messages took36 milliseconds
-  ProcessSitesModule Assembly-CSharp.dll elapsed time:00:00:00.0011667
-Find all reader and writers took 170 milliseconds
+Weave behaviours and messages took35 milliseconds
+  ProcessSitesModule Assembly-CSharp.dll elapsed time:00:00:00.0009615
+Find all reader and writers took 174 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Extensions.SceneTransitionService.dll
 Weave sync objects took 8 milliseconds
 Weave behaviours and messages took11 milliseconds
-Find all reader and writers took 170 milliseconds
+Find all reader and writers took 173 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Providers.OpenVR.dll
-Weave sync objects took 9 milliseconds
-Weave behaviours and messages took33 milliseconds
-Find all reader and writers took 174 milliseconds
+Weave sync objects took 16 milliseconds
+Weave behaviours and messages took35 milliseconds
+Find all reader and writers took 173 milliseconds
 Script Module: Mirror.Cloud.dll
-Weave sync objects took 6 milliseconds
-Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 161 milliseconds
+Weave sync objects took 4 milliseconds
+Weave behaviours and messages took7 milliseconds
+Find all reader and writers took 188 milliseconds
 Script Module: Unity.XR.Management.dll
-Weave sync objects took 6 milliseconds
-Weave behaviours and messages took8 milliseconds
-Find all reader and writers took 171 milliseconds
+Weave sync objects took 5 milliseconds
+Weave behaviours and messages took7 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: Unity.XR.InteractionSubsystems.dll
-Weave sync objects took 10 milliseconds
-Weave behaviours and messages took12 milliseconds
-Find all reader and writers took 208 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Extensions.Tracking.dll
-Weave sync objects took 7 milliseconds
-Weave behaviours and messages took10 milliseconds
-Find all reader and writers took 167 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Providers.WindowsMixedReality.Shared.dll
 Weave sync objects took 7 milliseconds
 Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 176 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Extensions.HandPhysics.dll
-Weave sync objects took 10 milliseconds
-Weave behaviours and messages took17 milliseconds
-Find all reader and writers took 175 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Providers.XRSDK.dll
-Weave sync objects took 7 milliseconds
-Weave behaviours and messages took10 milliseconds
-Find all reader and writers took 161 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Services.DiagnosticsSystem.dll
-Weave sync objects took 7 milliseconds
-Weave behaviours and messages took12 milliseconds
 Find all reader and writers took 171 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Demos.Gltf.dll
-Weave sync objects took 12 milliseconds
-Weave behaviours and messages took13 milliseconds
-Find all reader and writers took 174 milliseconds
-Script Module: Mirror.Websocket.dll
+Script Module: Microsoft.MixedReality.Toolkit.Extensions.Tracking.dll
+Weave sync objects took 14 milliseconds
+Weave behaviours and messages took16 milliseconds
+Find all reader and writers took 181 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Providers.WindowsMixedReality.Shared.dll
 Weave sync objects took 5 milliseconds
+Weave behaviours and messages took8 milliseconds
+Find all reader and writers took 172 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Extensions.HandPhysics.dll
+Weave sync objects took 7 milliseconds
 Weave behaviours and messages took11 milliseconds
-Find all reader and writers took 170 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Demos.UX.Interactables.dll
+Find all reader and writers took 177 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Providers.XRSDK.dll
 Weave sync objects took 1 milliseconds
-Weave behaviours and messages took1 milliseconds
-Find all reader and writers took 178 milliseconds
+Weave behaviours and messages took8 milliseconds
+Find all reader and writers took 177 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Services.DiagnosticsSystem.dll
+Weave sync objects took 8 milliseconds
+Weave behaviours and messages took12 milliseconds
+Find all reader and writers took 179 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Demos.Gltf.dll
+Weave sync objects took 9 milliseconds
+Weave behaviours and messages took10 milliseconds
+Find all reader and writers took 177 milliseconds
+Script Module: Mirror.Websocket.dll
+Weave sync objects took 7 milliseconds
+Weave behaviours and messages took11 milliseconds
+Find all reader and writers took 179 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Demos.UX.Interactables.dll
+Weave sync objects took 3 milliseconds
+Weave behaviours and messages took4 milliseconds
+Find all reader and writers took 165 milliseconds
 Script Module: Mirror.Authenticators.dll
 Weave sync objects took 7 milliseconds
 [MessageBase] MessageClassProcessor Start
@@ -324,65 +324,61 @@ Weave sync objects took 7 milliseconds
 [AuthResponseMessage]   GenerateSerialization
 [AuthResponseMessage]   GenerateDeserialization
 [AuthResponseMessage] MessageClassProcessor Done
-Weave behaviours and messages took8 milliseconds
-  ProcessSitesModule Mirror.Authenticators.dll elapsed time:00:00:00
-Find all reader and writers took 169 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Providers.XRSDK.Oculus.dll
-Weave sync objects took 8 milliseconds
 Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 185 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Services.SpatialAwarenessSystem.dll
-Weave sync objects took 1 milliseconds
-Weave behaviours and messages took2 milliseconds
+  ProcessSitesModule Mirror.Authenticators.dll elapsed time:00:00:00
+Find all reader and writers took 173 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Providers.XRSDK.Oculus.dll
+Weave sync objects took 6 milliseconds
+Weave behaviours and messages took10 milliseconds
 Find all reader and writers took 171 milliseconds
+Script Module: Microsoft.MixedReality.Toolkit.Services.SpatialAwarenessSystem.dll
+Weave sync objects took 4 milliseconds
+Weave behaviours and messages took10 milliseconds
+Find all reader and writers took 173 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Providers.WindowsVoiceInput.dll
-Weave sync objects took 1 milliseconds
+Weave sync objects took 3 milliseconds
 Weave behaviours and messages took5 milliseconds
-Find all reader and writers took 195 milliseconds
+Find all reader and writers took 172 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Demos.InspectorFields.dll
-Weave sync objects took 10 milliseconds
-Weave behaviours and messages took11 milliseconds
-Find all reader and writers took 183 milliseconds
+Weave sync objects took 4 milliseconds
+Weave behaviours and messages took6 milliseconds
+Find all reader and writers took 185 milliseconds
 Script Module: Unity.Subsystem.Registration.dll
 Weave sync objects took 0 milliseconds
-Weave behaviours and messages took0 milliseconds
-Find all reader and writers took 171 milliseconds
+Weave behaviours and messages took1 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Tools.Runtime.dll
-Weave sync objects took 8 milliseconds
-Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 171 milliseconds
+Weave sync objects took 6 milliseconds
+Weave behaviours and messages took8 milliseconds
+Find all reader and writers took 174 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Services.TeleportSystem.dll
-Weave sync objects took 5 milliseconds
-Weave behaviours and messages took9 milliseconds
-Find all reader and writers took 171 milliseconds
+Weave sync objects took 1 milliseconds
+Weave behaviours and messages took2 milliseconds
+Find all reader and writers took 172 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Tests.EditModeTests.dll
-Weave sync objects took 14 milliseconds
-Weave behaviours and messages took28 milliseconds
-Find all reader and writers took 173 milliseconds
+Weave sync objects took 9 milliseconds
+Weave behaviours and messages took24 milliseconds
+Find all reader and writers took 177 milliseconds
 Script Module: UnityEditor.TestRunner.dll
-Weave sync objects took 34 milliseconds
-Weave behaviours and messages took73 milliseconds
-Find all reader and writers took 169 milliseconds
+Weave sync objects took 31 milliseconds
+Weave behaviours and messages took72 milliseconds
+Find all reader and writers took 172 milliseconds
 Script Module: Microsoft.MixedReality.Toolkit.Gltf.Importers.dll
-Weave sync objects took 27 milliseconds
-Weave behaviours and messages took28 milliseconds
-Find all reader and writers took 170 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.MSBuild.dll
-Weave sync objects took 0 milliseconds
-Weave behaviours and messages took11 milliseconds
-Find all reader and writers took 174 milliseconds
-Script Module: Mirror.CompilerSymbols.dll
-Weave sync objects took 0 milliseconds
-Weave behaviours and messages took0 milliseconds
-Find all reader and writers took 167 milliseconds
-Script Module: UnityEditor.UI.dll
-Weave sync objects took 25 milliseconds
-Weave behaviours and messages took45 milliseconds
-Find all reader and writers took 174 milliseconds
-Script Module: UnityEditor.SpatialTracking.dll
 Weave sync objects took 28 milliseconds
 Weave behaviours and messages took29 milliseconds
 Find all reader and writers took 180 milliseconds
-Script Module: Microsoft.MixedReality.Toolkit.Providers.LeapMotion.ConfigurationChecker.dll
+Script Module: Microsoft.MixedReality.Toolkit.MSBuild.dll
+Weave sync objects took 0 milliseconds
+Weave behaviours and messages took9 milliseconds
+Find all reader and writers took 182 milliseconds
+Script Module: Mirror.CompilerSymbols.dll
 Weave sync objects took 0 milliseconds
 Weave behaviours and messages took0 milliseconds
+Find all reader and writers took 205 milliseconds
+Script Module: UnityEditor.UI.dll
+Weave sync objects took 26 milliseconds
+Weave behaviours and messages took41 milliseconds
+Find all reader and writers took 178 milliseconds
+Script Module: UnityEditor.SpatialTracking.dll
+Weave sync objects took 25 milliseconds
+Weave behaviours and messages took26 milliseconds
