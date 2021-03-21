@@ -1,10 +1,10 @@
 {
     "DisplayXLoc": 0,
-    "DisplayYLoc": 0,
-    "DisplayWidth": 1280,
-    "DisplayHeight": 720,
-    "EyeTextureWidth": 2048,
-    "EyeTextureHeight": 2048,
+    "DisplayYLoc": 1080,
+    "DisplayWidth": 2880,
+    "DisplayHeight": 1600,
+    "EyeTextureWidth": 1600,
+    "EyeTextureHeight": 1440,
     "RendererWindowID": 1,
     "Initialized": false
 }

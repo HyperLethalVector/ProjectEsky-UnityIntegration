@@ -163,5 +163,5 @@ float4 PShader(float4 position : SV_POSITION, float2 tex: TEXCOORD) : SV_TARGET
 {
     float xSettled = 1.0-(tex.x); // flip the X axis since the screen is upside down
     float ySettled = tex.y; //we can use the raw Y
-    return resolveWithLuT(xSettled,ySettled);
+    return resolveWithDistortion(xSettled,ySettled);
 }
