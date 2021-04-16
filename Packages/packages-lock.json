@@ -1,5 +1,20 @@
 {
   "dependencies": {
+    "com.microsoft.mixedreality.webrtc": {
+      "version": "file:../com.microsoft.mixedreality.webrtc-2.0.2/package",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "com.microsoft.mixedreality.webrtc.samples": {
+      "version": "file:../com.microsoft.mixedreality.webrtc.samples-2.0.2/package",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.microsoft.mixedreality.webrtc": "2.0.2",
+        "com.unity.textmeshpro": "1.4.1"
+      }
+    },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
       "depth": 1,
@@ -94,7 +109,7 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.subsystemregistration": "1.0.6"
+        "com.unity.subsystemregistration": "1.0.5"
       },
       "url": "https://packages.unity.com"
     },

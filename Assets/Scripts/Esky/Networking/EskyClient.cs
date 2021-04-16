@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 using ProjectEsky.Tracking;
 namespace ProjectEsky.Networking
 {
@@ -9,7 +8,6 @@ namespace ProjectEsky.Networking
     {
         // Start is called before the first frame update
         public static EskyClient myClient;
-        [SyncVar]
         public bool isAR;
         public UnityEngine.Events.UnityEvent ClientARFlagTriggerEventsLocal;
         public UnityEngine.Events.UnityEvent ClientARFlagTriggerEventsRemote;
@@ -19,9 +17,8 @@ namespace ProjectEsky.Networking
         public FollowType followType;
         public Vector3 TranslationOffset;
         public Vector3 RotationOffset;
-        public override void OnStartClient()
+        public void OnStartClient()
         {
-            base.OnStartClient();
             if (isLocalPlayer)
             {
                 myClient = this;
@@ -62,7 +59,6 @@ namespace ProjectEsky.Networking
                 CmdTriggerServerIsClientFlag();
             }
         }
-        [Command]
         public void CmdTriggerServerIsClientFlag()
         {
             isAR = true;
@@ -76,7 +72,6 @@ namespace ProjectEsky.Networking
                 ClientARFlagTriggerEventsAll.Invoke();
             }
         }
-        [ClientRpc]
         public void RpcTriggerClientObjects()
         {
             if (isLocalPlayer)
@@ -98,7 +93,7 @@ namespace ProjectEsky.Networking
                 ClientARFlagTriggerEventsAll.Invoke();
             }
         }
-        public override void UpdateTrackingLocally()
+        public void UpdateTrackingLocally()
         {
             if (EskyHMDOrigin.instance != null)
             {

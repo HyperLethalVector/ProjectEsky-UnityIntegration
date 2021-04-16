@@ -1,27 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 using System.Linq;
 namespace ProjectEsky.Networking
 {
-    [RequireComponent(typeof(NetworkIdentity))]
-    public class EskyNetworkEntity : NetworkBehaviour
+    public class EskyNetworkEntity : MonoBehaviour
     {
-        [SyncVar, SerializeField]
+        [SerializeField]
         public Vector3 LocalPosition;
-        [SyncVar, SerializeField]
+        [SerializeField]
         public Vector3 LocalRotation;
         GameObject closestAnchor;
         public float TranslationSmoothingFactor;
         public float RotationSmoothingFactor;
         public float DistanceBeforeSnap;
         // Start is called before the first frame update
-        [SyncVar]
         string closestAnchorName;
         // Update is called once per frame
         float _timeBeforeSend = 0f;
         public bool useSmoothing;
+        public bool isLocalPlayer;
+        public bool isServer;
+        public float syncInterval;
         public virtual void FixedUpdate()//this will be modified when the large scale mapping system becomes prevalent
         {
             if (closestAnchor == null)
@@ -166,7 +166,6 @@ namespace ProjectEsky.Networking
         {
 
         }
-        [Command(channel = 0)]
         public virtual void CmdUpdatePose(string localName, Vector3 _LocalPos, Vector3 _LocalRot)
         {
             closestAnchorName = localName;
@@ -176,10 +175,6 @@ namespace ProjectEsky.Networking
         protected void SetAnchorGO(GameObject newAnchor)
         {
             closestAnchor = newAnchor;
-        }
-        public void OnClientDisconnect(NetworkConnection conn)
-        {
-            Destroy(this.gameObject);
         }
         public virtual void OnMyClientCallback()
         {

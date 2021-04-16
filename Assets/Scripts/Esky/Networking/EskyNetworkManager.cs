@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 using UnityEngine.Events;
 namespace ProjectEsky.Networking{
     [System.Serializable]
-    public class NetworkConnectionCallback: UnityEvent<NetworkConnection>{
+    public class NetworkConnectionCallback{
 
     }
-    public class EskyNetworkManager : NetworkManager
+    public class EskyNetworkManager : MonoBehaviour
     {
         public bool AutoStartServer = false;
         public static EskyNetworkManager instance;
@@ -17,9 +16,8 @@ namespace ProjectEsky.Networking{
         public NetworkConnectionCallback OnClientConnected;
         public NetworkConnectionCallback OnClientDisconnected;
         // Start is called before the first frame update
-        public override void Awake()
+        public void Awake()
         {
-            base.Awake();
             if(instance != null)
             {
                 DestroyImmediate(this.gameObject);
@@ -30,83 +28,35 @@ namespace ProjectEsky.Networking{
                 instance = this;
             }
         }
-        public override void Start()
+        public void Start()
         {
-            base.Start();
 
         }
         bool connectClient = false;
         private void Update() {
-            if(connectClient || Input.GetKeyDown(KeyCode.C)){
-                connectClient = false;
-                StartClient();
-            }
-            if(AutoStartServer){
-                AutoStartServer = false;
-                StartServer();
-            }
         }
-        public override void OnStartServer()
+        public void OnStartServer()
         {
-            base.OnStartServer();
             //need to run a web api instance to collate all the known gameobjects in the scene
-            Debug.Log("Started Server");      
             if(OnStartedServer != null){
                 OnStartedServer.Invoke();
             }
         }
-        public override void OnStopServer()
+        public void OnStopServer()
         {
-            base.OnStopServer();
             Debug.Log("Stopped Server");
             if(OnStoppedServer != null){
                 OnStoppedServer.Invoke();
             }            
         }
-        public override void OnStartHost()
-        {
-            base.OnStartHost();
-
-        }
-        public override void OnServerReady(NetworkConnection conn)
+        public void OnStartHost()
         {
 
-            base.OnServerReady(conn);
-
         }
-        public override void OnServerConnect(NetworkConnection conn)
+        public void OnStopHost()
         {
-            base.OnServerConnect(conn);
-
-        }
-        public override void OnClientConnect(NetworkConnection conn)
-        {
-            base.OnClientConnect(conn);
-            if(OnClientConnected != null){
-                OnClientConnected.Invoke(conn);
-            }
-            Debug.Log("Connected to server!");
-        }
-        public override void OnServerDisconnect(NetworkConnection conn)
-        {
-            base.OnServerDisconnect(conn);
-            Debug.Log("OnServerDisconnect");
-        }
-        public override void OnStopHost()
-        {
-            base.OnStopHost();
-            Debug.Log("Stopped Host");
         }
         int connectionAttempts = 0;
-        public override void OnClientDisconnect(NetworkConnection conn)
-        {
-            base.OnClientDisconnect(conn);
-            Debug.Log("OnClientDisconnect");            
-            Debug.Log("Disconnected from server!");
-            connectionAttempts++;
-            StartCoroutine(ConnectAfterSeconds(2));
-        }
-
         public IEnumerator LoadAfterSeconds(int seconds)
         {
             yield return new WaitForSeconds(seconds);
@@ -114,7 +64,7 @@ namespace ProjectEsky.Networking{
         }
         public void StartServerUp()
         {
-            StartServer();
+            //StartServer();
         }
         public void ConnectClient()
         {   

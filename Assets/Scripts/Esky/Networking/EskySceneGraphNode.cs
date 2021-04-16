@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 namespace ProjectEsky.Networking{
     public enum SceneGraphPoseSyncType{
         Instant,

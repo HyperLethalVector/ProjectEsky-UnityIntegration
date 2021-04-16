@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 namespace ProjectEsky.Networking{
     public struct NetworkTransformation{
         public Vector3 localPosition;
@@ -57,22 +56,24 @@ namespace ProjectEsky.Networking{
             Palm.UpdateTransform(info.Palm);
         }
     }
-    public class SceneGraphNetwork: SyncDictionary<int,Node>{
+    public class SceneGraphNetwork: Dictionary<int,Node>{
 
     }
-    public class HandSceneGraph: SyncDictionary<int,HandGraph>{
+    public class HandSceneGraph: Dictionary<int,HandGraph>{
 
     }
-    public class EskySceneGraphSync : NetworkBehaviour
+    public class EskySceneGraphSync : MonoBehaviour
     {
         public readonly SceneGraphNetwork SceneGraph = new SceneGraphNetwork();
         public readonly HandSceneGraph HandSceneGraphs = new HandSceneGraph(); 
         Dictionary<int,EskySceneGraphNode> SubscribedObjects = new Dictionary<int, EskySceneGraphNode>();
         Dictionary<int,EskyHandSync> SubscribedSyncHands = new Dictionary<int, EskyHandSync>();
+        public bool isLocalPlayer;
+        public float syncInterval;
         // Start is called before the first frame update
-        public override void OnStartClient(){
-            SceneGraph.Callback += OnGraphChange;
-            HandSceneGraphs.Callback += OnHandGraphChange;
+        public void OnStartClient(){
+        //    SceneGraph.Callback += OnGraphChange;
+          //  HandSceneGraphs.Callback += OnHandGraphChange;
         }
         public void AddHandIDToList(int ID, EskyHandSync ehs){
             if(SubscribedSyncHands.ContainsKey(ID)){
@@ -110,7 +111,6 @@ namespace ProjectEsky.Networking{
                 }
             }
         }
-        [Command]
         public void CmdUpdateHand(HandGraph handGraph){
             if(!HandSceneGraphs.ContainsKey(handGraph.HandID)){
                 HandGraph hg = new HandGraph();
@@ -132,7 +132,6 @@ namespace ProjectEsky.Networking{
                 HandSceneGraphs[handGraph.HandID] = hg;//(handGraph.HandID,handGraph);
             }
         }
-        [Command]
         public void CmdUpdatePose(int ID, Vector3 localPosition, Quaternion localRotation){
             if(!SceneGraph.ContainsKey(ID)){
                 Node n = new Node();
@@ -156,9 +155,10 @@ namespace ProjectEsky.Networking{
                 }
                 SceneGraph[ID] = n;
             }
-        }
-        void OnGraphChange(SyncDictionary<int,Node>.Operation op, int itemIndex, Node newItem)
+        }/*
+        void OnGraphChange(Dictionary<int,Node>.Operation op, int itemIndex, Node newItem)
         {
+            /*
             if(op == SyncDictionary<int,Node>.Operation.OP_SET || op == SyncDictionary<int,Node>.Operation.OP_ADD){
                 if(!isLocalPlayer){
                     Debug.Log("Updating Scene Graph for node");
@@ -170,7 +170,8 @@ namespace ProjectEsky.Networking{
                 }
             }
         }
-        void OnHandGraphChange(SyncDictionary<int,HandGraph>.Operation op, int itemIndex, HandGraph newItem){
+        void OnHandGraphChange(Dictionary<int,HandGraph>.Operation op, int itemIndex, HandGraph newItem){
+/*            
             if(op == SyncDictionary<int,HandGraph>.Operation.OP_SET || op == SyncDictionary<int,HandGraph>.Operation.OP_ADD){
                 if(!isLocalPlayer){
                     if(SubscribedSyncHands.ContainsKey(newItem.HandID)){
@@ -180,6 +181,6 @@ namespace ProjectEsky.Networking{
                     }
                 }
             }
-        }
+        }*/
     }
 }
