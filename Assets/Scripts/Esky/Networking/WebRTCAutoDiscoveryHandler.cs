@@ -125,6 +125,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             while(messagesQueue.Count > 0){
                 byte[] b = messagesQueue[0];
                 messagesQueue.RemoveAt(0);
+                onDataReceivedFromDataTrack.Invoke(b);
             }
         }
         public void Finish(){
@@ -135,6 +136,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 onConnectionDropped.Invoke();
         }
         public void ReceiveMessageData(byte[] b){   
+            Debug.Log("Receiving Message Data");
             messagesQueue.Add(b); 
         }
         public override void SendBytes(byte[] b){
