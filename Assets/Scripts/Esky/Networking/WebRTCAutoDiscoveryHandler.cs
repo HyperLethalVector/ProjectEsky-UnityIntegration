@@ -76,6 +76,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         bool createAnswer = false;
         bool receiveAnswer = false;
         bool receiveOffer = false;
+        bool initConnection = false;
         SdpMessage sdpOffer = null;
         SdpMessage sdpAnswer = null;
         [HideInInspector]
@@ -112,9 +113,10 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 connected += 1;
                 PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
                 {
-                    onConnectionHandled.Invoke();
+                    initConnection = true;
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
+            if(initConnection){initConnection = false;onConnectionHandled.Invoke();}
         }
         public void Finish(){
         }
