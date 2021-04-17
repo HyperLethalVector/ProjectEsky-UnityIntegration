@@ -40,6 +40,16 @@ namespace ProjectEsky.Networking.Discovery{
             // Report thread messages to Console
             Debug.Log(e.UserState.ToString());
         }
+
+        public void OnDestroy(){
+            if(ads != null){
+                ads.Stop();
+            }
+            if(adr != null){
+
+                adr.Stop();
+            }
+        }
     }
     public class AutoDiscoveryReceiver
     {
