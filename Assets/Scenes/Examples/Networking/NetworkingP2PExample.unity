@@ -453,7 +453,7 @@ MonoBehaviour:
       sdp: 
       type: 
   connected: 0
-  LogInfo: 0
+  LogInfo: 1
 --- !u!4 &966919328 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6210530807246673570, guid: a5df3c1fbf79c4b4ca9d5e5035d945a7,
