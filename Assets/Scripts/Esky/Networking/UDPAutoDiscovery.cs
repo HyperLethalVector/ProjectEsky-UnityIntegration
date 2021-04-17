@@ -360,7 +360,7 @@ namespace ProjectEsky.Networking.Discovery{
 
                 try
                 {
-                    //udp.Send(packetBytes, packetBytes.Length, groupEP);
+                    udp.Send(packetBytes, packetBytes.Length, groupEP);
 
                     byte[] receiveBytes = udp.Receive(ref groupEP);
 
