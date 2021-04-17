@@ -21,12 +21,12 @@ namespace ProjectEsky.Networking.WebRTC{
         [ProtoMember(2)]
         public byte[] packetData;
     }
-    public class PackageManagerHookBehaviour : MonoBehaviour
+    public class WebRTCDataStreamManager : MonoBehaviour
     {
         public string ClientUUID;
         public bool isConnected;        
         public bool canTimeout = false;
-        public PackageManagerHookBehaviour instance;
+        public static WebRTCDataStreamManager instance;
         public UnityEvent<byte[]> onCustomPacketReceive;
         // Start is called before the first frame update
         [Range(0.1f,3f)]
