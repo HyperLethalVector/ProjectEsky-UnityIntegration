@@ -159,9 +159,13 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         }
         public void StartSender(){
             shake.iceMessages.Clear();
-            objWorkerDiscovery.CancelAsync();
-            adr.Stop();
-            adr = null;
+            if(objWorkerDiscovery != null){
+                objWorkerDiscovery.CancelAsync();
+            }
+            if(adr != null){
+                adr.Stop();
+                adr = null;
+            }
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
             objWorkerDiscovery.WorkerSupportsCancellation = true;
