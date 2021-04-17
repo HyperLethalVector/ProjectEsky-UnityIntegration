@@ -85,6 +85,18 @@ namespace ProjectEsky.Networking.Discovery{
             workerUDP.Dispose();
             this.disposing = true;
         }
+        public string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
 
         /// <summary>
         /// Start the listener.
@@ -117,7 +129,7 @@ namespace ProjectEsky.Networking.Discovery{
                         // Here we reply the Service IP and Port (TCP).. 
                         // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
 
-                        byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK " + addrDaemonListenIP + " " + BroadCastDaemonPort); // Acknowledged
+                        byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK " + GetLocalIPAddress() + " " + BroadCastDaemonPort); // Acknowledged
 
                         newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
 
@@ -250,6 +262,7 @@ namespace ProjectEsky.Networking.Discovery{
                     string returnData = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
                     if (returnData.Substring(0, 3) == "ACK")
                     {
+                        Debug.Log("Received Data: " + returnData);
                         string[] splitRcvd = returnData.Split(' ');
                         this.worker.ReportProgress(3, "AutoDiscovery::Response Server is " + splitRcvd[1] + ":" + splitRcvd[2]);
 
