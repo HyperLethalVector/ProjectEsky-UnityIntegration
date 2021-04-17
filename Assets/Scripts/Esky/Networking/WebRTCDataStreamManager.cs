@@ -98,7 +98,7 @@ namespace ProjectEsky.Networking.WebRTC{
         public void SendPacket(WebRTCPacket packet){
             using (MemoryStream bnStream = new MemoryStream()){
                 Serializer.Serialize<WebRTCPacket>(bnStream,packet);
-                WebRTC.Discovery.WebRTCAutoDiscoveryHandler.instance.SendBytes(bnStream.GetBuffer());
+                WebRTC.Discovery.WebRTCAutoDiscoveryHandler.instance.SendBytes(bnStream.ToArray());
                 bnStream.Dispose();
             }
         }
