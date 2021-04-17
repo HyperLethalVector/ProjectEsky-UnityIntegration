@@ -10,8 +10,9 @@ using System.ComponentModel;
 using System.Threading;
 using Microsoft.MixedReality.WebRTC;
 using System.Threading.Tasks;
+using UnityEngine.Events;
 
-namespace ProjectEsky.Networking.Discovery{
+namespace ProjectEsky.Networking.WebRTC.Discovery{
     public class PackageManagerHookBehaviour : Microsoft.MixedReality.WebRTC.Unity.Signaler{
         public delegate void BytesReceivedDelegate(byte[] b);
         public BytesReceivedDelegate BytesReceived;
@@ -62,6 +63,10 @@ namespace ProjectEsky.Networking.Discovery{
 
     public class WebRTCAutoDiscoveryHandler : PackageManagerHookBehaviour
     {
+        public static WebRTCAutoDiscoveryHandler instance;
+        public UnityEvent<byte[]> onDataReceivedFromDataTrack;
+        public UnityEvent onConnectionHandled;
+        public UnityEvent onConnectionDropped;
         BackgroundWorker objWorkerDiscovery;
         AutoDiscoverySender ads;
         AutoDiscoveryReceiver adr;
@@ -76,7 +81,14 @@ namespace ProjectEsky.Networking.Discovery{
         [HideInInspector]
         public int connected = 0;
         public bool LogInfo;
+        public void Awake(){
+            instance = this;
+        }
+        public bool isConnected(){
+            return connected > 1;
+        }
         public void Start() {
+
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
             objWorkerDiscovery.WorkerSupportsCancellation = true;
@@ -100,23 +112,22 @@ namespace ProjectEsky.Networking.Discovery{
                 connected += 1;
                 PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
                 {
-                    Debug.Log("Handled Answer");
-                    SendBytes(Encoding.Unicode.GetBytes("Handle"));
+                    if(onConnectionHandled != null){
+                        onConnectionHandled.Invoke();
+                    }
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
         }
         public void Finish(){
         }
         public void ReceivedConnection(){
-            Debug.Log("Connection established");
-
         }
         public void StoppedConnection(){
-            Debug.Log("Connection Stopped");
-            connected = 0;
+            if(onConnectionDropped != null){
+                onConnectionDropped.Invoke();
+            }
         }
         public void ReceiveMessageData(byte[] b){    
-            Debug.Log("Hanlded byte info");
             if(BytesReceived != null){
                 BytesReceived(b);
             }
@@ -124,9 +135,12 @@ namespace ProjectEsky.Networking.Discovery{
         public override void SendBytes(byte[] b){
                 knownDataChannels[0].SendMessage(b);
         }
+        public void Disconnect(){
+            PeerConnection.Peer.Close();
+        }
         public List<DataChannel> knownDataChannels = new List<DataChannel>();
         public void DataChannelAddedDelegate(DataChannel channel){
-            Debug.LogError("Data Channel Added, ID: " + channel.ID + ", Label: " + channel.Label);
+//            Debug.LogError("Data Channel Added, ID: " + channel.ID + ", Label: " + channel.Label);
             channel.MessageReceived += ReceiveMessageData;
             knownDataChannels.Add(channel);
         }
@@ -139,7 +153,7 @@ namespace ProjectEsky.Networking.Discovery{
                 { 
                     throw prevTask.Exception; 
                 } 
-                Debug.Log("Added Transfer Channel");
+            //    Debug.Log("Added Transfer Channel");
                 knownDataChannels.Add(prevTask.Result); 
             });            
         }
@@ -159,6 +173,7 @@ namespace ProjectEsky.Networking.Discovery{
         private void LogProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // Report thread messages to Console
+            if(LogInfo)
             Debug.Log(e.UserState.ToString());
         }
 
@@ -181,13 +196,11 @@ namespace ProjectEsky.Networking.Discovery{
 
         public void ReceiveCompletedOffer(WebrtcShakeClass receivedClass){
             ReceiveIceCandidate(receivedClass);            
-            Debug.Log("Received Offer: " + receivedClass.sdpMessage.sdp);            
             sdpOffer = new SdpMessage { Type = SdpMessageType.Offer, Content = receivedClass.sdpMessage.sdp};
             receiveOffer = true;
         }
         public void ReceiveCompletedAnswer(WebrtcShakeClass receivedClass){
             ReceiveIceCandidate(receivedClass);
-            Debug.Log("Received Answer: " + receivedClass.sdpMessage.sdp);
             sdpAnswer = new SdpMessage { Type = SdpMessageType.Answer, Content = receivedClass.sdpMessage.sdp};                            
             receiveAnswer = true;
         }
@@ -207,14 +220,12 @@ namespace ProjectEsky.Networking.Discovery{
         {
 
             SdpMessageWebsocket sdpws = new SdpMessageWebsocket(offer.Content,"offer");
-            Debug.Log("Sending Offer: " + sdpws.sdp);                        
             shake.sdpMessage = sdpws;
         }
         protected override void OnSdpAnswerReadyToSend(SdpMessage answer)
         {
 
             SdpMessageWebsocket sdpws = new SdpMessageWebsocket(answer.Content,"answer");
-            Debug.Log("Sending Answer: " + sdpws.sdp);
             shake.sdpMessage = sdpws;            
         }
     }
