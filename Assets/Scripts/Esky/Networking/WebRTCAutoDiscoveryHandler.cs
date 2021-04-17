@@ -145,6 +145,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             knownDataChannels.Add(channel);
         }
         public override void OnPeerInitialized(){ 
+            Debug.Log("On initialized");
             base.OnPeerInitialized();
             PeerConnection.Peer.DataChannelAdded += DataChannelAddedDelegate;
             PeerConnection.Peer.AddDataChannelAsync(0, "transfer", true, true).ContinueWith((prevTask) => 
@@ -158,6 +159,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             });            
         }
         public void StartSender(){
+            Debug.Log("Starting Sender");
             shake.iceMessages.Clear();
             if(objWorkerDiscovery != null){
                 objWorkerDiscovery.CancelAsync();
