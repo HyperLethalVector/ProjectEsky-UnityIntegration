@@ -98,11 +98,19 @@ namespace ProjectEsky.Networking.Discovery{
                 PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
                 {
                     Debug.Log("Handled Answer");
-                    connected = true;
+//                    connected = true;
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
         }
         public void Finish(){
+        }
+        public void ReceivedConnection(){
+            Debug.Log("Connection established");
+            connected = true;
+        }
+        public void StoppedConnection(){
+            Debug.Log("Connection Stopped");
+            connected = false;
         }
         public void ReceiveMessageData(byte[] b){    
             if(BytesReceived != null){
@@ -369,16 +377,17 @@ namespace ProjectEsky.Networking.Discovery{
                 {
                     while (this.disposing == false)
                     {
+                        if(!hookedAutoDiscovery.connected){
                         // Must look for server.. Repeat until configured.
-                        if (ServerAddress == String.Empty)
-                        {
-                            this.worker.ReportProgress(2, "AutoDiscovery::Looking for server..");
+                            if (ServerAddress == String.Empty)
+                            {
+                                this.worker.ReportProgress(2, "AutoDiscovery::Looking for server..");
 
-                            // Broadcast the query
-                            sendBroadcastSearchPacket();
+                                // Broadcast the query
+                                sendBroadcastSearchPacket();
+                            }
+                            Thread.Sleep(3000);
                         }
-
-                        Thread.Sleep(100);
                     }
                 }
                 catch (Exception ex)
