@@ -60,7 +60,7 @@ namespace ProjectEsky.Networking.Discovery{
     public delegate void CreateOfferDelegate();
     public delegate void CreateResponseDelegate();
 
-    public class UDPAutoDiscovery : PackageManagerHookBehaviour
+    public class WebRTCAutoDiscoveryHandler : PackageManagerHookBehaviour
     {
         BackgroundWorker objWorkerDiscovery;
         AutoDiscoverySender ads;
@@ -75,6 +75,7 @@ namespace ProjectEsky.Networking.Discovery{
         SdpMessage sdpAnswer = null;
         [HideInInspector]
         public int connected = 0;
+        public bool LogInfo;
         public void Start() {
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
@@ -96,10 +97,11 @@ namespace ProjectEsky.Networking.Discovery{
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);     
             }
             if(receiveAnswer){receiveAnswer = false;
+                connected += 1;
                 PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
                 {
                     Debug.Log("Handled Answer");
-//                    connected = true;
+                    SendBytes(Encoding.Unicode.GetBytes("Handle"));
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
         }
@@ -107,13 +109,14 @@ namespace ProjectEsky.Networking.Discovery{
         }
         public void ReceivedConnection(){
             Debug.Log("Connection established");
-            connected += 1;
+
         }
         public void StoppedConnection(){
             Debug.Log("Connection Stopped");
             connected = 0;
         }
         public void ReceiveMessageData(byte[] b){    
+            Debug.Log("Hanlded byte info");
             if(BytesReceived != null){
                 BytesReceived(b);
             }
@@ -218,7 +221,7 @@ namespace ProjectEsky.Networking.Discovery{
     public class AutoDiscoveryReceiver
     {
         public CreateOfferDelegate createOfferDelegate;
-        public UDPAutoDiscovery hookedAutoDiscovery;
+        public WebRTCAutoDiscoveryHandler hookedAutoDiscovery;
         private System.ComponentModel.BackgroundWorker workerUDP;
 
         // Port the UDP server will listen to broadcast packets from UDP Clients.
@@ -237,7 +240,7 @@ namespace ProjectEsky.Networking.Discovery{
 
         private bool disposing = false;
 
-        public AutoDiscoveryReceiver(ref BackgroundWorker workerUDP, CreateOfferDelegate offerDelegate,UDPAutoDiscovery hookedDiscovery)
+        public AutoDiscoveryReceiver(ref BackgroundWorker workerUDP, CreateOfferDelegate offerDelegate, WebRTCAutoDiscoveryHandler hookedDiscovery)
         {
             this.workerUDP = workerUDP;
             this.BroadCastDaemonPort = AutoDiscoveryPort;
@@ -340,7 +343,7 @@ namespace ProjectEsky.Networking.Discovery{
     public class AutoDiscoverySender
         {
             public CreateResponseDelegate createAnswerDelegate;
-            public UDPAutoDiscovery hookedAutoDiscovery;
+            public WebRTCAutoDiscoveryHandler hookedAutoDiscovery;
             public bool disposing = false;
 
             // Fixed Port for broadcast.
@@ -365,7 +368,7 @@ namespace ProjectEsky.Networking.Discovery{
 
             private BackgroundWorker worker;
 
-            public AutoDiscoverySender(ref BackgroundWorker worker, CreateResponseDelegate offerDelegate, UDPAutoDiscovery hookedDiscovery)
+            public AutoDiscoverySender(ref BackgroundWorker worker, CreateResponseDelegate offerDelegate, WebRTCAutoDiscoveryHandler hookedDiscovery)
             {
                 this.worker = worker;
                 worker.ReportProgress(1, "AutoDiscoverySender::Started at " + AutoDiscoveryPort + "/UDP");
