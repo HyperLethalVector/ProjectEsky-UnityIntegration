@@ -74,10 +74,10 @@ namespace ProjectEsky.Networking.WebRTC{
             isConnected = false;
         }
         public void OnReceiveByte(byte[] b){
+            Debug.Log("Received Data");
             using(MemoryStream bnStream = new MemoryStream(b)){
                 if(!isConnected){
                     isConnected = true;
-
                 }
                 WebRTCPacket p = Serializer.Deserialize<WebRTCPacket>(bnStream);
                 OnReceivePacket(p);                

@@ -123,14 +123,10 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         public void ReceivedConnection(){
         }
         public void StoppedConnection(){
-            if(onConnectionDropped != null){
                 onConnectionDropped.Invoke();
-            }
         }
         public void ReceiveMessageData(byte[] b){    
-            if(BytesReceived != null){
-                BytesReceived(b);
-            }
+            BytesReceived.Invoke(b);
         }
         public override void SendBytes(byte[] b){
                 knownDataChannels[knownDataChannels.Count-1].SendMessage(b);
