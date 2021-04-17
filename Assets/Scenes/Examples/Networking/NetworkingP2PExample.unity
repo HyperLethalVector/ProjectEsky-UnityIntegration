@@ -1283,8 +1283,11 @@ MonoBehaviour:
   PeerConnection: {fileID: 114452440398351871}
   hasMessagePrepared: 0
   shake:
-    IceMessages: []
-    sdpMessage: 
+    iceMessages: []
+    sdpMessage:
+      sdp: 
+      type: 
+  connected: 0
 --- !u!114 &2014660827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1836,7 +1839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64dff3d25ffa2ee4f907d396ed9c1ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AutoCreateOfferOnRenegotiationNeeded: 1
+  AutoCreateOfferOnRenegotiationNeeded: 0
   AutoLogErrorsToUnityConsole: 1
   IceServers:
   - Type: 1
@@ -1846,13 +1849,13 @@ MonoBehaviour:
   OnInitialized:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2014660825}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 2014660826}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.WebRTC.Unity.Signaler, Microsoft.MixedReality.WebRTC.Unity
+        m_MethodName: OnPeerInitialized
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

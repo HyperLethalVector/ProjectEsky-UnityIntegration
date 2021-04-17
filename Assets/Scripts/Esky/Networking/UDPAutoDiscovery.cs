@@ -72,6 +72,8 @@ namespace ProjectEsky.Networking.Discovery{
         bool receiveAnswer = false;
         bool receiveOffer = false;
         SdpMessage sdpOffer = null;
+        SdpMessage sdpAnswer = null;
+        public bool connected = false;
         public void Start() {
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
@@ -93,8 +95,40 @@ namespace ProjectEsky.Networking.Discovery{
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);     
             }
             if(receiveAnswer){receiveAnswer = false;
-
+                PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
+                {
+                    Debug.Log("Handled Answer");
+                    connected = true;
+                }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
+        }
+        public void Finish(){
+        }
+        public void ReceiveMessageData(byte[] b){    
+            if(BytesReceived != null){
+                BytesReceived(b);
+            }
+        }
+        public override void SendBytes(byte[] b){
+                knownDataChannels[0].SendMessage(b);
+        }
+        public List<DataChannel> knownDataChannels = new List<DataChannel>();
+        public void DataChannelAddedDelegate(DataChannel channel){
+            Debug.LogError("Data Channel Added, ID: " + channel.ID + ", Label: " + channel.Label);
+            channel.MessageReceived += ReceiveMessageData;
+            knownDataChannels.Add(channel);
+        }
+        public void AfterPeerInitialized(){
+            PeerConnection.Peer.DataChannelAdded += DataChannelAddedDelegate;
+            PeerConnection.Peer.AddDataChannelAsync(0, "transfer", true, true).ContinueWith((prevTask) => 
+            { 
+                if (prevTask.Exception != null) 
+                { 
+                    throw prevTask.Exception; 
+                } 
+                Debug.Log("Added Transfer Channel");
+                knownDataChannels.Add(prevTask.Result); 
+            });            
         }
         public void StartSender(){
             shake.iceMessages.Clear();
@@ -141,11 +175,8 @@ namespace ProjectEsky.Networking.Discovery{
         public void ReceiveCompletedAnswer(WebrtcShakeClass receivedClass){
             ReceiveIceCandidate(receivedClass);
             Debug.Log("Received Answer: " + receivedClass.sdpMessage.sdp);
-            SdpMessage sdpAnswer = new SdpMessage { Type = SdpMessageType.Answer, Content = receivedClass.sdpMessage.sdp};                            
-            PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
-            {
-                Debug.Log("Handled Answer");
-            }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+            sdpAnswer = new SdpMessage { Type = SdpMessageType.Answer, Content = receivedClass.sdpMessage.sdp};                            
+            receiveAnswer = true;
         }
         public void ReceiveIceCandidate(WebrtcShakeClass receivedClass){
             for(int i = 0; i < receivedClass.iceMessages.Count; i++){
@@ -247,36 +278,43 @@ namespace ProjectEsky.Networking.Discovery{
 
                 while (!disposing)
                 {
-                    if (ReceivedData.SequenceEqual(packetBytes))
-                    {
-                        // Use ReportProgress from BackgroundWorker as communication channel between main app and the worker thread.
-                        this.workerUDP.ReportProgress(1, "Discovery from " + IncomingIP + "/UDP");
+                    if(!hookedAutoDiscovery.connected){
+                        if (ReceivedData.SequenceEqual(packetBytes))
+                        {
+                            // Use ReportProgress from BackgroundWorker as communication channel between main app and the worker thread.
+                            this.workerUDP.ReportProgress(1, "Discovery from " + IncomingIP + "/UDP");
 
-                        // Here we reply the Service IP and Port (TCP).. 
-                        // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
-                        createOfferDelegate.Invoke();
-                        Thread.Sleep(2000);//wait for the candidates to be generated
-                        string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
-                        this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
-                        byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*" + s); // Acknowledged
-                        newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
-                        this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
-                        byte[] packetsToRead = newsock.Receive(ref RemoteEP);
-                        if(packetsToRead.Length > 0){
+                            // Here we reply the Service IP and Port (TCP).. 
+                            // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
+                            createOfferDelegate.Invoke();
+                            Thread.Sleep(2000);//wait for the candidates to be generated
+                            string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
+                            this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
+                            byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*" + s); // Acknowledged
+                            newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
+                            this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
+                            byte[] packetsToRead = newsock.Receive(ref RemoteEP);
+                            if(packetsToRead.Length > 0){
 
-                            string returnedAnswer = Encoding.Unicode.GetString(packetsToRead, 0, packetsToRead.Length);
-                            this.workerUDP.ReportProgress(1, "Received Answer:" + returnedAnswer);                            
+                                string returnedAnswer = Encoding.Unicode.GetString(packetsToRead, 0, packetsToRead.Length);
+                                string[] splitAns = returnedAnswer.Split('*');
+                                if(splitAns[0] == "RSP"){
+                                    this.workerUDP.ReportProgress(1, "Received Answer:" + splitAns[1]);
+                                    WebrtcShakeClass retAnswer = JsonUtility.FromJson<WebrtcShakeClass>(splitAns[1]);
+                                    hookedAutoDiscovery.ReceiveCompletedAnswer(retAnswer);
+                                }                            
+                            }
                         }
-                    }
-                    else
-                    {
-                        // Unknown packet type.
-                        this.workerUDP.ReportProgress(1, "Answering(NAK) " + packetBytes.Length + " bytes to " + IncomingIP);
-                        byte[] packetBytesNak = Encoding.Unicode.GetBytes("NAK"); // Not Acknowledged
+                        else
+                        {
+                            // Unknown packet type.
+                            this.workerUDP.ReportProgress(1, "Answering(NAK) " + packetBytes.Length + " bytes to " + IncomingIP);
+                            byte[] packetBytesNak = Encoding.Unicode.GetBytes("NAK"); // Not Acknowledged
 
-                        newsock.Send(packetBytesNak, packetBytesNak.Length, RemoteEP);
+                            newsock.Send(packetBytesNak, packetBytesNak.Length, RemoteEP);
+                        }
+                        ReceivedData = newsock.Receive(ref RemoteEP);
                     }
-                    ReceivedData = newsock.Receive(ref RemoteEP);
                 }
 
                 
