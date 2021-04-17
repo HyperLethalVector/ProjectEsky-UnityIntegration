@@ -106,7 +106,7 @@ namespace ProjectEsky.Networking.Discovery{
         }
         public void ReceivedConnection(){
             Debug.Log("Connection established");
-            connected = true;
+//            connected = true;
         }
         public void StoppedConnection(){
             Debug.Log("Connection Stopped");
@@ -126,7 +126,8 @@ namespace ProjectEsky.Networking.Discovery{
             channel.MessageReceived += ReceiveMessageData;
             knownDataChannels.Add(channel);
         }
-        public void AfterPeerInitialized(){
+        public override void OnPeerInitialized(){ 
+            base.OnPeerInitialized();
             PeerConnection.Peer.DataChannelAdded += DataChannelAddedDelegate;
             PeerConnection.Peer.AddDataChannelAsync(0, "transfer", true, true).ContinueWith((prevTask) => 
             { 

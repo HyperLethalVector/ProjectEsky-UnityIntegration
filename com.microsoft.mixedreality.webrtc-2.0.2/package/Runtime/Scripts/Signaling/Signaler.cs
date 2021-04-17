@@ -68,7 +68,7 @@ namespace Microsoft.MixedReality.WebRTC.Unity
         /// initializing, to subscribe to signaling-related events.
         /// </summary>
         /// <param name="peer">The peer connection to attach to</param>
-        public void OnPeerInitialized()
+        public virtual void OnPeerInitialized()
         {
             _nativePeer = PeerConnection.Peer;
 
