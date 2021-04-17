@@ -133,7 +133,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             }
         }
         public override void SendBytes(byte[] b){
-                knownDataChannels[0].SendMessage(b);
+                knownDataChannels[knownDataChannels.Count-1].SendMessage(b);
         }
         public void Disconnect(){
             PeerConnection.Peer.Close();
@@ -148,7 +148,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             Debug.Log("On initialized");
             base.OnPeerInitialized();
             PeerConnection.Peer.DataChannelAdded += DataChannelAddedDelegate;
-            /*PeerConnection.Peer.AddDataChannelAsync(0, "transfer", true, true).ContinueWith((prevTask) => 
+            PeerConnection.Peer.AddDataChannelAsync(0, "transfer", true, true).ContinueWith((prevTask) => 
             { 
                 if (prevTask.Exception != null) 
                 { 
@@ -156,7 +156,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 } 
                 Debug.Log("Added Transfer Channel");
                 knownDataChannels.Add(prevTask.Result); 
-            });*/            
+            });           
         }
         public void StartSender(){
             Debug.Log("Starting Sender");
