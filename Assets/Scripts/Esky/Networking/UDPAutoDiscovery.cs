@@ -53,11 +53,6 @@ namespace ProjectEsky.Networking.Discovery{
     }
     
     [System.Serializable]
-    public class WebrtcShakeString{
-        public List<string> IceMessages;
-        public string sdpMessage;
-    }
-    [System.Serializable]
     public class WebrtcShakeClass{
         public List<IceMessageWebsocket> iceMessages;
         public SdpMessageWebsocket sdpMessage;
@@ -71,7 +66,7 @@ namespace ProjectEsky.Networking.Discovery{
         AutoDiscoverySender ads;
         AutoDiscoveryReceiver adr;
         public bool hasMessagePrepared = false;
-        public WebrtcShakeString shake = new WebrtcShakeString();
+        public WebrtcShakeClass shake = new WebrtcShakeClass();
         bool createOffer = false;
         bool createAnswer = false;
         bool receiveAnswer = false;
@@ -102,7 +97,7 @@ namespace ProjectEsky.Networking.Discovery{
             }
         }
         public void StartSender(){
-            shake.IceMessages.Clear();
+            shake.iceMessages.Clear();
             objWorkerDiscovery.CancelAsync();
             adr.Stop();
             adr = null;
@@ -162,24 +157,21 @@ namespace ProjectEsky.Networking.Discovery{
         {
           //Data = string.Join(IceSeparatorChar, candidate.Content, candidate.SdpMlineIndex.ToString(), candidate.SdpMid);      
             IceMessageWebsocket imws = new IceMessageWebsocket(candidate.Content,candidate.SdpMlineIndex,candidate.SdpMid);
-            string json = JsonUtility.ToJson(imws);  
-            shake.IceMessages.Add(json);
+            shake.iceMessages.Add(imws);
         }
         protected override void OnSdpOfferReadyToSend(SdpMessage offer)
         {
 
             SdpMessageWebsocket sdpws = new SdpMessageWebsocket(offer.Content,"offer");
             Debug.Log("Sending Offer: " + sdpws.sdp);                        
-            string json = JsonUtility.ToJson(sdpws);
-            shake.sdpMessage = json;
+            shake.sdpMessage = sdpws;
         }
         protected override void OnSdpAnswerReadyToSend(SdpMessage answer)
         {
 
             SdpMessageWebsocket sdpws = new SdpMessageWebsocket(answer.Content,"answer");
             Debug.Log("Sending Answer: " + sdpws.sdp);
-            string json = JsonUtility.ToJson(sdpws);
-            shake.sdpMessage = json;            
+            shake.sdpMessage = sdpws;            
         }
     }
     public class AutoDiscoveryReceiver
