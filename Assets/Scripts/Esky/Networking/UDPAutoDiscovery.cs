@@ -74,6 +74,9 @@ namespace ProjectEsky.Networking.Discovery{
         public WebrtcShakeString shake = new WebrtcShakeString();
         bool createOffer = false;
         bool createAnswer = false;
+        bool receiveAnswer = false;
+        bool receiveOffer = false;
+        SdpMessage sdpOffer = null;
         public void Start() {
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
@@ -86,6 +89,17 @@ namespace ProjectEsky.Networking.Discovery{
         private void FixedUpdate() {
             if(createOffer){createOffer = false;PeerConnection.StartConnection();}    
             if(createAnswer){createAnswer = false;PeerConnection.Peer.CreateAnswer();}        
+            if(receiveOffer){receiveOffer = false;
+                PeerConnection.HandleConnectionMessageAsync(sdpOffer).ContinueWith(_ =>
+                {
+                    // If the remote description was successfully applied then immediately send
+                    // back an answer to the remote peer to acccept the offer.
+                    _nativePeer.CreateAnswer();
+                }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);     
+            }
+            if(receiveAnswer){receiveAnswer = false;
+
+            }
         }
         public void StartSender(){
             shake.IceMessages.Clear();
@@ -124,16 +138,13 @@ namespace ProjectEsky.Networking.Discovery{
         }
 
         public void ReceiveCompletedOffer(WebrtcShakeClass receivedClass){
-            Debug.Log("Received Offer: " + receivedClass.sdpMessage.sdp);
-            SdpMessage sdpOffer = new SdpMessage { Type = SdpMessageType.Offer, Content = receivedClass.sdpMessage.sdp};
-            PeerConnection.HandleConnectionMessageAsync(sdpOffer).ContinueWith(_ =>
-            {
-                // If the remote description was successfully applied then immediately send
-                // back an answer to the remote peer to acccept the offer.
-                _nativePeer.CreateAnswer();
-            }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);     
+            ReceiveIceCandidate(receivedClass);            
+            Debug.Log("Received Offer: " + receivedClass.sdpMessage.sdp);            
+            sdpOffer = new SdpMessage { Type = SdpMessageType.Offer, Content = receivedClass.sdpMessage.sdp};
+            receiveOffer = true;
         }
         public void ReceiveCompletedAnswer(WebrtcShakeClass receivedClass){
+            ReceiveIceCandidate(receivedClass);
             Debug.Log("Received Answer: " + receivedClass.sdpMessage.sdp);
             SdpMessage sdpAnswer = new SdpMessage { Type = SdpMessageType.Answer, Content = receivedClass.sdpMessage.sdp};                            
             PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
@@ -229,7 +240,7 @@ namespace ProjectEsky.Networking.Discovery{
             try
             {
                 this.workerUDP.ReportProgress(30, "AutoDiscoveryReceiver::Service Listening " + this.AutoDiscoveryPort + "/UDP");
-                byte[] ReceivedData = new byte[1024];
+                byte[] ReceivedData;
 
 
                 // Local End-Point
@@ -255,7 +266,7 @@ namespace ProjectEsky.Networking.Discovery{
                         Thread.Sleep(2000);//wait for the candidates to be generated
                         string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                         this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
-                        byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK*" + s); // Acknowledged
+                        byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*" + s); // Acknowledged
                         newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
                         this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
                     }
@@ -263,7 +274,7 @@ namespace ProjectEsky.Networking.Discovery{
                     {
                         // Unknown packet type.
                         this.workerUDP.ReportProgress(1, "Answering(NAK) " + packetBytes.Length + " bytes to " + IncomingIP);
-                        byte[] packetBytesNak = Encoding.ASCII.GetBytes("NAK"); // Not Acknowledged
+                        byte[] packetBytesNak = Encoding.Unicode.GetBytes("NAK"); // Not Acknowledged
 
                         newsock.Send(packetBytesNak, packetBytesNak.Length, RemoteEP);
                     }
@@ -364,7 +375,7 @@ namespace ProjectEsky.Networking.Discovery{
 
                     byte[] receiveBytes = udp.Receive(ref groupEP);
 
-                    string returnData = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
+                    string returnData = Encoding.Unicode.GetString(receiveBytes, 0, receiveBytes.Length);
                     this.worker.ReportProgress(3,"Received Data: " + returnData);   
                     string[] returnDataSpl = returnData.Split('*');
   //                  returnData = returnData.Remove(0,3);  
@@ -379,7 +390,7 @@ namespace ProjectEsky.Networking.Discovery{
                         hookedAutoDiscovery.ReceiveCompletedOffer(wrsc);
                         Thread.Sleep(4000);
                         string sendOffer = JsonUtility.ToJson(hookedAutoDiscovery.shake);
-                        byte[] packetBytesResponse = Encoding.ASCII.GetBytes("RSP=" + sendOffer); // Acknowledged
+                        byte[] packetBytesResponse = Encoding.Unicode.GetBytes("RSP=" + sendOffer); // Acknowledged
                         udp.Send(packetBytesResponse,packetBytesResponse.Length,groupEP);                          
 //                        newsock.Send(packetBytesResponse, packetBytesResponse.Length, RemoteEP);
                         // Check if the server is reachable! Try to connect it using TCP.
