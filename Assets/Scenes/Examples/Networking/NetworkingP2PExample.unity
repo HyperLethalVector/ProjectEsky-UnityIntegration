@@ -715,8 +715,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ProjectEsky.Networking.Discovery.UDPAutoDiscovery,
+      - m_Target: {fileID: 1732322567789194}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.Discovery.WebRTCAutoDiscoveryHandler,
           Assembly-CSharp
         m_MethodName: StartSender
         m_Mode: 1
