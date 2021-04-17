@@ -37,15 +37,12 @@ namespace ProjectEsky.Networking.WebRTC{
 
         float timeSinceLastSeenHeartbeat = 0;
         float timeSinceLastSentHeartbeat = 0;
-        UnityAction<byte[]> actionToAdd;        
         void Awake(){
             instance = this;
             ClientUUID = Guid.NewGuid().ToString();
         }
         void Start()
         {
-            actionToAdd += OnReceiveByte;
-            Discovery.WebRTCAutoDiscoveryHandler.instance.onDataReceivedFromDataTrack.AddListener(OnReceiveByte);
         }
         void FixedUpdate(){
             if(isConnected){
@@ -68,13 +65,13 @@ namespace ProjectEsky.Networking.WebRTC{
                 }
             }
         }
-        void OnConnected(){
-
+        public void OnConnected(){
+            isConnected = true;
         }
         void OnDisconnected(){
             isConnected = false;
         }
-        void OnReceiveByte(byte[] b){
+        public void OnReceiveByte(byte[] b){
             using(MemoryStream bnStream = new MemoryStream(b)){
                 if(!isConnected){
                     isConnected = true;

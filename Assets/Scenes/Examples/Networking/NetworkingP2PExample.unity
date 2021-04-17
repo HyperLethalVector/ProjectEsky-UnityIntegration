@@ -1401,6 +1401,7 @@ GameObject:
   - component: {fileID: 4483042683139361}
   - component: {fileID: 114452440398351871}
   - component: {fileID: 1732322567789194}
+  - component: {fileID: 1732322567789195}
   m_Layer: 0
   m_Name: PeerConnection
   m_TagString: Untagged
@@ -1423,10 +1424,36 @@ MonoBehaviour:
   PeerConnection: {fileID: 114452440398351871}
   onDataReceivedFromDataTrack:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1732322567789195}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
+          Assembly-CSharp
+        m_MethodName: OnReceiveByte
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onConnectionHandled:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1732322567789195}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
+          Assembly-CSharp
+        m_MethodName: OnConnected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onConnectionDropped:
     m_PersistentCalls:
       m_Calls: []
@@ -1438,6 +1465,26 @@ MonoBehaviour:
       type: 
   connected: 0
   LogInfo: 0
+--- !u!114 &1732322567789195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732322567789193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5bced301a14ff479d0dee785135995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClientUUID: 
+  isConnected: 0
+  canTimeout: 0
+  onCustomPacketReceive:
+    m_PersistentCalls:
+      m_Calls: []
+  HeartBeatInterval: 1
+  DisconnectTimeout: 30
 --- !u!4 &4483042683139361
 Transform:
   m_ObjectHideFlags: 0
