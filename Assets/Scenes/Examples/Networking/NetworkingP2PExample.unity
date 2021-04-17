@@ -345,6 +345,115 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &762479099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 762479100}
+  - component: {fileID: 762479102}
+  - component: {fileID: 762479101}
+  m_Layer: 0
+  m_Name: WebRTCConnectionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &762479100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762479099}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4483042683139361}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &762479101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762479099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5bced301a14ff479d0dee785135995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClientUUID: 
+  isConnected: 0
+  canTimeout: 0
+  onCustomPacketReceive:
+    m_PersistentCalls:
+      m_Calls: []
+  HeartBeatInterval: 1
+  DisconnectTimeout: 30
+--- !u!114 &762479102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762479099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3711a2a33b7aa3c43834cdc36a9f4bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PeerConnection: {fileID: 114452440398351871}
+  onDataReceivedFromDataTrack:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 762479101}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
+          Assembly-CSharp
+        m_MethodName: OnReceiveByte
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onConnectionHandled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 762479101}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
+          Assembly-CSharp
+        m_MethodName: OnConnected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onConnectionDropped:
+    m_PersistentCalls:
+      m_Calls: []
+  hasMessagePrepared: 0
+  shake:
+    iceMessages: []
+    sdpMessage:
+      sdp: 
+      type: 
+  connected: 0
+  LogInfo: 0
 --- !u!4 &966919328 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6210530807246673570, guid: a5df3c1fbf79c4b4ca9d5e5035d945a7,
@@ -715,7 +824,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1732322567789194}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.Discovery.WebRTCAutoDiscoveryHandler,
           Assembly-CSharp
         m_MethodName: StartSender
@@ -1400,8 +1509,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4483042683139361}
   - component: {fileID: 114452440398351871}
-  - component: {fileID: 1732322567789194}
-  - component: {fileID: 1732322567789195}
   m_Layer: 0
   m_Name: PeerConnection
   m_TagString: Untagged
@@ -1409,82 +1516,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
---- !u!114 &1732322567789194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732322567789193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3711a2a33b7aa3c43834cdc36a9f4bf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PeerConnection: {fileID: 114452440398351871}
-  onDataReceivedFromDataTrack:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1732322567789195}
-        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
-          Assembly-CSharp
-        m_MethodName: OnReceiveByte
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onConnectionHandled:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1732322567789195}
-        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
-          Assembly-CSharp
-        m_MethodName: OnConnected
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onConnectionDropped:
-    m_PersistentCalls:
-      m_Calls: []
-  hasMessagePrepared: 0
-  shake:
-    iceMessages: []
-    sdpMessage:
-      sdp: 
-      type: 
-  connected: 0
-  LogInfo: 0
---- !u!114 &1732322567789195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732322567789193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d5bced301a14ff479d0dee785135995, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ClientUUID: 
-  isConnected: 0
-  canTimeout: 0
-  onCustomPacketReceive:
-    m_PersistentCalls:
-      m_Calls: []
-  HeartBeatInterval: 1
-  DisconnectTimeout: 30
 --- !u!4 &4483042683139361
 Transform:
   m_ObjectHideFlags: 0
@@ -1496,7 +1527,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 762479100}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114452440398351871
