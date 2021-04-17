@@ -1,0 +1,417 @@
+Using pre-set license
+Built from '2020.3/staging' branch; Version is '2020.3.0f1 (c7b5465681fb) revision 13088070'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Pro; OS build 19042.867; Version 2009; 64bit' Language: 'en' Physical Memory: 32553 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2020.3.0f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+C:/Releases/ProjectEsky-UnityIntegration
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+50524
+Successfully changed project path to: C:/Releases/ProjectEsky-UnityIntegration
+C:/Releases/ProjectEsky-UnityIntegration
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 97.30 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 2.08 ms.
+Initialize engine version: 2020.3.0f1 (c7b5465681fb)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.0f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Releases/ProjectEsky-UnityIntegration/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2080 (ID=0x1e90)
+    Vendor:   
+    VRAM:     8010 MB
+    Driver:   27.21.14.6589
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.0f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.0f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.0f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56232
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.0f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002660 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 68.84 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.18 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.427 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.031903 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 76.69 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.17 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+[XR] OculusXRPlugin: registering subsystems
+[XR] Unable to register display lifecyle provider: [1]
+[XR] Oculus Input lifecycle provider registered.
+[XR] Unable to register input lifecyle provider: [1]
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:243 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:228 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.8.1/Runtime/OculusLoader.cs Line: 243)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  2.494 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.07 seconds
+Refreshing native plugins compatible for Editor in 1.53 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.22 ms.
+Unloading 3446 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 166.8 MB.
+System memory in use after: 166.2 MB.
+
+Unloading 2222 unused Assets to reduce memory usage. Loaded Objects now: 3542.
+Total: 6.221400 ms (FindLiveObjects: 0.778500 ms CreateObjectMapping: 0.477400 ms MarkObjects: 2.268000 ms  DeleteObjects: 2.696100 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/XR/XRGeneralSettings.asset
+  artifactKey: Guid(2a463f9177d856b43a128d198511bf1c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/XR/XRGeneralSettings.asset using Guid(2a463f9177d856b43a128d198511bf1c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5bd38ba6de64198cf701d5158aa4edde') in 0.039089 seconds
+  Import took 0.045990 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000368 seconds.
+  path: Packages/com.unity.xr.arsubsystems/package.json
+  artifactKey: Guid(138de250db28475c974590f762d87650) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.xr.arsubsystems/package.json using Guid(138de250db28475c974590f762d87650) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8533eb122f002a922c6c9881c3e0c465') in 0.015049 seconds
+  Import took 0.022105 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 280.437919 seconds.
+  path: Assets/Scripts/Esky/Spatial Mapping.mat
+  artifactKey: Guid(0257883edf43e684f85598238df6fb62) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Spatial Mapping.mat using Guid(0257883edf43e684f85598238df6fb62) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e723ee5a698784bef9a4633f31fc0b31') in 0.084064 seconds
+  Import took 0.089978 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 73.250052 seconds.
+  path: Assets/Scenes/Examples/V2-UniversalRendering
+  artifactKey: Guid(eba1e436259e06e47896f122a0a655ec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Examples/V2-UniversalRendering using Guid(eba1e436259e06e47896f122a0a655ec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ff5c77a51b3e56f4adfa69b8aebcf88a') in 0.003953 seconds
+  Import took 0.009957 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.007005 seconds.
+  path: Assets/Scenes/Examples/V2-UniversalRendering
+  artifactKey: Guid(eba1e436259e06e47896f122a0a655ec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Examples/V2-UniversalRendering using Guid(eba1e436259e06e47896f122a0a655ec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ff5c77a51b3e56f4adfa69b8aebcf88a') in 0.003463 seconds
+  Import took 0.008691 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 18.396595 seconds.
+  path: Assets/Prefabs/EskyAnchor.prefab
+  artifactKey: Guid(8c17db66f24630a4bab5d3f78a87f5c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/EskyAnchor.prefab using Guid(8c17db66f24630a4bab5d3f78a87f5c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9423a02aae8b58f0f1847848312a854b') in 0.012544 seconds
+  Import took 0.017718 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 194.772937 seconds.
+  path: Assets/Scripts/Esky/Networking
+  artifactKey: Guid(07c20cfda663b3f4d83ab2b50621343e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking using Guid(07c20cfda663b3f4d83ab2b50621343e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0c3b407122ca28e87bdc92b3d31faea9') in 0.003825 seconds
+  Import took 0.010465 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.041605 seconds.
+  path: Assets/Scripts/Esky/Networking/Mirror
+  artifactKey: Guid(73bc64e26e3b3c7429b2cc25e3ba9f39) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/Mirror using Guid(73bc64e26e3b3c7429b2cc25e3ba9f39) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '46360d8fe1ba24d5170c266d9bd36905') in 0.003991 seconds
+  Import took 0.009047 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.373317 seconds.
+  path: Assets/Scripts/Esky/Networking/EskyTrackingOrigin.cs
+  artifactKey: Guid(847c0845c5a5dc24abf2cd83607bb132) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/EskyTrackingOrigin.cs using Guid(847c0845c5a5dc24abf2cd83607bb132) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c6a692e361d922bbded0e3be449ba9ca') in 0.008381 seconds
+  Import took 0.013876 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.601218 seconds.
+  path: Assets/Scripts/Esky/Networking/EskyClient.cs
+  artifactKey: Guid(70e8b110bbc9cdf4fb58b4354b80c5d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/EskyClient.cs using Guid(70e8b110bbc9cdf4fb58b4354b80c5d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f336641bdb912facc5d3c077f95f14b5') in 0.003777 seconds
+  Import took 0.009035 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.014242 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.97 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.16 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:243 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:228 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.8.1/Runtime/OculusLoader.cs Line: 243)
+
+Error when attempting to update scene info fields. Scene info data may be stale.
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Microsoft.MixedReality.Toolkit.Editor.SceneInfoUtils:RefreshSceneInfoFieldsInScriptableObjects () (at Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs:313)
+Microsoft.MixedReality.Toolkit.Editor.SceneInfoUtils:InitializeOnLoad () (at Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs:231)
+
+(Filename: Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs Line: 313)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.645 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.07 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.18 ms.
+Unloading 3351 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.7 MB.
+System memory in use after: 167.9 MB.
+
+Unloading 2338 unused Assets to reduce memory usage. Loaded Objects now: 3586.
+Total: 5.709900 ms (FindLiveObjects: 0.525400 ms CreateObjectMapping: 0.349000 ms MarkObjects: 2.168000 ms  DeleteObjects: 2.666300 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 25.421736 seconds.
+  path: Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs
+  artifactKey: Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs using Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6119a4a47d5772f469eac0744daf6764') in 0.007861 seconds
+  Import took 0.014131 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.037160 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.97 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.17 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:243 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:228 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.8.1/Runtime/OculusLoader.cs Line: 243)
+
+Error when attempting to update scene info fields. Scene info data may be stale.
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Microsoft.MixedReality.Toolkit.Editor.SceneInfoUtils:RefreshSceneInfoFieldsInScriptableObjects () (at Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs:313)
+Microsoft.MixedReality.Toolkit.Editor.SceneInfoUtils:InitializeOnLoad () (at Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs:231)
+
+(Filename: Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs Line: 313)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.809 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.00 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.16 ms.
+Unloading 3351 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.8 MB.
+System memory in use after: 168.0 MB.
+
+Unloading 2335 unused Assets to reduce memory usage. Loaded Objects now: 3591.
+Total: 5.998700 ms (FindLiveObjects: 0.806300 ms CreateObjectMapping: 0.433700 ms MarkObjects: 2.480400 ms  DeleteObjects: 2.276800 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 2064.787153 seconds.
+  path: Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs
+  artifactKey: Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs using Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '188cda99acfea7b7377d0d4a856a5d2f') in 0.010969 seconds
+  Import took 0.019768 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.013903 seconds.
+  path: Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs
+  artifactKey: Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs using Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '188cda99acfea7b7377d0d4a856a5d2f') in 0.003935 seconds
+  Import took 0.009352 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.012524 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.95 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.16 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+NullReferenceException: Object reference not set to an instance of an object
+  at Unity.XR.Oculus.OculusLoader.AssetPathToAbsolutePath (System.String assetPath) [0x00048] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:243 
+  at Unity.XR.Oculus.OculusLoader.EditorLoadOVRPlugin () [0x0007b] in C:\Releases\ProjectEsky-UnityIntegration\Library\PackageCache\com.unity.xr.oculus@1.8.1\Runtime\OculusLoader.cs:228 
+
+(Filename: Library/PackageCache/com.unity.xr.oculus@1.8.1/Runtime/OculusLoader.cs Line: 243)
+
+Error when attempting to update scene info fields. Scene info data may be stale.
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Microsoft.MixedReality.Toolkit.Editor.SceneInfoUtils:RefreshSceneInfoFieldsInScriptableObjects () (at Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs:313)
+Microsoft.MixedReality.Toolkit.Editor.SceneInfoUtils:InitializeOnLoad () (at Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs:231)
+
+(Filename: Assets/MRTK/Core/Inspectors/PropertyDrawers/SceneInfoUtils.cs Line: 313)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.599 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.19 ms, found 18 plugins.
+Preloading 2 native plugins for Editor in 0.17 ms.
+Unloading 3351 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.9 MB.
+System memory in use after: 167.8 MB.
+
+Unloading 2335 unused Assets to reduce memory usage. Loaded Objects now: 3595.
+Total: 6.724800 ms (FindLiveObjects: 0.495000 ms CreateObjectMapping: 0.278500 ms MarkObjects: 2.290200 ms  DeleteObjects: 3.659100 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 329.141967 seconds.
+  path: Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs
+  artifactKey: Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Esky/Networking/UDPAutoDiscovery.cs using Guid(efa22011462a4ac4189482a32ca2a4f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c4ffb9ee3ae6ca0ad8fb6f90028830dd') in 0.007193 seconds
+  Import took 0.012807 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 32.174411 seconds.
+  path: Assets/Prefabs/Calibration/NorthStarRigCalibratorHand.prefab
+  artifactKey: Guid(30cfa88c248fca545a504bd2a56884c6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Calibration/NorthStarRigCalibratorHand.prefab using Guid(30cfa88c248fca545a504bd2a56884c6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2a4648dda4306508f8da178f23724871') in 0.037400 seconds
+  Import took 0.044140 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.607820 seconds.
+  path: Assets/Prefabs/Networking/ClientRepresentation.prefab
+  artifactKey: Guid(06045adcfcae0fb428beb285753d7265) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Networking/ClientRepresentation.prefab using Guid(06045adcfcae0fb428beb285753d7265) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bd8f064a7b9919d957e6c7479f7c27bf') in 0.059738 seconds
+  Import took 0.067478 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000277 seconds.
+  path: Assets/Prefabs/Networking/NetworkClient.prefab
+  artifactKey: Guid(99f052f953464f442bc68fb3952f331f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Networking/NetworkClient.prefab using Guid(99f052f953464f442bc68fb3952f331f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd31ce5cda6ecbb8137289f7c1573a2d4') in 0.010594 seconds
+  Import took 0.015987 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000217 seconds.
+  path: Assets/Prefabs/Networking/NetworkServer.prefab
+  artifactKey: Guid(9e6f6365c1aa481468fbfa4f6390f0ba) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Networking/NetworkServer.prefab using Guid(9e6f6365c1aa481468fbfa4f6390f0ba) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bc2e5e83f90f7eaa52b83e4d0b647ca3') in 0.006087 seconds
+  Import took 0.011557 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 33.505645 seconds.
+  path: Assets/Scenes
+  artifactKey: Guid(550d91e795a83ee4baf1e5db23401150) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes using Guid(550d91e795a83ee4baf1e5db23401150) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '606566600dcdbe41317d75c2ea0450b2') in 0.004619 seconds
+  Import took 0.009772 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.327509 seconds.
+  path: Assets/Scenes/AutoDiscoveryTest.unity
+  artifactKey: Guid(ca710d9d7a1b0124d855ff22c60f07e9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/AutoDiscoveryTest.unity using Guid(ca710d9d7a1b0124d855ff22c60f07e9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1aa222682bb704d75b324d69622dc0bd') in 0.004772 seconds
+  Import took 0.010165 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.389133 seconds.
+  path: Assets/Scenes/HandInteractionExamplesSettings.lighting
+  artifactKey: Guid(3baa167288cf1984b9b62a55c2664054) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/HandInteractionExamplesSettings.lighting using Guid(3baa167288cf1984b9b62a55c2664054) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '204accdf4977dd11ce926347e756ed3b') in 0.006070 seconds
+  Import took 0.011119 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.027495 seconds.
+  path: Assets/Scenes/HandInteractionExamplesSettings.lighting
+  artifactKey: Guid(3baa167288cf1984b9b62a55c2664054) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/HandInteractionExamplesSettings.lighting using Guid(3baa167288cf1984b9b62a55c2664054) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '204accdf4977dd11ce926347e756ed3b') in 0.005553 seconds
+  Import took 0.011965 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.109871 seconds.
+  path: Assets/Scenes/SampleScene.unity
+  artifactKey: Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/SampleScene.unity using Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0345a1cf969069371804f2466b47e6e2') in 0.004855 seconds
+  Import took 0.010543 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000637 seconds.
+  path: Assets/Scenes/SampleScene.unity
+  artifactKey: Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/SampleScene.unity using Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0345a1cf969069371804f2466b47e6e2') in 0.003775 seconds
+  Import took 0.008826 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.239622 seconds.
+  path: Assets/Scenes/Calibration
+  artifactKey: Guid(abfdcf9c1c398474bb543d34f1e31b78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Calibration using Guid(abfdcf9c1c398474bb543d34f1e31b78) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd9332d19c375a99e931a66348e3c2c63') in 0.004312 seconds
+  Import took 0.009668 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.221852 seconds.
+  path: Assets/Scenes/Examples
+  artifactKey: Guid(ca6bb28d97823d244a45dfd97d8a17d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/Examples using Guid(ca6bb28d97823d244a45dfd97d8a17d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd9df324271e9312bb90874dde75b2938') in 0.004233 seconds
+  Import took 0.009112 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.223483 seconds.
+  path: Assets/Scenes/UserStudy_New.unity
+  artifactKey: Guid(ade1da867d029914ba47e1ee01c7f580) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/UserStudy_New.unity using Guid(ade1da867d029914ba47e1ee01c7f580) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e435a2ff1344f3397ffbb69969122f4a') in 0.004901 seconds
+  Import took 0.010127 seconds .
+
