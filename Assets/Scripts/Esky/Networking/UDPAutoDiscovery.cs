@@ -288,7 +288,7 @@ namespace ProjectEsky.Networking.Discovery{
 
                 while (!disposing)
                 {
-                    if(hookedAutoDiscovery.connected != 2){
+                    if(hookedAutoDiscovery.connected < 2){
                         if (ReceivedData.SequenceEqual(packetBytes))
                         {
                             // Use ReportProgress from BackgroundWorker as communication channel between main app and the worker thread.
@@ -379,7 +379,7 @@ namespace ProjectEsky.Networking.Discovery{
                 {
                     while (this.disposing == false)
                     {
-                        if(hookedAutoDiscovery.connected != 2){
+                        if(hookedAutoDiscovery.connected < 2){
                         // Must look for server.. Repeat until configured.
                             if (ServerAddress == String.Empty)
                             {
