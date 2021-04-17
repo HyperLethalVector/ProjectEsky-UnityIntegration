@@ -63,6 +63,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
 
     public class WebRTCAutoDiscoveryHandler : PackageManagerHookBehaviour
     {
+        public List<byte[]> messagesQueue = new List<byte[]>();
         public static WebRTCAutoDiscoveryHandler instance;
         public UnityEvent<byte[]> onDataReceivedFromDataTrack;
         public UnityEvent onConnectionHandled;
@@ -117,6 +118,14 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
             if(initConnection){initConnection = false;onConnectionHandled.Invoke();}
+
+        }
+        protected override void Update(){
+            base.Update();
+            while(messagesQueue.Count > 0){
+                byte[] b = messagesQueue[0];
+                messagesQueue.RemoveAt(0);
+            }
         }
         public void Finish(){
         }
@@ -125,8 +134,8 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         public void StoppedConnection(){
                 onConnectionDropped.Invoke();
         }
-        public void ReceiveMessageData(byte[] b){    
-            onDataReceivedFromDataTrack.Invoke(b);
+        public void ReceiveMessageData(byte[] b){   
+            messagesQueue.Add(b); 
         }
         public override void SendBytes(byte[] b){
                 knownDataChannels[knownDataChannels.Count-1].SendMessage(b);
