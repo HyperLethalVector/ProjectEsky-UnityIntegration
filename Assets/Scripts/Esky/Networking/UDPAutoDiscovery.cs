@@ -72,6 +72,8 @@ namespace ProjectEsky.Networking.Discovery{
         AutoDiscoveryReceiver adr;
         public bool hasMessagePrepared = false;
         public WebrtcShakeString shake = new WebrtcShakeString();
+        bool createOffer = false;
+        bool createAnswer = false;
         public void Start() {
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
@@ -80,6 +82,10 @@ namespace ProjectEsky.Networking.Discovery{
             objWorkerDiscovery.DoWork += new DoWorkEventHandler(adr.Start);
             objWorkerDiscovery.ProgressChanged += new ProgressChangedEventHandler(LogProgressChanged);
             objWorkerDiscovery.RunWorkerAsync();
+        }
+        private void FixedUpdate() {
+            if(createOffer){createOffer = false;PeerConnection.StartConnection();}    
+            if(createAnswer){createAnswer = false;PeerConnection.Peer.CreateAnswer();}        
         }
         public void StartSender(){
             shake.IceMessages.Clear();
@@ -111,10 +117,10 @@ namespace ProjectEsky.Networking.Discovery{
         }
         
         public void CreateOffer(){
-            PeerConnection.StartConnection();
+            createOffer = true;
         }
         public void CreateAnswer(){
-            PeerConnection.Peer.CreateAnswer();
+            createAnswer = true;
         }
 
         public void ReceiveCompletedOffer(WebrtcShakeClass receivedClass){
@@ -246,12 +252,12 @@ namespace ProjectEsky.Networking.Discovery{
                         // Here we reply the Service IP and Port (TCP).. 
                         // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
                         createOfferDelegate.Invoke();
-                        Thread.Sleep(5000);//wait for the candidates to be generated
+                        Thread.Sleep(1000);//wait for the candidates to be generated
                         string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                         this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
                         byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK=" + s); // Acknowledged
                         newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
-                        this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytes.Length + " bytes to " + IncomingIP);
+                        this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
                     }
                     else
                     {
