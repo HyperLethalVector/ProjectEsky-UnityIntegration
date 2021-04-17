@@ -255,7 +255,7 @@ namespace ProjectEsky.Networking.Discovery{
                         Thread.Sleep(2000);//wait for the candidates to be generated
                         string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                         this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
-                        byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK=" + s); // Acknowledged
+                        byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK*" + s); // Acknowledged
                         newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
                         this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
                     }
@@ -365,30 +365,27 @@ namespace ProjectEsky.Networking.Discovery{
                     byte[] receiveBytes = udp.Receive(ref groupEP);
 
                     string returnData = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
-                    if (returnData.Substring(0, 3) == "ACK")
+                    this.worker.ReportProgress(3,"Received Data: " + returnData);   
+                    string[] returnDataSpl = returnData.Split('*');
+  //                  returnData = returnData.Remove(0,3);  
+//                    string substr = returnData.Substring(3,returnData.Length);
+
+                    if (returnDataSpl[0] == "NAK")
                     {
-                        string ReceivedHandshake = returnData.Substring(4,returnData.Length);
-                        
-                        this.worker.ReportProgress(3,"Received Data: " + ReceivedHandshake);
-                        WebrtcShakeClass wrsc = JsonUtility.FromJson<WebrtcShakeClass>(ReceivedHandshake);
+                        this.worker.ReportProgress(3, "AutoDiscovery::INVALID REQUEST");
+                    }else if(returnDataSpl[0] == "ACK"){//everything ok
+                        this.worker.ReportProgress(3,"It was ACK! " + returnDataSpl[1]);
+                        WebrtcShakeClass wrsc = JsonUtility.FromJson<WebrtcShakeClass>(returnDataSpl[1]);
                         hookedAutoDiscovery.ReceiveCompletedOffer(wrsc);
                         Thread.Sleep(4000);
                         string sendOffer = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                         byte[] packetBytesResponse = Encoding.ASCII.GetBytes("RSP=" + sendOffer); // Acknowledged
+                        udp.Send(packetBytesResponse,packetBytesResponse.Length,groupEP);                          
 //                        newsock.Send(packetBytesResponse, packetBytesResponse.Length, RemoteEP);
-                        udp.Send(packetBytesResponse,packetBytesResponse.Length,groupEP);
                         // Check if the server is reachable! Try to connect it using TCP.
+                    }else{
+                        this.worker.ReportProgress(3,"RECEIVED GARBAGE?");   
                     }
-                    else if (returnData.Substring(0, 3) == "NAK")
-                    {
-                        this.worker.ReportProgress(3, "AutoDiscovery::INVALID REQUEST");
-                    }
-                    else
-                    {
-                        this.worker.ReportProgress(3, "AutoDiscovery::Garbage Received?");
-                    }
-
-                    Console.WriteLine("Sleeping. No work to do.");
                     Thread.Sleep(100);
                 }
                 catch (SocketException e)
