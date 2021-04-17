@@ -252,7 +252,7 @@ namespace ProjectEsky.Networking.Discovery{
                         // Here we reply the Service IP and Port (TCP).. 
                         // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
                         createOfferDelegate.Invoke();
-                        Thread.Sleep(1000);//wait for the candidates to be generated
+                        Thread.Sleep(2000);//wait for the candidates to be generated
                         string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                         this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
                         byte[] packetBytesAck = Encoding.ASCII.GetBytes("ACK=" + s); // Acknowledged
