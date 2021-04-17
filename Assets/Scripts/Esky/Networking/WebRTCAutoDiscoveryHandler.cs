@@ -388,9 +388,9 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
 
             // Specify timeout since UDP is a state-less protocol
             // 5000ms - 5 seconds.
-            private int ServerSyncTimeout = 5000;
+            private int ServerSyncTimeout = 10000;
             
-            private int AutoDiscoveryTimeout = 10000;
+            private int AutoDiscoveryTimeout = 40000;
 
             // Sample byte sequency that Identify a Server Address Request. You may change on the client-side also.
             // Implementing other byte sequences for other actions are also valid. You as developer may know that ;)
