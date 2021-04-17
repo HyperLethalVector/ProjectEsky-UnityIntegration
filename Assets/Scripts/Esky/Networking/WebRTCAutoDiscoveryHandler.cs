@@ -78,6 +78,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         bool receiveAnswer = false;
         bool receiveOffer = false;
         bool initConnection = false;
+        bool discConnection = false;
         SdpMessage sdpOffer = null;
         SdpMessage sdpAnswer = null;
         [HideInInspector]
@@ -114,11 +115,10 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 connected += 1;
                 PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
                 {
-                    initConnection = true;
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
             if(initConnection){initConnection = false;onConnectionHandled.Invoke();}
-
+            if(discConnection){discConnection = false;onConnectionDropped.Invoke();}
         }
         protected override void Update(){
             base.Update();
@@ -149,7 +149,19 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         public void DataChannelAddedDelegate(DataChannel channel){
             Debug.LogError("Data Channel Added, ID: " + channel.ID + ", Label: " + channel.Label);
             channel.MessageReceived += ReceiveMessageData;
+            channel.StateChanged += DataChannelOpen;
             knownDataChannels.Add(channel);
+        }
+        public void DataChannelOpen(){
+            switch(knownDataChannels[0].State){
+                case DataChannel.ChannelState.Open:
+                initConnection = true;                
+                break;
+                case DataChannel.ChannelState.Closed:
+                discConnection = true;
+
+                break;
+            } 
         }
         public override void OnPeerInitialized(){ 
             Debug.Log("On initialized");
