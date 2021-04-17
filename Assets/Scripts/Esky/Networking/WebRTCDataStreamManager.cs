@@ -48,6 +48,7 @@ namespace ProjectEsky.Networking.WebRTC{
             if(isConnected){
                 timeSinceLastSentHeartbeat += Time.fixedDeltaTime;
                 if(timeSinceLastSentHeartbeat > HeartBeatInterval){
+                    Debug.Log("Sending Heartbeat");
                     timeSinceLastSentHeartbeat = 0;
                     WebRTCPacket p = new WebRTCPacket();
                     p.packetType = WebRTCPacketType.Heartbeat;
@@ -66,6 +67,7 @@ namespace ProjectEsky.Networking.WebRTC{
             }
         }
         public void OnConnected(){
+            Debug.Log("Connected! Will start heartbeats");
             isConnected = true;
         }
         void OnDisconnected(){
