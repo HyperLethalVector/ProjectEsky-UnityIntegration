@@ -346,28 +346,6 @@ namespace ProjectEsky.Networking.Discovery{
             }
 
             // Here is to check if the server replied by Auto Discovery is Alive.
-            private bool serverIsReachable(string host, int port)
-            {
-                try
-                {
-                    TcpClient handle = TCP_Client.Connect(new IPEndPoint(IPAddress.Parse(host), port), ServerSyncTimeout);
-                    if (handle.Connected == true)
-                    {
-                        handle.Close();
-                        return (true);
-                    }
-                    else
-                    {
-                        return (false);
-                    }
-                }
-                catch (Exception e)
-                {
-                    worker.ReportProgress(1, "AutoDiscovery::Connect Error:" + e.Message);
-                    return (false);
-                }
-            }
-
             private bool sendBroadcastSearchPacket()
             {
 
@@ -382,31 +360,24 @@ namespace ProjectEsky.Networking.Discovery{
 
                 try
                 {
-                    udp.Send(packetBytes, packetBytes.Length, groupEP);
+                    //udp.Send(packetBytes, packetBytes.Length, groupEP);
 
                     byte[] receiveBytes = udp.Receive(ref groupEP);
 
                     string returnData = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
                     if (returnData.Substring(0, 3) == "ACK")
                     {
-                        Debug.Log("Received Data: " + returnData);
-                        string[] splitRcvd = returnData.Split(' ');
-                        this.worker.ReportProgress(3, "AutoDiscovery::Response Server is " + splitRcvd[1] + ":" + splitRcvd[2]);
-
+                        string ReceivedHandshake = returnData.Substring(4,returnData.Length);
+                        
+                        this.worker.ReportProgress(3,"Received Data: " + ReceivedHandshake);
+                        WebrtcShakeClass wrsc = JsonUtility.FromJson<WebrtcShakeClass>(ReceivedHandshake);
+                        hookedAutoDiscovery.ReceiveCompletedOffer(wrsc);
+                        Thread.Sleep(4000);
+                        string sendOffer = JsonUtility.ToJson(hookedAutoDiscovery.shake);
+                        byte[] packetBytesResponse = Encoding.ASCII.GetBytes("RSP=" + sendOffer); // Acknowledged
+//                        newsock.Send(packetBytesResponse, packetBytesResponse.Length, RemoteEP);
+                        udp.Send(packetBytesResponse,packetBytesResponse.Length,groupEP);
                         // Check if the server is reachable! Try to connect it using TCP.
-                        if (serverIsReachable(splitRcvd[1], Convert.ToInt16(splitRcvd[2])))
-                        {
-                            ServerAddress = splitRcvd[1];
-                            ServerPort = Convert.ToInt16(splitRcvd[2]);
-                            returnVal = true;
-                        }
-                        else
-                        {
-                            this.worker.ReportProgress(3, "AutoDiscovery::WARNING Server found but is unreachable. Retrying..");
-                            return (false);
-                        }
-
-
                     }
                     else if (returnData.Substring(0, 3) == "NAK")
                     {
@@ -433,68 +404,5 @@ namespace ProjectEsky.Networking.Discovery{
             }
 
         }
-    public class TCP_Client
-    {
-
-        private static bool IsConnectionSuccessful = false;
-        private static Exception socketexception;
-        private static ManualResetEvent TimeoutObject = new ManualResetEvent(false);
-
-        public static TcpClient Connect(IPEndPoint remoteEndPoint, int timeoutMSec)
-        {
-
-            TimeoutObject.Reset();
-            socketexception = null;
-
-            string serverip = Convert.ToString(remoteEndPoint.Address);
-            int serverport = remoteEndPoint.Port;
-            TcpClient tcpclient = new TcpClient();
-
-            tcpclient.BeginConnect(serverip, serverport,
-                new AsyncCallback(CallBackMethod), tcpclient);
-
-            if (TimeoutObject.WaitOne(timeoutMSec, false))
-            {
-                if (IsConnectionSuccessful)
-                {
-                    return tcpclient;
-                }
-                else
-                {
-                    throw socketexception;
-                }
-            }
-            else
-            {
-                tcpclient.Close();
-                throw new TimeoutException("TimeOut Exception");
-            }
-
-        }
-        private static void CallBackMethod(IAsyncResult asyncresult)
-        {
-            try
-            {
-                IsConnectionSuccessful = false;
-                TcpClient tcpclient = asyncresult.AsyncState as TcpClient;
-
-                if (tcpclient.Client != null)
-                {
-                    tcpclient.EndConnect(asyncresult);
-                    IsConnectionSuccessful = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                IsConnectionSuccessful = false;
-                socketexception = ex;
-            }
-            finally
-            {
-                TimeoutObject.Set();
-            }
-        }
-
-    }
 
 }
