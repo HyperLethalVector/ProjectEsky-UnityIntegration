@@ -261,6 +261,12 @@ namespace ProjectEsky.Networking.Discovery{
                         byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*" + s); // Acknowledged
                         newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
                         this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
+                        byte[] packetsToRead = newsock.Receive(ref RemoteEP);
+                        if(packetsToRead.Length > 0){
+
+                            string returnedAnswer = Encoding.Unicode.GetString(packetsToRead, 0, packetsToRead.Length);
+                            this.workerUDP.ReportProgress(1, "Received Answer:" + returnedAnswer);                            
+                        }
                     }
                     else
                     {
@@ -382,7 +388,7 @@ namespace ProjectEsky.Networking.Discovery{
                         hookedAutoDiscovery.ReceiveCompletedOffer(wrsc);
                         Thread.Sleep(4000);
                         string sendOffer = JsonUtility.ToJson(hookedAutoDiscovery.shake);
-                        byte[] packetBytesResponse = Encoding.Unicode.GetBytes("RSP=" + sendOffer); // Acknowledged
+                        byte[] packetBytesResponse = Encoding.Unicode.GetBytes("RSP*" + sendOffer); // Acknowledged
                         udp.Send(packetBytesResponse,packetBytesResponse.Length,groupEP);                          
 //                        newsock.Send(packetBytesResponse, packetBytesResponse.Length, RemoteEP);
                         // Check if the server is reachable! Try to connect it using TCP.
