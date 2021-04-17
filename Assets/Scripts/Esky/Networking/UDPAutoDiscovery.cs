@@ -73,7 +73,8 @@ namespace ProjectEsky.Networking.Discovery{
         bool receiveOffer = false;
         SdpMessage sdpOffer = null;
         SdpMessage sdpAnswer = null;
-        public bool connected = false;
+        [HideInInspector]
+        public int connected = 0;
         public void Start() {
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
@@ -106,11 +107,11 @@ namespace ProjectEsky.Networking.Discovery{
         }
         public void ReceivedConnection(){
             Debug.Log("Connection established");
-//            connected = true;
+            connected += 1;
         }
         public void StoppedConnection(){
             Debug.Log("Connection Stopped");
-            connected = false;
+            connected = 0;
         }
         public void ReceiveMessageData(byte[] b){    
             if(BytesReceived != null){
@@ -287,7 +288,7 @@ namespace ProjectEsky.Networking.Discovery{
 
                 while (!disposing)
                 {
-                    if(!hookedAutoDiscovery.connected){
+                    if(hookedAutoDiscovery.connected != 2){
                         if (ReceivedData.SequenceEqual(packetBytes))
                         {
                             // Use ReportProgress from BackgroundWorker as communication channel between main app and the worker thread.
@@ -378,7 +379,7 @@ namespace ProjectEsky.Networking.Discovery{
                 {
                     while (this.disposing == false)
                     {
-                        if(!hookedAutoDiscovery.connected){
+                        if(hookedAutoDiscovery.connected != 2){
                         // Must look for server.. Repeat until configured.
                             if (ServerAddress == String.Empty)
                             {
