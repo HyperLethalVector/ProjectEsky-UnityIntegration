@@ -29,7 +29,7 @@ namespace ProjectEsky.Networking.WebRTC{
         public static WebRTCDataStreamManager instance;
         public UnityEvent<byte[]> onCustomPacketReceive;
         // Start is called before the first frame update
-        [Range(0.1f,3f)]
+        [Range(0.001f,3f)]
         public float HeartBeatInterval = 1f; // do a heartbeat every second
         [Range(10f,120f)]
         public float DisconnectTimeout = 30f;// Timeout after 30 seconds, then close the webrtc port;

@@ -396,7 +396,7 @@ MonoBehaviour:
   onCustomPacketReceive:
     m_PersistentCalls:
       m_Calls: []
-  HeartBeatInterval: 1
+  HeartBeatInterval: 0.1
   DisconnectTimeout: 30
 --- !u!114 &762479102
 MonoBehaviour:
