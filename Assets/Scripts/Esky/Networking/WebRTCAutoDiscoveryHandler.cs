@@ -112,9 +112,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 connected += 1;
                 PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
                 {
-                    if(onConnectionHandled != null){
-                        onConnectionHandled.Invoke();
-                    }
+                    onConnectionHandled.Invoke();
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
             }
         }
