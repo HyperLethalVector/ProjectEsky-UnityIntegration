@@ -177,7 +177,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                     throw prevTask.Exception; 
                 } 
             });    
-            PeerConnection.Peer.AddDataChannelAsync(1, "unreliabletransferChannel", true, false).ContinueWith((prevTask) => 
+            PeerConnection.Peer.AddDataChannelAsync(1, "unreliabletransferChannel", true, true).ContinueWith((prevTask) => 
             { 
                 if (prevTask.Exception != null) 
                 { 
