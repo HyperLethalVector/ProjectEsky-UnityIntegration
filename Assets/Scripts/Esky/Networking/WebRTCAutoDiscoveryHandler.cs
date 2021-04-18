@@ -135,7 +135,6 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 onConnectionDropped.Invoke();
         }
         public void ReceiveMessageData(byte[] b){   
-            Debug.Log("Receiving Message Data");
             messagesQueue.Add(b); 
         }
         public override void SendBytes(byte[] b){

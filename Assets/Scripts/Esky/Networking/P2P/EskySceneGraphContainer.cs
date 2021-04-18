@@ -61,6 +61,8 @@ namespace ProjectEsky.Networking{
         public int RegisteredPrefabIndex;
         [ProtoMember(4)]
         public NetworkOwnership ownership;
+        [ProtoMember(5)]
+        public string UUID;
         public GameObject hookedObject;
     }
     public class EskySynchronizedSceneGraph{
@@ -69,21 +71,21 @@ namespace ProjectEsky.Networking{
         public ItemUpdateDelegate ValueChangedEvent;
         public ItemUpdateDelegate ValueAddedEvent;
         public ItemUpdateDelegate ValueRemovedEvent;    
-        public void UpdateValue(string key, EskySceneGraphNode value)
+        public void UpdateValue(EskySceneGraphNode value)
         {
             try
             {
-                if(Items.ContainsKey(key)){
+                if(Items.ContainsKey(value.UUID)){
                     //Needtoupdate
-                    EskySceneGraphNode n = Items[key];
+                    EskySceneGraphNode n = Items[value.UUID];
                     n.positionRelativeToAnchor = value.positionRelativeToAnchor;
                     n.rotationRelativeToAnchor = value.rotationRelativeToAnchor;
                     n.ownership = value.ownership;
-                    Items[key] = n;
-                    ValueChangedEvent(key,n);
-                }else{
-                    Items.Add(key, value);
-                    ValueAddedEvent(key,Items[key]);
+                    Items[value.UUID] = n;
+                    ValueChangedEvent(value.UUID,n);
+                }else{ 
+                    Items.Add(value.UUID, value);
+                    ValueAddedEvent(value.UUID,Items[value.UUID]);
                 }
             }
             catch (System.Exception ex)
@@ -100,6 +102,7 @@ namespace ProjectEsky.Networking{
                     n.positionRelativeToAnchor.SetFromVector3(value.localPosition);
                     n.rotationRelativeToAnchor.SetFromQuaternion(value.localRotation);
                     n.ownership = value.ownership;
+                    n.UUID = key;
                     Items[key] = n; 
                     return n;
                 }else{
@@ -109,6 +112,7 @@ namespace ProjectEsky.Networking{
                     n.positionRelativeToAnchor.SetFromVector3(value.localPosition);
                     n.rotationRelativeToAnchor.SetFromQuaternion(value.localRotation);
                     n.ownership = value.ownership;
+                    n.UUID = key;
                     Items[key] = n; 
                     Items.Add(key, n);
                     return n;
@@ -156,13 +160,13 @@ namespace ProjectEsky.Networking{
                 Serializer.Serialize<EskySceneGraphNode>(bnStream,n);
                 p.packetData = bnStream.ToArray();                
             }
-            Debug.Log("Sending Scene Graph Locally");
             WebRTCDataStreamManager.instance.SendPacket(p);
 
         }
         public void ReceiveSceneGraphPacket(WebRTCPacket packet){
             using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
                 EskySceneGraphNode p = Serializer.Deserialize<EskySceneGraphNode>(bnStream);
+                mySyncedSceneGraph.UpdateValue(p);
             }
         }
         public void SubscribeNewItem(string UUID, NetworkObject go){//should be called by all items created on the local player

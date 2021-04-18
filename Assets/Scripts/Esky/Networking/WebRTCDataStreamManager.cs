@@ -93,7 +93,6 @@ namespace ProjectEsky.Networking.WebRTC{
                 break;
                 case WebRTCPacketType.PoseGraphSync:
                 if(EskySceneGraphContainer.instance != null){
-                    Debug.Log("ReceivedSceneGraphPose");
                     EskySceneGraphContainer.instance.ReceiveSceneGraphPacket(packetIncoming);
                 }else{
                     Debug.LogError("A scene graph must exist in order to process scene graph packets");
