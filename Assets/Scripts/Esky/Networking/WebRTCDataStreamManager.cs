@@ -48,7 +48,6 @@ namespace ProjectEsky.Networking.WebRTC{
             if(isConnected){
                 timeSinceLastSentHeartbeat += Time.fixedDeltaTime;
                 if(timeSinceLastSentHeartbeat > HeartBeatInterval){
-                    Debug.Log("Sending Heartbeat");
                     timeSinceLastSentHeartbeat = 0;
                     WebRTCPacket p = new WebRTCPacket();
                     p.packetType = WebRTCPacketType.Heartbeat;
@@ -59,7 +58,6 @@ namespace ProjectEsky.Networking.WebRTC{
                     timeSinceLastSeenHeartbeat += Time.fixedDeltaTime;
                     if(timeSinceLastSeenHeartbeat > DisconnectTimeout){
                         timeSinceLastSeenHeartbeat = 0;
-                        Debug.Log("Timout! Disconnecting");
                         Discovery.WebRTCAutoDiscoveryHandler.instance.Disconnect();
                         isConnected = false;
                     }
@@ -67,14 +65,12 @@ namespace ProjectEsky.Networking.WebRTC{
             }
         }
         public void OnConnected(){
-            Debug.Log("Connected! Will start heartbeats");
             isConnected = true;
         }
         void OnDisconnected(){
             isConnected = false;
         }
         public void OnReceiveByte(byte[] b){
-            Debug.Log("Received Data");
             using(MemoryStream bnStream = new MemoryStream(b)){
                 if(!isConnected){
                     isConnected = true;
@@ -88,7 +84,6 @@ namespace ProjectEsky.Networking.WebRTC{
 
             switch(packetIncoming.packetType){
                 case WebRTCPacketType.Heartbeat:
-                UnityEngine.Debug.Log("Received Heartbeat");
                 timeSinceLastSeenHeartbeat = 0;
                 break;
                 default:

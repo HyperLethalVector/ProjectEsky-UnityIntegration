@@ -83,12 +83,11 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
         SdpMessage sdpAnswer = null;
         [HideInInspector]
         public int connected = 0;
+
+        public bool isConnected = false;
         public bool LogInfo;
         public void Awake(){
             instance = this;
-        }
-        public bool isConnected(){
-            return connected > 1;
         }
         public void Start() {
 
@@ -156,10 +155,11 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             switch(knownDataChannels[0].State){
                 case DataChannel.ChannelState.Open:
                 initConnection = true;                
+                isConnected = true;
                 break;
                 case DataChannel.ChannelState.Closed:
                 discConnection = true;
-
+                isConnected = false;
                 break;
             } 
         }
@@ -327,7 +327,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
 
                 while (!disposing)
                 {
-                    if(hookedAutoDiscovery.connected < 2){
+                    if(!hookedAutoDiscovery.isConnected){
                         if (ReceivedData.SequenceEqual(packetBytes))
                         {
                             // Use ReportProgress from BackgroundWorker as communication channel between main app and the worker thread.
@@ -336,7 +336,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                             // Here we reply the Service IP and Port (TCP).. 
                             // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
                             createOfferDelegate.Invoke();
-                            Thread.Sleep(2000);//wait for the candidates to be generated
+                            Thread.Sleep(1000);//wait for the candidates to be generated
                             string s = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                             this.workerUDP.ReportProgress(1, "Got discovered, sending offer: " + s);
                             byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*" + s); // Acknowledged
@@ -418,7 +418,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 {
                     while (this.disposing == false)
                     {
-                        if(hookedAutoDiscovery.connected < 2){
+                        if(!hookedAutoDiscovery.isConnected){
                         // Must look for server.. Repeat until configured.
                             if (ServerAddress == String.Empty)
                             {
@@ -427,7 +427,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                                 // Broadcast the query
                                 sendBroadcastSearchPacket();
                             }
-                            Thread.Sleep(3000);
+                            Thread.Sleep(1000);
                         }
                     }
                 }
@@ -474,7 +474,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                         this.worker.ReportProgress(3,"It was ACK! " + returnDataSpl[1]);
                         WebrtcShakeClass wrsc = JsonUtility.FromJson<WebrtcShakeClass>(returnDataSpl[1]);
                         hookedAutoDiscovery.ReceiveCompletedOffer(wrsc);
-                        Thread.Sleep(4000);
+                        Thread.Sleep(1000);
                         string sendOffer = JsonUtility.ToJson(hookedAutoDiscovery.shake);
                         byte[] packetBytesResponse = Encoding.Unicode.GetBytes("RSP*" + sendOffer); // Acknowledged
                         udp.Send(packetBytesResponse,packetBytesResponse.Length,groupEP);                          
@@ -483,7 +483,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                     }else{
                         this.worker.ReportProgress(3,"RECEIVED GARBAGE?");   
                     }
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                 }
                 catch (SocketException e)
                 {
