@@ -9,13 +9,13 @@ namespace ProjectEsky.Networking{
     }
     public class NetworkObject : MonoBehaviour
     {
-
+        public TMPro.TextMeshPro myLabel;
         public Vector3 localPosition;
         public Quaternion localRotation;
         public NetworkOwnership ownership;
         public string UUID = "";
         [Range(1,200)]
-        public float SyncRate;
+        public float SyncRate = 5;
         float internalSyncRate = 0f;
         float internalSyncTimer = 0f;
         int RegisteredPrefabIndex = -1;
@@ -29,7 +29,10 @@ namespace ProjectEsky.Networking{
         public void Awake() {
             if(UUID == ""){ //this should insist code is only called once
                 UUID = Guid.NewGuid().ToString();
-                EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);                
+                EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);  
+                if(myLabel){
+                    myLabel.text = UUID;
+                }              
             }
             internalSyncRate = 1.0f/SyncRate;
 
