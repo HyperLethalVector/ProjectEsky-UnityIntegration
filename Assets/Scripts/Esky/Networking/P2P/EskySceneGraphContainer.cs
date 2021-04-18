@@ -170,8 +170,7 @@ namespace ProjectEsky.Networking{
             }
         }
         public void SubscribeNewItem(string UUID, NetworkObject go){//should be called by all items created on the local player
-            if(objectsInScene.ContainsKey(UUID)){
-                Debug.LogError("Duplicate network object is being added?");                
+            if(objectsInScene.ContainsKey(UUID)){  
             }else{
                 objectsInScene.Add(UUID,go);
             }
@@ -180,11 +179,11 @@ namespace ProjectEsky.Networking{
             if(id > 0 && id < RegisteredPrefabs.Count){
                 GameObject g = Instantiate<GameObject>(RegisteredPrefabs[id].gameObject);
                 NetworkObject no = g.GetComponent<NetworkObject>();
-                no.SetRegisteredPrefabIndex(id);                
+                no.SetRegisteredPrefabIndex(id);               
                 no.Start();
                 return no;
             }else{
-                Debug.LogError("Wasn't able to spawn network object, index doesn't exist!");
+
                 return null;
             }
         }
@@ -200,8 +199,9 @@ namespace ProjectEsky.Networking{
                     GameObject g = Instantiate<GameObject>(RegisteredPrefabs[node.RegisteredPrefabIndex].gameObject);
                     NetworkObject no;
                     objectsInScene.Add(key,no = g.GetComponent<NetworkObject>()); 
+                    no.UUID = key;                    
                     no.SetRegisteredPrefabIndex(node.RegisteredPrefabIndex);                    
-                    no.UUID = key;
+                    no.ActivateNetwork();
                     no.localPosition = node.positionRelativeToAnchor.GetVector3();
                     no.localRotation = node.rotationRelativeToAnchor.GetQuaternion();
                 }else{//below 0 is the registered client
@@ -209,6 +209,7 @@ namespace ProjectEsky.Networking{
                     NetworkObject no;
                     objectsInScene.Add(key,no = g.GetComponent<NetworkObject>()); 
                     no.UUID = key;
+                    no.ActivateNetwork();
                     no.SetRegisteredPrefabIndex(-1);
                     no.ownership = NetworkOwnership.Other;
                     no.localPosition = node.positionRelativeToAnchor.GetVector3();

@@ -37,6 +37,12 @@ namespace ProjectEsky.Networking{
             internalSyncRate = 1.0f/SyncRate;
 
         }
+        public void ActivateNetwork() {
+            internalSyncRate = 1.0f/SyncRate;
+            if(myLabel){
+                myLabel.text = UUID;
+            }              
+        }
         // Update is called once per frame
         void Update()
         {
