@@ -31208,7 +31208,7 @@ MonoBehaviour:
   MapName: temp.raw
   loadMap: 0
   saveMap: 0
-  loadBlob: 1
+  loadBlob: 0
 --- !u!1 &2130909386
 GameObject:
   m_ObjectHideFlags: 0
