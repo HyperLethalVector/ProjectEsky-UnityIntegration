@@ -160,6 +160,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 case DataChannel.ChannelState.Closed:
                 discConnection = true;
                 isConnected = false;
+                PeerConnection.ReInit();
                 break;
             } 
         }

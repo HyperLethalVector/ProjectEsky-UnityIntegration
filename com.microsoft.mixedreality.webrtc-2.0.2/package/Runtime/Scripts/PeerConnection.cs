@@ -630,6 +630,9 @@ namespace Microsoft.MixedReality.WebRTC.Unity
             }
             InitializeAsync();
         }
+        public void ReInit(){
+            InitializeAsync();
+        }
 
         /// <summary>
         /// Unity Engine OnDisable() hook
