@@ -392,11 +392,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ClientUUID: 
   isConnected: 0
-  canTimeout: 0
+  canTimeout: 1
   onCustomPacketReceive:
     m_PersistentCalls:
       m_Calls: []
-  HeartBeatInterval: 0.1
+  HeartBeatInterval: 1
   DisconnectTimeout: 30
 --- !u!114 &762479102
 MonoBehaviour:
@@ -453,6 +453,7 @@ MonoBehaviour:
       sdp: 
       type: 
   connected: 0
+  isConnected: 0
   LogInfo: 1
 --- !u!4 &966919328 stripped
 Transform:
