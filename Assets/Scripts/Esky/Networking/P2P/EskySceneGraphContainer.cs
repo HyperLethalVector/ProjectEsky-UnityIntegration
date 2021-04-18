@@ -174,7 +174,7 @@ namespace ProjectEsky.Networking{
                 GameObject g = Instantiate<GameObject>(RegisteredPrefabs[id].gameObject);
                 NetworkObject no = g.GetComponent<NetworkObject>();
                 no.SetRegisteredPrefabIndex(id);                
-                no.Awake();
+                no.Start();
                 return no;
             }else{
                 Debug.LogError("Wasn't able to spawn network object, index doesn't exist!");
