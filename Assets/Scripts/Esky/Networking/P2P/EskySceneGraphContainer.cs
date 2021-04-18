@@ -54,9 +54,9 @@ namespace ProjectEsky.Networking{
     [ProtoContract]    
     public class EskySceneGraphNode{
         [ProtoMember(1)]        
-        public ProtoVector3 positionRelativeToAnchor;
+        public ProtoVector3 positionRelativeToAnchor = new ProtoVector3();
         [ProtoMember(2)]
-        public ProtoQuaternion rotationRelativeToAnchor;
+        public ProtoQuaternion rotationRelativeToAnchor = new ProtoQuaternion();
         [ProtoMember(3)]
         public int RegisteredPrefabIndex;
         [ProtoMember(4)]
@@ -115,7 +115,8 @@ namespace ProjectEsky.Networking{
                 }
             }
             catch (System.Exception ex)
-            {                
+            {   
+                Debug.LogError(ex);             
                 throw ex;
             }                        
         }
@@ -128,6 +129,7 @@ namespace ProjectEsky.Networking{
                     throw new System.Exception("Key doesn't exist");
                 }
             }catch(System.Exception ex){
+                Debug.LogError(ex);                
                 throw ex;                
             }
         }
@@ -154,6 +156,7 @@ namespace ProjectEsky.Networking{
                 Serializer.Serialize<EskySceneGraphNode>(bnStream,n);
                 p.packetData = bnStream.ToArray();                
             }
+            Debug.Log("Sending Scene Graph Locally");
             WebRTCDataStreamManager.instance.SendPacket(p);
 
         }

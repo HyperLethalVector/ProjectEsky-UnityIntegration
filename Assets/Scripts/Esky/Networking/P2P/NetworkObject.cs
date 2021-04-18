@@ -16,7 +16,9 @@ namespace ProjectEsky.Networking{
         public string UUID = "";
         [Range(1,200)]
         public float SyncRate = 5;
+        [SerializeField]
         float internalSyncRate = 0f;
+        [SerializeField]        
         float internalSyncTimer = 0f;
         int RegisteredPrefabIndex = -1;
         public PoseSynctype PoseSyncronisationType;
