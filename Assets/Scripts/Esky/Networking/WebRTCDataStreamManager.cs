@@ -101,6 +101,7 @@ namespace ProjectEsky.Networking.WebRTC{
                 break;
                 case WebRTCPacketType.MapBLOBShare:
                 if(NetworkMapSharer.instance != null){
+                    Debug.Log("Received map! Loading....");
                     NetworkMapSharer.instance.ReceiveMap(packetIncoming.packetData);
                 }
                 break;
@@ -113,6 +114,15 @@ namespace ProjectEsky.Networking.WebRTC{
                 using (MemoryStream bnStream = new MemoryStream()){
                     Serializer.Serialize<WebRTCPacket>(bnStream,packet);
                     WebRTC.Discovery.WebRTCAutoDiscoveryHandler.instance.SendBytes(bnStream.ToArray());
+                    bnStream.Dispose();
+                }
+            }
+        }
+        public void SendPacketReliable(WebRTCPacket packet){
+            if(isConnected){
+                using (MemoryStream bnStream = new MemoryStream()){
+                    Serializer.Serialize<WebRTCPacket>(bnStream,packet);
+                    WebRTC.Discovery.WebRTCAutoDiscoveryHandler.instance.SendBytesReliable(bnStream.ToArray());
                     bnStream.Dispose();
                 }
             }

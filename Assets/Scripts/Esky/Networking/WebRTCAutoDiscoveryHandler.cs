@@ -138,18 +138,21 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             messagesQueue.Add(b); 
         }
         public override void SendBytes(byte[] b){
-                knownDataChannels[knownDataChannels.Count-1].SendMessage(b);
+                knownDataChannels[1].SendMessage(b);
+        }
+        public void SendBytesReliable(byte[] b){
+                knownDataChannels[2].SendMessage(b);
         }
         public void Disconnect(){
                 discConnection = true;
                 isConnected = false;                
         }
-        public List<DataChannel> knownDataChannels = new List<DataChannel>();
+        public Dictionary<int,DataChannel> knownDataChannels = new Dictionary<int, DataChannel>();
         public void DataChannelAddedDelegate(DataChannel channel){
             Debug.LogError("Data Channel Added, ID: " + channel.ID + ", Label: " + channel.Label);
             channel.MessageReceived += ReceiveMessageData;
             channel.StateChanged += DataChannelOpen;
-            knownDataChannels.Add(channel);
+            knownDataChannels.Add(channel.ID,channel);
         }
         public void DataChannelOpen(){
             switch(knownDataChannels[0].State){
@@ -167,15 +170,27 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             Debug.Log("On initialized");
             base.OnPeerInitialized();
             PeerConnection.Peer.DataChannelAdded += DataChannelAddedDelegate;
-            PeerConnection.Peer.AddDataChannelAsync(0, "transfer", true, true).ContinueWith((prevTask) => 
+            PeerConnection.Peer.AddDataChannelAsync(0, "message_transfer", true, true).ContinueWith((prevTask) => 
             { 
                 if (prevTask.Exception != null) 
                 { 
                     throw prevTask.Exception; 
                 } 
-                Debug.Log("Added Transfer Channel");
-                knownDataChannels.Add(prevTask.Result); 
-            });           
+            });    
+            PeerConnection.Peer.AddDataChannelAsync(1, "unreliabletransferChannel", true, false).ContinueWith((prevTask) => 
+            { 
+                if (prevTask.Exception != null) 
+                { 
+                    throw prevTask.Exception; 
+                } 
+            });      
+            PeerConnection.Peer.AddDataChannelAsync(2, "reliabletransferChannel", true, true).ContinueWith((prevTask) => 
+            { 
+                if (prevTask.Exception != null) 
+                { 
+                    throw prevTask.Exception; 
+                } 
+            });              
         }
         public void StartSender(){
             Debug.Log("Starting Sender");

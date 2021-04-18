@@ -20,7 +20,7 @@ namespace ProjectEsky.Networking{
             WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
             p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
             p.packetData = m.mapBLOB;
-            WebRTC.WebRTCDataStreamManager.instance.SendPacket(p);
+            WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);
         }
     }
 }
