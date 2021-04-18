@@ -13,7 +13,8 @@ namespace ProjectEsky.Networking.WebRTC{
         PoseGraphSync = 1,
         EventTrigger = 2,
         NetworkObjectCreate = 3,
-        CustomClass =  4
+        MapBLOBShare = 4,
+        CustomClass =  5
     }
     [ProtoContract]
     public class WebRTCPacket{

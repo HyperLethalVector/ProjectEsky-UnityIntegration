@@ -194,6 +194,9 @@ namespace ProjectEsky.Networking{
                     n.localPosition = node.positionRelativeToAnchor.GetVector3();
                     n.localRotation = node.rotationRelativeToAnchor.GetQuaternion();
                 }
+                if(n.ownership != node.ownership){
+                    n.ownership = node.ownership;
+                }
             }else{//object doesn't appear to exist in our local scene, we need to create it!
                 if(node.RegisteredPrefabIndex >= 0){//above 0 is registered prefabs
                     GameObject g = Instantiate<GameObject>(RegisteredPrefabs[node.RegisteredPrefabIndex].gameObject);
