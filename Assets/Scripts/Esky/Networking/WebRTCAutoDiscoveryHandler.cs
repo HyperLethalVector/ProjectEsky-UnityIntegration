@@ -142,7 +142,8 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 knownDataChannels[knownDataChannels.Count-1].SendMessage(b);
         }
         public void Disconnect(){
-            PeerConnection.Peer.Close();
+                discConnection = true;
+                isConnected = false;                
         }
         public List<DataChannel> knownDataChannels = new List<DataChannel>();
         public void DataChannelAddedDelegate(DataChannel channel){
@@ -160,7 +161,6 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 case DataChannel.ChannelState.Closed:
                 discConnection = true;
                 isConnected = false;
-                PeerConnection.ReInit();
                 break;
             } 
         }
