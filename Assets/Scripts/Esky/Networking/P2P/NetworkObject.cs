@@ -26,7 +26,7 @@ namespace ProjectEsky.Networking{
         public float SmoothingFactorRotation;
         public PoseSynctype myPoseSyncType;
         // Start is called before the first frame update
-        public void Awake() {
+        public void Start() {
             if(UUID == ""){ //this should insist code is only called once
                 UUID = Guid.NewGuid().ToString();
                 EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);  
