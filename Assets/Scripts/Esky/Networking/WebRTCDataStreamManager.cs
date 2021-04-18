@@ -98,6 +98,7 @@ namespace ProjectEsky.Networking.WebRTC{
                 }else{
                     Debug.LogError("A scene graph must exist in order to process scene graph packets");
                 }
+                break;
                 case WebRTCPacketType.MapBLOBShare:
                 if(NetworkMapSharer.instance != null){
                     NetworkMapSharer.instance.ReceiveMap(packetIncoming.packetData);
