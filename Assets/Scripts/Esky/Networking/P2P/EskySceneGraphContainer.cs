@@ -184,8 +184,10 @@ namespace ProjectEsky.Networking{
         void OnItemUpdated(string key, EskySceneGraphNode node){
             if(objectsInScene.ContainsKey(key)){
                 NetworkObject n = objectsInScene[key];
-                n.localPosition = node.positionRelativeToAnchor.GetVector3();
-                n.localRotation = node.rotationRelativeToAnchor.GetQuaternion();
+                if(n.ownership != NetworkOwnership.Local){
+                    n.localPosition = node.positionRelativeToAnchor.GetVector3();
+                    n.localRotation = node.rotationRelativeToAnchor.GetQuaternion();
+                }
             }else{//object doesn't appear to exist in our local scene, we need to create it!
                 if(node.RegisteredPrefabIndex >= 0){//above 0 is registered prefabs
                     GameObject g = Instantiate<GameObject>(RegisteredPrefabs[node.RegisteredPrefabIndex].gameObject);
@@ -201,6 +203,7 @@ namespace ProjectEsky.Networking{
                     objectsInScene.Add(key,no = g.GetComponent<NetworkObject>()); 
                     no.UUID = key;
                     no.SetRegisteredPrefabIndex(-1);
+                    no.ownership = NetworkOwnership.Other;
                     no.localPosition = node.positionRelativeToAnchor.GetVector3();
                     no.localRotation = node.rotationRelativeToAnchor.GetQuaternion();                    
                 }

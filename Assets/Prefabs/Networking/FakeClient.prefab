@@ -774,7 +774,7 @@ MonoBehaviour:
   myLabel: {fileID: 584766127}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  ownership: 0
+  ownership: 1
   UUID: 
   SyncRate: 15
   PoseSyncronisationType: 0
