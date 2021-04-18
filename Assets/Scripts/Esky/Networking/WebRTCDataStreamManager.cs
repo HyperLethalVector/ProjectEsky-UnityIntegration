@@ -23,6 +23,7 @@ namespace ProjectEsky.Networking.WebRTC{
     }
     public class WebRTCDataStreamManager : MonoBehaviour
     {
+        public bool sendHeartBeat = true;
         public string ClientUUID;
         public bool isConnected;        
         public bool canTimeout = false;
@@ -46,13 +47,15 @@ namespace ProjectEsky.Networking.WebRTC{
         }
         void FixedUpdate(){
             if(isConnected){
-                timeSinceLastSentHeartbeat += Time.fixedDeltaTime;
-                if(timeSinceLastSentHeartbeat > HeartBeatInterval){
-                    timeSinceLastSentHeartbeat = 0;
-                    WebRTCPacket p = new WebRTCPacket();
-                    p.packetType = WebRTCPacketType.Heartbeat;
-                    p.packetData = System.Text.Encoding.Unicode.GetBytes(ClientUUID);
-                    SendPacket(p);
+                if(sendHeartBeat){
+                    timeSinceLastSentHeartbeat += Time.fixedDeltaTime;
+                    if(timeSinceLastSentHeartbeat > HeartBeatInterval){
+                        timeSinceLastSentHeartbeat = 0;
+                        WebRTCPacket p = new WebRTCPacket();
+                        p.packetType = WebRTCPacketType.Heartbeat;
+                        p.packetData = System.Text.Encoding.Unicode.GetBytes(ClientUUID);
+                        SendPacket(p);
+                    }
                 }
                 if(canTimeout){
                     timeSinceLastSeenHeartbeat += Time.fixedDeltaTime;
