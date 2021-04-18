@@ -141,7 +141,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                 knownDataChannels[1].SendMessage(b);
         }
         public void SendBytesReliable(byte[] b){
-                knownDataChannels[2].SendMessage(b);
+                knownDataChannels[1].SendMessage(b);
         }
         public void Disconnect(){
                 discConnection = true;

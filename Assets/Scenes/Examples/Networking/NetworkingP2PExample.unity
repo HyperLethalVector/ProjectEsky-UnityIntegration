@@ -17297,7 +17297,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 8765651289286496634}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2126778838}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99d77de64b022a341ba3fceeb54da7cd, type: 3}
@@ -31185,6 +31185,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2072186463}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2126778838 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8765651290299538738, guid: f2bfb4557779fbd44b350f5c554cc4c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 8765651289286496634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2126778840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126778838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3849f61953cbe224c855fea218abf642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myAttachedTracker: {fileID: 1540452978}
+  HookedTrackerID: 0
+  MapName: temp.raw
+  loadMap: 0
+  saveMap: 0
+  loadBlob: 1
 --- !u!1 &2130909386
 GameObject:
   m_ObjectHideFlags: 0

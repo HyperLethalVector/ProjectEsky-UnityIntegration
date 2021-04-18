@@ -6,10 +6,12 @@ namespace ProjectEsky.Utilities{
     
     public class EskyMapSaverBasic : MonoBehaviour
     {
+        public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public int HookedTrackerID;
         public string MapName;
         public bool loadMap = false;
         public bool saveMap = false;
+        public bool loadBlob = false;
         
         // Update is called once per frame
         void Update()
@@ -21,6 +23,11 @@ namespace ProjectEsky.Utilities{
             if(saveMap){
                 saveMap = false;
                 SaveFile();
+            }
+            if(loadBlob){
+
+                loadBlob = false;
+                LoadFileBlob();
             }
         }
         public void ReceiveFile(ProjectEsky.Tracking.EskyMap info){
@@ -42,6 +49,12 @@ namespace ProjectEsky.Utilities{
             }else{
                 throw new System.Exception("Error loading file: " + MapName + " as EskyMap");
             }
+        }
+        public void LoadFileBlob(){
+            byte[] dataInfo = System.IO.File.ReadAllBytes("temp.raw");
+            ProjectEsky.Tracking.EskyMap myMap = new ProjectEsky.Tracking.EskyMap();
+            myMap.mapBLOB = dataInfo;
+            myAttachedTracker.LoadEskyMap(myMap);
         }
     }
 }
