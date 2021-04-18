@@ -56,7 +56,7 @@ namespace ProjectEsky.Networking{
         public (Vector3, Quaternion) getPoseRelative(){
             if(EskySceneGraphContainer.instance.SceneOrigin != null){
                 Vector3 pos = EskySceneGraphContainer.instance.SceneOrigin.transform.InverseTransformPoint(transform.position);
-                Quaternion q = (EskySceneGraphContainer.instance.SceneOrigin.transform.localToWorldMatrix *transform.worldToLocalMatrix).rotation;
+                Quaternion q = (transform.localToWorldMatrix *EskySceneGraphContainer.instance.SceneOrigin.transform.worldToLocalMatrix).rotation;
                 return (pos,q);
             }else{
                 return (transform.localPosition,transform.localRotation);
