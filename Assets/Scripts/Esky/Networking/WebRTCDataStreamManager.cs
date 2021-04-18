@@ -12,7 +12,8 @@ namespace ProjectEsky.Networking.WebRTC{
         Heartbeat = 0,
         PoseGraphSync = 1,
         EventTrigger = 2,
-        CustomClass =  3
+        NetworkObjectCreate = 3,
+        CustomClass =  4
     }
     [ProtoContract]
     public class WebRTCPacket{
@@ -21,6 +22,7 @@ namespace ProjectEsky.Networking.WebRTC{
         [ProtoMember(2)]
         public byte[] packetData;
     }
+    
     public class WebRTCDataStreamManager : MonoBehaviour
     {
         public bool sendHeartBeat = true;
@@ -87,7 +89,15 @@ namespace ProjectEsky.Networking.WebRTC{
 
             switch(packetIncoming.packetType){
                 case WebRTCPacketType.Heartbeat:
-                timeSinceLastSeenHeartbeat = 0;
+                    timeSinceLastSeenHeartbeat = 0;
+                break;
+                case WebRTCPacketType.PoseGraphSync:
+                if(EskySceneGraphContainer.instance != null){
+                    Debug.Log("ReceivedSceneGraphPose");
+                    EskySceneGraphContainer.instance.ReceiveSceneGraphPacket(packetIncoming);
+                }else{
+                    Debug.LogError("A scene graph must exist in order to process scene graph packets");
+                }
                 break;
                 default:
                 break;
