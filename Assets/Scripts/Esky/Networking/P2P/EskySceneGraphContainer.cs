@@ -58,12 +58,13 @@ namespace ProjectEsky.Networking{
         [ProtoMember(2)]
         public ProtoQuaternion rotationRelativeToAnchor = new ProtoQuaternion();
         [ProtoMember(3)]
-        public int RegisteredPrefabIndex;
+        public ProtoVector3 scaleRelativeToAnchor = new ProtoVector3();
         [ProtoMember(4)]
-        public NetworkOwnership ownership;
+        public int RegisteredPrefabIndex;
         [ProtoMember(5)]
+        public NetworkOwnership ownership;
+        [ProtoMember(6)]
         public string UUID;
-        public GameObject hookedObject;
     }
     public class EskySynchronizedSceneGraph{
         public Dictionary<string,EskySceneGraphNode> Items = new Dictionary<string,EskySceneGraphNode>();
@@ -80,7 +81,7 @@ namespace ProjectEsky.Networking{
                     EskySceneGraphNode n = Items[value.UUID];
                     n.positionRelativeToAnchor = value.positionRelativeToAnchor;
                     n.rotationRelativeToAnchor = value.rotationRelativeToAnchor;
-                    n.ownership = value.ownership;
+                    n.scaleRelativeToAnchor = value.scaleRelativeToAnchor;
                     Items[value.UUID] = n;
                     ValueChangedEvent(value.UUID,n);
                 }else{ 
@@ -93,6 +94,22 @@ namespace ProjectEsky.Networking{
                 throw ex;
             }            
         }
+        public void UpdateOwnership(EskySceneGraphNode value){
+             if(Items.ContainsKey(value.UUID)){
+                    //Needtoupdate
+                    EskySceneGraphNode n = Items[value.UUID];
+                    n.ownership = value.ownership;
+                    Items[value.UUID] = n;
+                    ValueChangedEvent(value.UUID,n);
+                }else{ 
+                    Debug.LogError("Object doesn't exist?");
+                }
+        }
+        public EskySceneGraphNode SetOwnerShip(string Key, NetworkOwnership newOwnership){
+            EskySceneGraphNode n = Items[Key];
+            n.ownership = newOwnership;
+            return n;
+        }
         public EskySceneGraphNode UpdateValueLocally(string key, NetworkObject value,int RegisteredPrefabIndex){
            try
             {
@@ -101,6 +118,7 @@ namespace ProjectEsky.Networking{
                     EskySceneGraphNode n = Items[key];
                     n.positionRelativeToAnchor.SetFromVector3(value.localPosition);
                     n.rotationRelativeToAnchor.SetFromQuaternion(value.localRotation);
+                    n.scaleRelativeToAnchor.SetFromVector3(value.localScale);
                     n.ownership = value.ownership;
                     n.UUID = key;
                     Items[key] = n; 
@@ -111,6 +129,7 @@ namespace ProjectEsky.Networking{
                     n.RegisteredPrefabIndex = RegisteredPrefabIndex;
                     n.positionRelativeToAnchor.SetFromVector3(value.localPosition);
                     n.rotationRelativeToAnchor.SetFromQuaternion(value.localRotation);
+                    n.scaleRelativeToAnchor.SetFromVector3(value.localScale);
                     n.ownership = value.ownership;
                     n.UUID = key;
                     Items[key] = n; 
@@ -163,6 +182,44 @@ namespace ProjectEsky.Networking{
             WebRTCDataStreamManager.instance.SendPacket(p);
 
         }
+        public void TakeOwnershipLocally(NetworkObject obj){
+            using(MemoryStream bnStream = new MemoryStream()){
+                EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.Local);
+                EskySceneGraphNode nNew = new EskySceneGraphNode();
+                nNew.UUID = n.UUID;
+                nNew.ownership = NetworkOwnership.Other;
+                obj.ownership = NetworkOwnership.Local;                
+                Serializer.Serialize<EskySceneGraphNode>(bnStream,nNew);
+
+                WebRTCPacket packet = new WebRTCPacket();
+                packet.packetType = WebRTCPacketType.NewObjectOwnership;
+                packet.packetData = bnStream.ToArray();
+                WebRTCDataStreamManager.instance.SendPacket(packet);
+            }
+
+        }
+        public void RevokeOwnershipLocally(NetworkObject obj){
+            using(MemoryStream bnStream = new MemoryStream()){
+                EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.None);
+                EskySceneGraphNode nNew = new EskySceneGraphNode();
+                nNew.UUID = n.UUID;
+                nNew.ownership = NetworkOwnership.None;
+                obj.ownership = NetworkOwnership.None;
+                Serializer.Serialize<EskySceneGraphNode>(bnStream,nNew);
+
+                WebRTCPacket packet = new WebRTCPacket();
+                packet.packetType = WebRTCPacketType.NewObjectOwnership;
+                packet.packetData = bnStream.ToArray();
+                WebRTCDataStreamManager.instance.SendPacket(packet);
+            }
+        }
+        public void ReceiveNewOwnershipPacket(WebRTCPacket packet){
+            using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
+                EskySceneGraphNode p = Serializer.Deserialize<EskySceneGraphNode>(bnStream);
+                mySyncedSceneGraph.UpdateOwnership(p);
+                objectsInScene[p.UUID].ownership = p.ownership;
+            }
+        }
         public void ReceiveSceneGraphPacket(WebRTCPacket packet){
             using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
                 EskySceneGraphNode p = Serializer.Deserialize<EskySceneGraphNode>(bnStream);
@@ -193,6 +250,7 @@ namespace ProjectEsky.Networking{
                 if(n.ownership != NetworkOwnership.Local){
                     n.localPosition = node.positionRelativeToAnchor.GetVector3();
                     n.localRotation = node.rotationRelativeToAnchor.GetQuaternion();
+                    n.localScale = node.scaleRelativeToAnchor.GetVector3();
                 }
             }else{//object doesn't appear to exist in our local scene, we need to create it!
                 if(node.RegisteredPrefabIndex >= 0){//above 0 is registered prefabs
@@ -204,6 +262,7 @@ namespace ProjectEsky.Networking{
                     no.ActivateNetwork();
                     no.localPosition = node.positionRelativeToAnchor.GetVector3();
                     no.localRotation = node.rotationRelativeToAnchor.GetQuaternion();
+                    no.localScale = node.scaleRelativeToAnchor.GetVector3();
                 }else{//below 0 is the registered client
                     GameObject g = Instantiate<GameObject>(RegisteredClient.gameObject);
                     NetworkObject no;
@@ -213,7 +272,8 @@ namespace ProjectEsky.Networking{
                     no.SetRegisteredPrefabIndex(-1);
                     no.ownership = NetworkOwnership.Other;
                     no.localPosition = node.positionRelativeToAnchor.GetVector3();
-                    no.localRotation = node.rotationRelativeToAnchor.GetQuaternion();                    
+                    no.localRotation = node.rotationRelativeToAnchor.GetQuaternion();   
+                    no.localScale = node.scaleRelativeToAnchor.GetVector3();                 
                 }
             }
         }

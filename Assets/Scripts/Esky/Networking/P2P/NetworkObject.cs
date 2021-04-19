@@ -12,6 +12,7 @@ namespace ProjectEsky.Networking{
         public TMPro.TextMeshPro myLabel;
         public Vector3 localPosition;
         public Quaternion localRotation;
+        public Vector3 localScale;
         public NetworkOwnership ownership;
         public string UUID = "";
         [Range(1,200)]
@@ -22,6 +23,8 @@ namespace ProjectEsky.Networking{
         public PoseSynctype PoseSyncronisationType;
         [Range(0.01f,10)]
         public float SmoothingFactorTranslation;
+        [Range(0.01f,10)]
+        public float SmoothingFactorScale;        
         [Range(1f,90f)]
         public float SmoothingFactorRotation;
         public PoseSynctype myPoseSyncType;
@@ -53,6 +56,7 @@ namespace ProjectEsky.Networking{
                     (Vector3, Quaternion) vals = getPoseRelative();
                     localPosition = vals.Item1;
                     localRotation = vals.Item2;
+                    localScale = transform.localScale;
                     EskySceneGraphContainer.instance.UpdateSceneGraphLocally(this);
                 }
             }else{
@@ -88,12 +92,20 @@ namespace ProjectEsky.Networking{
                     transform.rotation = localRotation;
                 }
             }
+            //scaling is separate since it's independent of the synchronized anchors existence, plus the fact it doesn't scale
+            transform.localScale = (PoseSyncronisationType == PoseSynctype.Smooth)? Vector3.MoveTowards(transform.localScale,localScale,Time.deltaTime * SmoothingFactorScale): localScale;
         }
         public void TakeOwnership(){
-            ownership = NetworkOwnership.Local;
+            EskySceneGraphContainer.instance.TakeOwnershipLocally(this);
+            Debug.Log("Taking ownership locally");            
         }
-        public void RelinquishOwnership(NetworkOwnership newOwner){
-            ownership = newOwner;
+        public void RelinquishOwnership(){
+            if(ownership == NetworkOwnership.Local){
+                Debug.Log("Reqlinquishing ownership locally");
+                EskySceneGraphContainer.instance.RevokeOwnershipLocally(this);
+            }else{
+                Debug.Log("Someone already has control!");                
+            }
         }
         public int GetRegisteredPrefabIndex(){
             return RegisteredPrefabIndex;

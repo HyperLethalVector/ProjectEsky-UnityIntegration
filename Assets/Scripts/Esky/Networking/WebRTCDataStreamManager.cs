@@ -11,10 +11,11 @@ namespace ProjectEsky.Networking.WebRTC{
     public enum WebRTCPacketType{
         Heartbeat = 0,
         PoseGraphSync = 1,
-        EventTrigger = 2,
-        NetworkObjectCreate = 3,
-        MapBLOBShare = 4,
-        CustomClass =  5
+        NewObjectOwnership = 2,
+        EventTrigger = 3,
+        NetworkObjectCreate = 4,
+        MapBLOBShare = 5,
+        CustomClass =  6
     }
     [ProtoContract]
     public class WebRTCPacket{
@@ -103,6 +104,13 @@ namespace ProjectEsky.Networking.WebRTC{
                 case WebRTCPacketType.PoseGraphSync:
                 if(EskySceneGraphContainer.instance != null){
                     EskySceneGraphContainer.instance.ReceiveSceneGraphPacket(packetIncoming);
+                }else{
+                    Debug.LogError("A scene graph must exist in order to process scene graph packets");
+                }
+                break;
+                case WebRTCPacketType.NewObjectOwnership:
+                if(EskySceneGraphContainer.instance != null){
+                    EskySceneGraphContainer.instance.ReceiveNewOwnershipPacket(packetIncoming);
                 }else{
                     Debug.LogError("A scene graph must exist in order to process scene graph packets");
                 }
