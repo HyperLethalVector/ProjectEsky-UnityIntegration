@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7172086403288178366}
   - component: {fileID: 7172086403288178365}
   - component: {fileID: 7172086403288178367}
+  - component: {fileID: 7172086403635093314}
   m_Layer: 0
   m_Name: WebRTCConnectionManager
   m_TagString: Untagged
@@ -129,6 +130,20 @@ MonoBehaviour:
   RegisteredPrefabs:
   - {fileID: 7707916433225267816, guid: 339947f220abd7d4990e84b3f59e6962, type: 3}
   SceneOrigin: {fileID: 0}
+--- !u!114 &7172086403635093314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 769405f78ebb32849ba748a06a93005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myAttachedTracker: {fileID: 0}
+  folderPath: /hextris
 --- !u!1 &7173804419566142921
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,12 +203,4 @@ MonoBehaviour:
   OnError:
     m_PersistentCalls:
       m_Calls: []
-  _mediaLines:
-  - _mediaKind: 0
-    _source: {fileID: 0}
-    _receiver: {fileID: 0}
-    _senderTrackName: microphone_track
-  - _mediaKind: 1
-    _source: {fileID: 0}
-    _receiver: {fileID: 0}
-    _senderTrackName: webcam_track
+  _mediaLines: []

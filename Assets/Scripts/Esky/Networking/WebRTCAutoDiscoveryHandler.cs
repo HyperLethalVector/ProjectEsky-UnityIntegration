@@ -63,6 +63,8 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
 
     public class WebRTCAutoDiscoveryHandler : PackageManagerHookBehaviour
     {
+
+        public string HostingIP = "";
         public List<byte[]> messagesQueue = new List<byte[]>();
         public static WebRTCAutoDiscoveryHandler instance;
         public UnityEvent<byte[]> onDataReceivedFromDataTrack;
@@ -347,7 +349,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
                         {
                             // Use ReportProgress from BackgroundWorker as communication channel between main app and the worker thread.
                             this.workerUDP.ReportProgress(1, "Discovery from " + IncomingIP + "/UDP");
-
+                            this.hookedAutoDiscovery.HostingIP = IncomingIP.Address.ToString();
                             // Here we reply the Service IP and Port (TCP).. 
                             // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
                             createOfferDelegate.Invoke();

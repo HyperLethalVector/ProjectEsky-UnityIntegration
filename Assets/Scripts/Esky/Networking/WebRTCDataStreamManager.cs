@@ -101,8 +101,8 @@ namespace ProjectEsky.Networking.WebRTC{
                 break;
                 case WebRTCPacketType.MapBLOBShare:
                 if(NetworkMapSharer.instance != null){
-                    Debug.Log("Received map! Loading....");
-                    NetworkMapSharer.instance.ReceiveMap(packetIncoming.packetData);
+                    Debug.Log("Received cue to obtain map! Loading....");
+                    NetworkMapSharer.instance.ObtainMap();
                 }
                 break;
                 default:
