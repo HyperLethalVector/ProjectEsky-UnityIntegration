@@ -63,7 +63,9 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
 
     public class WebRTCAutoDiscoveryHandler : PackageManagerHookBehaviour
     {
-
+        [HideInInspector]
+        public bool isHosting = false;
+        [HideInInspector]
         public string HostingIP = "";
         public List<byte[]> messagesQueue = new List<byte[]>();
         public static WebRTCAutoDiscoveryHandler instance;
@@ -195,6 +197,7 @@ namespace ProjectEsky.Networking.WebRTC.Discovery{
             });              
         }
         public void StartSender(){
+            isHosting = true;
             Debug.Log("Starting Sender");
             shake.iceMessages.Clear();
             if(objWorkerDiscovery != null){

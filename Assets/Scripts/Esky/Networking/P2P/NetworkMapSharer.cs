@@ -26,6 +26,9 @@ namespace ProjectEsky.Networking{
             p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
             WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);            
         }
+        public void TriggerObtainMap(){
+            myAttachedTracker.SaveEskyMapInformation();
+        }
         EmbeddedWebServerComponent server;
         
         void Start()

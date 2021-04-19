@@ -72,6 +72,14 @@ namespace ProjectEsky.Networking.WebRTC{
         }
         public void OnConnected(){
             isConnected = true;
+            if(WebRTC.Discovery.WebRTCAutoDiscoveryHandler.instance != null){
+                if(WebRTC.Discovery.WebRTCAutoDiscoveryHandler.instance.isHosting){
+                    if(NetworkMapSharer.instance != null){
+                        Debug.Log("Automatically triggering the map receive");
+                        NetworkMapSharer.instance.TriggerObtainMap();
+                    }
+                }
+            }
         }
         void OnDisconnected(){
             isConnected = false;
