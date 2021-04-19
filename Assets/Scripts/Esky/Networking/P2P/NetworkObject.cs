@@ -29,6 +29,7 @@ namespace ProjectEsky.Networking{
         public float SmoothingFactorRotation;
         public PoseSynctype myPoseSyncType;
         // Start is called before the first frame update
+        bool setInGraph = false;
         public void Start() {
             
             if(EskySceneGraphContainer.instance.SceneOrigin != null){
@@ -42,10 +43,14 @@ namespace ProjectEsky.Networking{
 
             if(UUID == ""){ //this should insist code is only called once
                 UUID = Guid.NewGuid().ToString();
-                EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);  
+
                 if(myLabel){
                     myLabel.text = UUID;
                 }              
+            }
+            if(!setInGraph){
+                setInGraph = true;
+                EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);              
             }
             internalSyncRate = 1.0f/SyncRate;
 
