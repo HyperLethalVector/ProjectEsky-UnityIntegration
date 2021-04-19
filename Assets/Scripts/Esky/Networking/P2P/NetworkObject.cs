@@ -30,6 +30,16 @@ namespace ProjectEsky.Networking{
         public PoseSynctype myPoseSyncType;
         // Start is called before the first frame update
         public void Start() {
+            
+            if(EskySceneGraphContainer.instance.SceneOrigin != null){
+                localPosition = EskySceneGraphContainer.instance.SceneOrigin.transform.InverseTransformPoint(transform.position);
+                localRotation= (transform.localToWorldMatrix *EskySceneGraphContainer.instance.SceneOrigin.transform.worldToLocalMatrix).rotation;
+            }else{
+                localPosition = transform.position;
+                localRotation = transform.rotation;
+            }
+            localScale = transform.localScale;
+
             if(UUID == ""){ //this should insist code is only called once
                 UUID = Guid.NewGuid().ToString();
                 EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);  
@@ -53,7 +63,7 @@ namespace ProjectEsky.Networking{
                 internalSyncTimer += Time.deltaTime;
                 if(internalSyncTimer > internalSyncRate){//sync the network node
                     internalSyncTimer = 0f;
-                    (Vector3, Quaternion) vals = getPoseRelative();
+                    (Vector3, Quaternion, Vector3) vals = getPoseRelative();
                     localPosition = vals.Item1;
                     localRotation = vals.Item2;
                     localScale = transform.localScale;
@@ -63,13 +73,13 @@ namespace ProjectEsky.Networking{
                 setPoseRelative();
             }
         }
-        public (Vector3, Quaternion) getPoseRelative(){
+        public (Vector3, Quaternion, Vector3) getPoseRelative(){
             if(EskySceneGraphContainer.instance.SceneOrigin != null){
                 Vector3 pos = EskySceneGraphContainer.instance.SceneOrigin.transform.InverseTransformPoint(transform.position);
                 Quaternion q = (transform.localToWorldMatrix *EskySceneGraphContainer.instance.SceneOrigin.transform.worldToLocalMatrix).rotation;
-                return (pos,q);
+                return (pos,q,transform.localScale);
             }else{
-                return (transform.localPosition,transform.localRotation);
+                return (transform.localPosition,transform.localRotation,transform.localScale);
             }
         }
         public void setPoseRelative(){

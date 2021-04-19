@@ -6326,14 +6326,14 @@ MonoBehaviour:
   myLabel: {fileID: 0}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  localScale: {x: 0, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   ownership: 0
   UUID: Tree
   SyncRate: 5
-  PoseSyncronisationType: 0
-  SmoothingFactorTranslation: 0
-  SmoothingFactorScale: 0
-  SmoothingFactorRotation: 0
+  PoseSyncronisationType: 1
+  SmoothingFactorTranslation: 0.65
+  SmoothingFactorScale: 0.65
+  SmoothingFactorRotation: 70
   myPoseSyncType: 0
 --- !u!1001 &555283269
 PrefabInstance:
@@ -7147,14 +7147,14 @@ MonoBehaviour:
   myLabel: {fileID: 0}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  localScale: {x: 0, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   ownership: 0
   UUID: Model_Platonic
   SyncRate: 5
-  PoseSyncronisationType: 0
-  SmoothingFactorTranslation: 0
-  SmoothingFactorScale: 0
-  SmoothingFactorRotation: 0
+  PoseSyncronisationType: 1
+  SmoothingFactorTranslation: 0.65
+  SmoothingFactorScale: 0.65
+  SmoothingFactorRotation: 70
   myPoseSyncType: 0
 --- !u!1 &594695093
 GameObject:
@@ -19226,14 +19226,14 @@ MonoBehaviour:
   myLabel: {fileID: 0}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  localScale: {x: 0, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   ownership: 0
   UUID: CoffeeCup
   SyncRate: 5
-  PoseSyncronisationType: 0
-  SmoothingFactorTranslation: 0
-  SmoothingFactorScale: 0
-  SmoothingFactorRotation: 0
+  PoseSyncronisationType: 1
+  SmoothingFactorTranslation: 0.65
+  SmoothingFactorScale: 0.65
+  SmoothingFactorRotation: 70
   myPoseSyncType: 0
 --- !u!1 &1490421979
 GameObject:
@@ -22230,14 +22230,14 @@ MonoBehaviour:
   myLabel: {fileID: 0}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  localScale: {x: 0, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   ownership: 0
   UUID: Cheese
   SyncRate: 5
-  PoseSyncronisationType: 0
-  SmoothingFactorTranslation: 0
-  SmoothingFactorScale: 0
-  SmoothingFactorRotation: 0
+  PoseSyncronisationType: 1
+  SmoothingFactorTranslation: 0.65
+  SmoothingFactorScale: 0.65
+  SmoothingFactorRotation: 70
   myPoseSyncType: 0
 --- !u!114 &1681619130 stripped
 MonoBehaviour:
@@ -23156,14 +23156,14 @@ MonoBehaviour:
   myLabel: {fileID: 0}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  localScale: {x: 0, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   ownership: 0
   UUID: Model_Octa
   SyncRate: 5
-  PoseSyncronisationType: 0
-  SmoothingFactorTranslation: 0
-  SmoothingFactorScale: 0
-  SmoothingFactorRotation: 0
+  PoseSyncronisationType: 1
+  SmoothingFactorTranslation: 0.65
+  SmoothingFactorScale: 0.65
+  SmoothingFactorRotation: 70
   myPoseSyncType: 0
 --- !u!1 &1725208774
 GameObject:
@@ -25697,14 +25697,14 @@ MonoBehaviour:
   myLabel: {fileID: 0}
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: 0, y: 0, z: 0, w: 0}
-  localScale: {x: 0, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   ownership: 0
   UUID: EarthCore
   SyncRate: 5
-  PoseSyncronisationType: 0
-  SmoothingFactorTranslation: 0
-  SmoothingFactorScale: 0
-  SmoothingFactorRotation: 0
+  PoseSyncronisationType: 1
+  SmoothingFactorTranslation: 0.65
+  SmoothingFactorScale: 0.65
+  SmoothingFactorRotation: 70
   myPoseSyncType: 0
 --- !u!1 &1885305491
 GameObject:
