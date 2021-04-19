@@ -110,7 +110,7 @@ namespace ProjectEsky.Networking{
             Debug.Log("Taking ownership locally");            
         }
         public void RelinquishOwnership(){
-            if(ownership == NetworkOwnership.Local){
+            if(ownership == NetworkOwnership.None){
                 Debug.Log("Reqlinquishing ownership locally");
                 EskySceneGraphContainer.instance.RevokeOwnershipLocally(this);
             }else{
