@@ -27,10 +27,8 @@ namespace UniWebServer
                 Application.runInBackground = true;
             server = new WebServer (port, workerThreads, processRequestsInMainThread);
             server.logRequests = logRequests;
-            server.HandleRequest += HandleRequest;
-            if (startOnAwake) {
-                server.Start ();
-            }
+//            server.HandleRequest += HandleRequest;
+
         }
 
         void OnApplicationQuit ()
@@ -44,7 +42,10 @@ namespace UniWebServer
                 server.ProcessRequests ();    
             }
         }
-
+        public void SubscribeResourceAndStart(Action<Request,Response> thingToSubscribe){
+            server.HandleRequest += thingToSubscribe;
+            server.Start ();
+        }
 
 
         void HandleRequest(Request request, Response response)

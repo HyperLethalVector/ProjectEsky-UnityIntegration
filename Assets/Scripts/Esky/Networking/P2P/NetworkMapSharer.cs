@@ -31,8 +31,10 @@ namespace ProjectEsky.Networking{
         void Start()
         {
             server = GetComponent<EmbeddedWebServerComponent>();
-            server.AddResource("/getMap", this);
+            server.AddResource("getMap", this);
+            server.SubscribeResourceAndStart(HandleRequest);
         }
+
         void FixedUpdate(){
             if(receivedMap){
                 receivedMap = false;

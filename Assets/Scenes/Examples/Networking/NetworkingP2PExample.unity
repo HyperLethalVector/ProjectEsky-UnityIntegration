@@ -9401,7 +9401,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 7172086403635093312}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7172086403635093313}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3711a2a33b7aa3c43834cdc36a9f4bf8, type: 3}
@@ -31412,41 +31412,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.data[0]._source
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.data[1]._source
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.data[0]._receiver
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.data[1]._receiver
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.data[0]._mediaKind
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: _mediaLines.Array.data[0]._senderTrackName
-      value: webcam_track
-      objectReference: {fileID: 0}
     - target: {fileID: 7172086403288178363, guid: 0648cba404421664390f6dff8b6bcb8f,
         type: 3}
       propertyPath: m_Name
@@ -31512,27 +31477,25 @@ PrefabInstance:
       propertyPath: SceneOrigin
       value: 
       objectReference: {fileID: 1306676300}
+    - target: {fileID: 7172086403635093314, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: myAttachedTracker
+      value: 
+      objectReference: {fileID: 1540452978}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0648cba404421664390f6dff8b6bcb8f, type: 3}
---- !u!1 &7172086403635093313 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7172086403288178363, guid: 0648cba404421664390f6dff8b6bcb8f,
+--- !u!114 &7172086403635093314 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7172086403635093314, guid: 0648cba404421664390f6dff8b6bcb8f,
     type: 3}
   m_PrefabInstance: {fileID: 7172086403635093312}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7172086403635093314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7172086403635093313}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 769405f78ebb32849ba748a06a93005c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myAttachedTracker: {fileID: 1540452978}
 --- !u!1001 &8765651289286496634
 PrefabInstance:
   m_ObjectHideFlags: 0
