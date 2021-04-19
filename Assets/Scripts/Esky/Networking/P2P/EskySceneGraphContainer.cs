@@ -105,10 +105,19 @@ namespace ProjectEsky.Networking{
                     Debug.LogError("Object doesn't exist?");
                 }
         }
-        public EskySceneGraphNode SetOwnerShip(string Key, NetworkOwnership newOwnership){
-            EskySceneGraphNode n = Items[Key];
-            n.ownership = newOwnership;
-            return n;
+        public EskySceneGraphNode SetOwnerShip(string Key, NetworkOwnership newOwnership,NetworkObject valueToSet){
+            if(Items.ContainsKey(Key)){
+                EskySceneGraphNode n = Items[Key];
+                n.ownership = newOwnership;
+                return n;
+            }else{
+                EskySceneGraphNode n = new EskySceneGraphNode();
+                n.ownership = valueToSet.ownership;
+                n.positionRelativeToAnchor.SetFromVector3(valueToSet.localPosition);
+                n.rotationRelativeToAnchor.SetFromQuaternion(valueToSet.localRotation);
+                n.scaleRelativeToAnchor.SetFromVector3(valueToSet.localScale);
+                return n;
+            }
         }
         public EskySceneGraphNode UpdateValueLocally(string key, NetworkObject value,int RegisteredPrefabIndex){
            try
@@ -139,8 +148,8 @@ namespace ProjectEsky.Networking{
             }
             catch (System.Exception ex)
             {   
-                Debug.LogError(ex);             
-                throw ex;
+                Debug.LogError(ex);                     
+                return Items[key];                
             }                        
         }
         public void RemoveValue(string key){
@@ -152,8 +161,7 @@ namespace ProjectEsky.Networking{
                     throw new System.Exception("Key doesn't exist");
                 }
             }catch(System.Exception ex){
-                Debug.LogError(ex);                
-                throw ex;                
+                Debug.LogError(ex);       
             }
         }
     }
@@ -180,11 +188,10 @@ namespace ProjectEsky.Networking{
                 p.packetData = bnStream.ToArray();                
             }
             WebRTCDataStreamManager.instance.SendPacket(p);
-
         }
         public void TakeOwnershipLocally(NetworkObject obj){
             using(MemoryStream bnStream = new MemoryStream()){
-                EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.Local);
+                EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.Local,obj);
                 EskySceneGraphNode nNew = new EskySceneGraphNode();
                 nNew.UUID = n.UUID;
                 nNew.ownership = NetworkOwnership.Other;
@@ -200,7 +207,7 @@ namespace ProjectEsky.Networking{
         }
         public void RevokeOwnershipLocally(NetworkObject obj){
             using(MemoryStream bnStream = new MemoryStream()){
-                EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.None);
+                EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.None,obj);
                 EskySceneGraphNode nNew = new EskySceneGraphNode();
                 nNew.UUID = n.UUID;
                 nNew.ownership = NetworkOwnership.None;
@@ -227,9 +234,18 @@ namespace ProjectEsky.Networking{
             }
         }
         public void SubscribeNewItem(string UUID, NetworkObject go){//should be called by all items created on the local player
-            if(objectsInScene.ContainsKey(UUID)){  
+            Debug.LogWarning("Subscribed: " + UUID);
+            if(objectsInScene.ContainsKey(UUID)){ 
+                Debug.LogError("Already subscribed!: " + UUID);                 
             }else{
                 objectsInScene.Add(UUID,go);
+                EskySceneGraphNode n = new EskySceneGraphNode();
+                n.UUID = UUID;
+                n.positionRelativeToAnchor.SetFromVector3(go.localPosition);
+                n.rotationRelativeToAnchor.SetFromQuaternion(go.localRotation);
+                n.scaleRelativeToAnchor.SetFromVector3(go.localScale);
+                n.ownership = go.ownership;
+                OnItemUpdated(UUID,n);
             }
         }
         public NetworkObject SpawnNewNetworkObject(int id){

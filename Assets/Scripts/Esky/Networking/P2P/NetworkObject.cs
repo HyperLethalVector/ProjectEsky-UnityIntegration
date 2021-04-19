@@ -32,15 +32,6 @@ namespace ProjectEsky.Networking{
         bool setInGraph = false;
         public void Start() {
             
-            if(EskySceneGraphContainer.instance.SceneOrigin != null){
-                localPosition = EskySceneGraphContainer.instance.SceneOrigin.transform.InverseTransformPoint(transform.position);
-                localRotation= (transform.localToWorldMatrix *EskySceneGraphContainer.instance.SceneOrigin.transform.worldToLocalMatrix).rotation;
-            }else{
-                localPosition = transform.position;
-                localRotation = transform.rotation;
-            }
-            localScale = transform.localScale;
-
             if(UUID == ""){ //this should insist code is only called once
                 UUID = Guid.NewGuid().ToString();
 
@@ -49,10 +40,21 @@ namespace ProjectEsky.Networking{
                 }              
             }
             if(!setInGraph){
+                Debug.Log("Setting Scene In Graph");
                 setInGraph = true;
                 EskySceneGraphContainer.instance.SubscribeNewItem(UUID,this);              
             }
-            internalSyncRate = 1.0f/SyncRate;
+            if(EskySceneGraphContainer.instance.SceneOrigin != null){
+                localPosition = EskySceneGraphContainer.instance.SceneOrigin.transform.InverseTransformPoint(transform.position);
+                localRotation= (transform.localToWorldMatrix *EskySceneGraphContainer.instance.SceneOrigin.transform.worldToLocalMatrix).rotation;
+            }else{
+                localPosition = transform.position;
+                localRotation = transform.rotation;
+            }
+            internalSyncRate = 1.0f/SyncRate;            
+            localScale = transform.localScale;
+
+
 
         }
         public void ActivateNetwork() {
@@ -112,12 +114,14 @@ namespace ProjectEsky.Networking{
         }
         public void TakeOwnership(){
             EskySceneGraphContainer.instance.TakeOwnershipLocally(this);
+            ownership = NetworkOwnership.Local;
             Debug.Log("Taking ownership locally");            
         }
         public void RelinquishOwnership(){
-            if(ownership == NetworkOwnership.None){
+            if(ownership == NetworkOwnership.Local){
                 Debug.Log("Reqlinquishing ownership locally");
                 EskySceneGraphContainer.instance.RevokeOwnershipLocally(this);
+                ownership = NetworkOwnership.None;                
             }else{
                 Debug.Log("Someone already has control!");                
             }

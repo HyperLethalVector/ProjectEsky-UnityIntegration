@@ -766,7 +766,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
             {
                 constraintsManager.ApplyTranslationConstraints(ref targetTransform, true, IsNearManipulation());
             }
-
             ApplyTargetTransform(targetTransform);
         }
 
