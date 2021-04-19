@@ -44,7 +44,9 @@ namespace ProjectEsky.Networking{
             }
         }
         IEnumerator GetMap() {
-                UnityWebRequest www = UnityWebRequest.Get("http://"+WebRTCAutoDiscoveryHandler.instance.HostingIP+":"+server.port+"/getMap");
+                string mapLoc = WebRTCAutoDiscoveryHandler.instance.HostingIP+":"+server.port+"/temp.raw";
+                Debug.Log("Obtaining map from: " + mapLoc);
+                UnityWebRequest www = UnityWebRequest.Get(mapLoc);
                 yield return www.SendWebRequest();        
                 if (www.result != UnityWebRequest.Result.Success) {
                     Debug.Log(www.error);
