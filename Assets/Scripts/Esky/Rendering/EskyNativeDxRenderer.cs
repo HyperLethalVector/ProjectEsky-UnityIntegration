@@ -269,7 +269,6 @@ namespace ProjectEsky.Rendering{
             IntPtr ptrLeftLuT = LookUpTextureSettings.LeftLookUpTexture.GetNativeTexturePtr();                        
             SetRenderTexturePointerLuT(id, ptrLeftLuT, ptrRightLuT,LookUpTextureSettings.RightLookUpTexture.width,LookUpTextureSettings.LeftLookUpTexture.height);
 
-
             GL.IssuePluginEvent(InitGraphics(), 0);
             yield return new WaitForEndOfFrame();
             SetRequiredValuesById(id,calibration.left_uv_to_rect_x,calibration.left_uv_to_rect_y,calibration.right_uv_to_rect_x,calibration.right_uv_to_rect_y,

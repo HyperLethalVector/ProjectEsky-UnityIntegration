@@ -363,6 +363,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2064029955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,6 +473,10 @@ MonoBehaviour:
     RightProjectionMatrix: []
     LeftInvProjectionMatrix: []
     RightInvProjectionMatrix: []
+  LookUpTextureSettings:
+    LeftLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25, type: 3}
+    RightLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25,
+      type: 3}
   myEyeBorders:
     minXLeft: 0
     maxXLeft: 1
@@ -649,6 +654,19 @@ MonoBehaviour:
   UsesDeckXIntegrator: 1
   comPort: 5
   attachedRenderer: {fileID: 208651425}
+  FilterEnabled: 1
+  TranslationFilterParameters:
+    Frequency: 0
+    MinimumCutoff: 0
+    Beta: 0
+    DCutoff: 0
+  RotationFilterParameters:
+    Frequency: 0
+    MinimumCutoff: 0
+    Beta: 0
+    DCutoff: 0
+  HeadPosePredictionOffsets:
+    HeadPosePredictionOffset: 0
 --- !u!1 &360103426797230292
 GameObject:
   m_ObjectHideFlags: 0
