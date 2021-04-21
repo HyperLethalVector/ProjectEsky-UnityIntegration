@@ -47,6 +47,11 @@ namespace ProjectEsky.Networking{
         protected virtual void SendPacket(NetworkEventPacket p){
             WebRTCPacket webp = new WebRTCPacket();
             webp.packetType = WebRTCPacketType.EventTrigger;
+            using(MemoryStream bnStream = new MemoryStream()){
+                Serializer.Serialize<NetworkEventPacket>(bnStream,p);
+                webp.packetData = bnStream.ToArray();
+                bnStream.Dispose();
+            }
             WebRTCDataStreamManager.instance.SendPacket(webp);
         }
         public void ReceiveEvent(NetworkEventPacket packet){
