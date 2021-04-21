@@ -9,9 +9,9 @@ using ProjectEsky.Networking.WebRTC;
 namespace ProjectEsky.Networking{
     [ProtoContract]
     public class NetworkEventPacket{
-        [ProtoMember(0)]
-        public string TriggerID;
         [ProtoMember(1)]
+        public string TriggerID;
+        [ProtoMember(2)]
         public byte[] data;
     }
     public class NetworkEvent : MonoBehaviour
@@ -51,6 +51,7 @@ namespace ProjectEsky.Networking{
             using(MemoryStream bnStream = new MemoryStream()){
                 Serializer.Serialize<NetworkEventPacket>(bnStream,p);
                 webp.packetData = bnStream.ToArray();
+                Debug.Log("Packet Data Length: " + webp.packetData.Length);
                 bnStream.Dispose();
             }
             WebRTCDataStreamManager.instance.SendPacket(webp); 
