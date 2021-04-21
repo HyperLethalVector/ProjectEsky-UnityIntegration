@@ -28,5 +28,16 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
                 textMesh.text = $"{eventData.NewValue:F2}";
             }
         }
+        public void OnSliderUpdatedFloat(float newval){
+             if (textMesh == null)
+            {
+                textMesh = GetComponent<TextMeshPro>();
+            }
+
+            if (textMesh != null)
+            {
+                textMesh.text = $"{newval:F2}";
+            }
+        }
     }
 }

@@ -841,7 +841,7 @@ PrefabInstance:
     - target: {fileID: 7307063430618434848, guid: 1093263a89abe47499cccf7dcb08effb,
         type: 3}
       propertyPath: OnValueUpdatedNoTrigger.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7307063430618434848, guid: 1093263a89abe47499cccf7dcb08effb,
         type: 3}
@@ -1278,6 +1278,19 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.Examples.Demos.SliderChangeColor,
           Microsoft.MixedReality.Toolkit.Examples
         m_MethodName: OnSliderUpdateGreenNetwork
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1885305494}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.Examples.Demos.ShowSliderValue,
+          Microsoft.MixedReality.Toolkit.Examples
+        m_MethodName: OnSliderUpdatedFloat
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2176,7 +2189,7 @@ MonoBehaviour:
   localScale: {x: 0, y: 0, z: 0}
   ownership: 0
   UUID: EarthCore
-  SyncRate: 5
+  SyncRate: 60
   PoseSyncronisationType: 0
   SmoothingFactorTranslation: 0.7
   SmoothingFactorScale: 1
@@ -6638,7 +6651,7 @@ MonoBehaviour:
   localScale: {x: 0, y: 0, z: 0}
   ownership: 0
   UUID: Cheese
-  SyncRate: 15
+  SyncRate: 60
   PoseSyncronisationType: 1
   SmoothingFactorTranslation: 1
   SmoothingFactorScale: 1
@@ -8112,7 +8125,7 @@ PrefabInstance:
     - target: {fileID: 7307063430618434848, guid: 1093263a89abe47499cccf7dcb08effb,
         type: 3}
       propertyPath: OnValueUpdatedNoTrigger.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7307063430618434848, guid: 1093263a89abe47499cccf7dcb08effb,
         type: 3}
@@ -8549,6 +8562,19 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.Examples.Demos.SliderChangeColor,
           Microsoft.MixedReality.Toolkit.Examples
         m_MethodName: OnSliderUpdateBlueNetwork
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1404789405}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.Examples.Demos.ShowSliderValue,
+          Microsoft.MixedReality.Toolkit.Examples
+        m_MethodName: OnSliderUpdatedFloat
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22279,7 +22305,7 @@ PrefabInstance:
     - target: {fileID: 7307063430618434848, guid: 1093263a89abe47499cccf7dcb08effb,
         type: 3}
       propertyPath: OnValueUpdatedNoTrigger.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7307063430618434848, guid: 1093263a89abe47499cccf7dcb08effb,
         type: 3}
@@ -22707,6 +22733,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1532071376}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.Examples.Demos.ShowSliderValue,
+          Microsoft.MixedReality.Toolkit.Examples
+        m_MethodName: OnSliderUpdatedFloat
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   mySlider: {fileID: 1801617326}
 --- !u!114 &1801617326 stripped
 MonoBehaviour:
@@ -22823,7 +22862,7 @@ MonoBehaviour:
   localScale: {x: 0, y: 0, z: 0}
   ownership: 0
   UUID: CoffeeCup
-  SyncRate: 15
+  SyncRate: 60
   PoseSyncronisationType: 0
   SmoothingFactorTranslation: 1
   SmoothingFactorScale: 1
