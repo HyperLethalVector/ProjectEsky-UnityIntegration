@@ -74,6 +74,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
             slider.OnInteractionStarted.AddListener(OnInteractionStarted);
             slider.OnInteractionEnded.AddListener(OnInteractionEnded);
             slider.OnValueUpdated.AddListener(OnValueUpdated);
+            slider.OnValueUpdatedNoTrigger.AddListener(OnValueUpdated);
         }
 
         private void OnValueUpdated(SliderEventData eventData)

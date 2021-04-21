@@ -45,6 +45,12 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 OnValueUpdated.Invoke(new SliderEventData(oldSliderValue, value, ActivePointer, this));
             }
         }
+        public void SetFloatWithoutTrigger(float value){
+            var oldSliderValue = sliderValue;
+            sliderValue = value;
+            UpdateUI();          
+            OnValueUpdatedNoTrigger.Invoke(new SliderEventData(oldSliderValue, value, ActivePointer, this));  
+        }
 
         [Header("Slider Axis Visuals")]
 
@@ -207,6 +213,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
         #region Event Handlers
         [Header("Events")]
         public SliderEvent OnValueUpdated = new SliderEvent();
+        public SliderEvent OnValueUpdatedNoTrigger = new SliderEvent();
         public SliderEvent OnInteractionStarted = new SliderEvent();
         public SliderEvent OnInteractionEnded = new SliderEvent();
         public SliderEvent OnHoverEntered = new SliderEvent();

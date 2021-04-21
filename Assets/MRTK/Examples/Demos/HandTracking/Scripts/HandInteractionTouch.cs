@@ -28,6 +28,9 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         protected float duration = 1.5f;
         protected float t = 0;
 
+        bool isIn = false;
+
+
         private void Start()
         {
             TargetRenderer = GetComponentInChildren<Renderer>();
@@ -36,6 +39,26 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
                 originalColor = TargetRenderer.sharedMaterial.color;
                 highlightedColor = new Color(originalColor.r + 0.2f, originalColor.g + 0.2f, originalColor.b + 0.2f);
             }
+        }
+        private void FixedUpdate(){
+            if(isIn){               
+                if ((TargetRenderer != null) && (TargetRenderer.material != null))
+                {
+                    TargetRenderer.material.color = Color.Lerp(Color.green, Color.red, t);
+                    t = Mathf.PingPong(Time.time, duration) / duration;
+                }
+            }else{
+                if (TargetRenderer != null)
+                {
+                    TargetRenderer.sharedMaterial.color = Color.Lerp(originalColor, highlightedColor, 2.0f);
+                }
+            }
+        }
+        public void RemoteTouchStart(){
+            isIn = true;
+        }
+        public void RemoteTouchEnd(){
+            isIn = false;
         }
 
         void IMixedRealityTouchHandler.OnTouchCompleted(HandTrackingInputEventData eventData)
@@ -46,7 +69,6 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             {
                 debugMessage.text = "OnTouchCompleted: " + Time.unscaledTime.ToString();
             }
-
             if ((TargetRenderer != null) && (TargetRenderer.material != null))
             {
                 TargetRenderer.material.color = originalColor;
@@ -61,11 +83,6 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             {
                 debugMessage.text = "OnTouchStarted: " + Time.unscaledTime.ToString();
             }
-
-            if (TargetRenderer != null)
-            {
-                TargetRenderer.sharedMaterial.color = Color.Lerp(originalColor, highlightedColor, 2.0f);
-            }
         }
 
         void IMixedRealityTouchHandler.OnTouchUpdated(HandTrackingInputEventData eventData)
@@ -77,11 +94,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
                 debugMessage2.text = "OnTouchUpdated: " + Time.unscaledTime.ToString();
             }
 
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = Color.Lerp(Color.green, Color.red, t);
-                t = Mathf.PingPong(Time.time, duration) / duration;
-            }
+            
         }
     }
 }

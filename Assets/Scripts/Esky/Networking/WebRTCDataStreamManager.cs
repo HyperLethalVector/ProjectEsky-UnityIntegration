@@ -15,8 +15,10 @@ namespace ProjectEsky.Networking.WebRTC{
         EventTrigger = 3,
         NetworkObjectCreate = 4,
         MapBLOBShare = 5,
-        CustomClass =  6
+        ForcedMapRefresh = 6,
+        CustomClass =  7
     }
+
     [ProtoContract]
     public class WebRTCPacket{
         [ProtoMember(1)]
@@ -120,6 +122,9 @@ namespace ProjectEsky.Networking.WebRTC{
                     Debug.Log("Received cue to obtain map! Loading....");
                     NetworkMapSharer.instance.ObtainMap();
                 }
+                break;
+                case WebRTCPacketType.EventTrigger:
+                    NetworkEvent.ProcessPacket(packetIncoming);
                 break;
                 default:
                 break;
