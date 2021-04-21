@@ -18,38 +18,50 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         public float green;
 
         public float blue;
+        bool updated = false;
         void Start(){
-            TargetRenderer = GetComponentInChildren<Renderer>();
+
         }
         private void FixedUpdate() {
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(red, green, blue);
-            }            
+            if(updated){
+                TargetRenderer = GetComponentInChildren<Renderer>();                
+                updated = false;
+                if ((TargetRenderer != null) && (TargetRenderer.material != null))
+                {
+                    TargetRenderer = GetComponentInChildren<Renderer>();                
+                    TargetRenderer.material.color = new Color(red, green, blue);
+                }          
+            }  
         }
 
         public void OnSliderUpdateRedNetwork(float newVal){
             red = newVal;
+            updated = true;
         }
         public void OnSliderUpdateGreenNetwork(float newVal){
             green = newVal;
+            updated = true;            
         }
         public void OnSliderUpdateBlueNetwork(float newVal){
             blue = newVal;
+            updated = true;            
         }        
         public void OnSliderUpdatedRed(SliderEventData eventData)
         {
             red = eventData.NewValue;
+            updated = true;            
         }
 
         public void OnSliderUpdatedGreen(SliderEventData eventData)
         {
             green = eventData.NewValue;
+            updated = true;            
         }
 
         public void OnSliderUpdateBlue(SliderEventData eventData)
         {
             blue = eventData.NewValue;
+            updated = true;            
         }
     }
 }
