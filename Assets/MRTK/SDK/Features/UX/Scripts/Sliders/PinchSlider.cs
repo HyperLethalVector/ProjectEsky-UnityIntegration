@@ -46,10 +46,9 @@ namespace Microsoft.MixedReality.Toolkit.UI
             }
         }
         public void SetFloatWithoutTrigger(float value){
-            var oldSliderValue = sliderValue;
             sliderValue = value;
             UpdateUI();          
-            OnValueUpdatedNoTrigger.Invoke(new SliderEventData(oldSliderValue, value, ActivePointer, this));  
+//            OnValueUpdatedNoTrigger.Invoke(new SliderEventData(oldSliderValue, value, ActivePointer, this));  
         }
 
         [Header("Slider Axis Visuals")]
