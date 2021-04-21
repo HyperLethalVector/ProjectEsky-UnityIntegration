@@ -41,18 +41,19 @@ namespace ProjectEsky.Networking{
         }
         public virtual void TriggerEventTransmission(){
             NetworkEventPacket p = new NetworkEventPacket();
-            p.TriggerID = ReceiverID;            
+            p.TriggerID = ReceiverID;                        
             SendPacket(p);
         }
         protected virtual void SendPacket(NetworkEventPacket p){
             WebRTCPacket webp = new WebRTCPacket();
             webp.packetType = WebRTCPacketType.EventTrigger;
+            Debug.Log("Sending Event Trigger: " + p.TriggerID);            
             using(MemoryStream bnStream = new MemoryStream()){
                 Serializer.Serialize<NetworkEventPacket>(bnStream,p);
                 webp.packetData = bnStream.ToArray();
                 bnStream.Dispose();
             }
-            WebRTCDataStreamManager.instance.SendPacket(webp);
+            WebRTCDataStreamManager.instance.SendPacket(webp); 
         }
         public void ReceiveEvent(NetworkEventPacket packet){
             packetsToProcess.Add(packet);
@@ -60,6 +61,7 @@ namespace ProjectEsky.Networking{
         public static void ProcessPacket(WebRTCPacket packet){
             using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
                 NetworkEventPacket netp = Serializer.Deserialize<NetworkEventPacket>(bnStream);
+                Debug.Log("Received Event Trigger: " + netp.TriggerID);
                 if(SubscribedEventReceivers.ContainsKey(netp.TriggerID)){
                     SubscribedEventReceivers[netp.TriggerID].ReceiveEvent(netp);
                 }
