@@ -59,6 +59,7 @@ namespace ProjectEsky.Networking{
             packetsToProcess.Add(packet);
         }
         public static void ProcessPacket(WebRTCPacket packet){
+            Debug.Log("Packet data length: " + packet.packetData.Length);
             using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
                 NetworkEventPacket netp = Serializer.Deserialize<NetworkEventPacket>(bnStream);
                 Debug.Log("Received Event Trigger: " + netp.TriggerID);
