@@ -19,18 +19,15 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 
         public float blue;
         bool updated = false;
+        HandInteractionTouch htt;
         void Start(){
-
+            htt = GetComponent<HandInteractionTouch>();
         }
         private void FixedUpdate() {
             if(updated){
                 TargetRenderer = GetComponentInChildren<Renderer>();                
                 updated = false;
-                if ((TargetRenderer != null) && (TargetRenderer.material != null))
-                {
-                    TargetRenderer = GetComponentInChildren<Renderer>();                
-                    TargetRenderer.material.color = new Color(red, green, blue);
-                }          
+                htt.SetHighlightedColor(red,green,blue);
             }  
         }
 
