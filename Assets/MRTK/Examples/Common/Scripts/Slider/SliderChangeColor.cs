@@ -14,52 +14,42 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
     {
         [SerializeField]
         private Renderer TargetRenderer;
+        public float red;
+        public float green;
+
+        public float blue;
         void Start(){
             TargetRenderer = GetComponentInChildren<Renderer>();
         }
+        private void FixedUpdate() {
+            if ((TargetRenderer != null) && (TargetRenderer.material != null))
+            {
+                TargetRenderer.material.color = new Color(red, green, blue);
+            }            
+        }
 
         public void OnSliderUpdateRedNetwork(float newVal){
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(newVal, TargetRenderer.sharedMaterial.color.g, TargetRenderer.sharedMaterial.color.b);
-            }
+            red = newVal;
         }
         public void OnSliderUpdateGreenNetwork(float newVal){
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(TargetRenderer.sharedMaterial.color.r, newVal, TargetRenderer.sharedMaterial.color.b);
-            }
+            green = newVal;
         }
         public void OnSliderUpdateBlueNetwork(float newVal){
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(TargetRenderer.sharedMaterial.color.r, TargetRenderer.sharedMaterial.color.g, newVal);
-            }
+            blue = newVal;
         }        
         public void OnSliderUpdatedRed(SliderEventData eventData)
         {
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(eventData.NewValue, TargetRenderer.sharedMaterial.color.g, TargetRenderer.sharedMaterial.color.b);
-            }
+            red = eventData.NewValue;
         }
 
         public void OnSliderUpdatedGreen(SliderEventData eventData)
         {
-            TargetRenderer = GetComponentInChildren<Renderer>();
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(TargetRenderer.sharedMaterial.color.r, eventData.NewValue, TargetRenderer.sharedMaterial.color.b);
-            }
+            green = eventData.NewValue;
         }
 
         public void OnSliderUpdateBlue(SliderEventData eventData)
         {
-            TargetRenderer = GetComponentInChildren<Renderer>();
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(TargetRenderer.sharedMaterial.color.r, TargetRenderer.sharedMaterial.color.g, eventData.NewValue);
-            }
+            blue = eventData.NewValue;
         }
     }
 }
