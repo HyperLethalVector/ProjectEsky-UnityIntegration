@@ -933,9 +933,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6075467949922931207}
+  - component: {fileID: 5123193150828458796}
   - component: {fileID: 799816792993756081}
   - component: {fileID: 5813933546723799654}
-  - component: {fileID: 5123193150828458796}
   m_Layer: 0
   m_Name: NorthStarRigRealsenseRGB
   m_TagString: Untagged
@@ -961,106 +961,10 @@ Transform:
   - {fileID: 680883014}
   - {fileID: 5818403229256799216}
   - {fileID: 5809784439140600648}
+  - {fileID: 7452955134567579959}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &799816792993756081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6075467949922931448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c592f16851a620743868a31232613370, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _leapProvider: {fileID: 6075467950660893040}
-  ModelPool:
-  - GroupName: DefaultHands
-    _handModelManager: {fileID: 0}
-    LeftModel: {fileID: 5852347243286147838}
-    IsLeftToBeSpawned: 1
-    RightModel: {fileID: 5853233340359705562}
-    IsRightToBeSpawned: 1
-    IsEnabled: 1
-    CanDuplicate: 0
---- !u!114 &5813933546723799654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6075467949922931448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7065063c12d417b46a220c58a7cdb0da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allowsSavingCalibration: 1
-  LoadDisplaySettings: 1
-  use2DTemporalWarping: 1
-  displaySettings:
-    DisplayXLoc: 0
-    DisplayYLoc: 0
-    DisplayWidth: 1280
-    DisplayHeight: 720
-    EyeTextureWidth: 1280
-    EyeTextureHeight: 720
-    RendererWindowID: 1
-    Initialized: 0
-  renderTextureSettings:
-    LeftRenderTexture: {fileID: 0}
-    RightRenderTexture: {fileID: 0}
-    LeftCamera: {fileID: 6075467949439196423}
-    RightCamera: {fileID: 6075467950788041349}
-    RequiresRotation: 1
-    LeftProjectionMatrix: []
-    RightProjectionMatrix: []
-    LeftInvProjectionMatrix: []
-    RightInvProjectionMatrix: []
-  LookUpTextureSettings:
-    LeftLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25, type: 3}
-    RightLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25,
-      type: 3}
-  myEyeBorders:
-    minXLeft: 0
-    maxXLeft: 1
-    minYLeft: 0
-    maxYLeft: 1
-    minXRight: 0
-    maxXRight: 1
-    minYRight: 0
-    maxYRight: 1
-    myBorders:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  loadLeapCalibration: 1
-  runInBackgroundInitial: 0
-  calibration:
-    focusDistance: 0
-    baseline: 0
-    left_uv_to_rect_x: []
-    left_uv_to_rect_y: []
-    right_uv_to_rect_x: []
-    right_uv_to_rect_y: []
-    left_eye_offset: []
-    right_eye_offset: []
-    localPositionLeapMotion: []
-    localRotationLeapMotion: []
-  LeapMotionCamera: {fileID: 6075467950660893041}
-  myAttachedTracker: {fileID: 5123193150828458796}
-  RigCenter: {fileID: 0}
-  RenderedGraphicsBrightness: 1
-  TargetRendererRate: 120
-  StartRendererAfterInitializing: 1
 --- !u!114 &5123193150828458796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105,8 +1009,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ProjectEsky.Utilities.EskyMapSaverBasic, Assembly-CSharp
-        m_MethodName: ReceiveFile
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.NetworkMapSharer, Assembly-CSharp
+        m_MethodName: SendMap
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1204,16 +1108,114 @@ MonoBehaviour:
   FilterEnabled: 1
   TranslationFilterParameters:
     Frequency: 200
-    MinimumCutoff: 1
-    Beta: 4
-    DCutoff: 0
+    MinimumCutoff: 2
+    Beta: 30
+    DCutoff: 0.009999999776482582
   RotationFilterParameters:
-    Frequency: 1
-    MinimumCutoff: 1
-    Beta: 12
-    DCutoff: 0
+    Frequency: 200
+    MinimumCutoff: 3
+    Beta: 15
+    DCutoff: 0.0010000000474974513
   HeadPosePredictionOffsets:
-    HeadPosePredictionOffset: 0.0025
+    HeadPosePredictionOffset: 0.05
+  UseAsyncPosePredictor: 0
+--- !u!114 &799816792993756081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6075467949922931448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c592f16851a620743868a31232613370, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _leapProvider: {fileID: 6075467950660893040}
+  ModelPool:
+  - GroupName: DefaultHands
+    _handModelManager: {fileID: 0}
+    LeftModel: {fileID: 5852347243286147838}
+    IsLeftToBeSpawned: 1
+    RightModel: {fileID: 5853233340359705562}
+    IsRightToBeSpawned: 1
+    IsEnabled: 1
+    CanDuplicate: 0
+--- !u!114 &5813933546723799654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6075467949922931448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7065063c12d417b46a220c58a7cdb0da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowsSavingCalibration: 1
+  LoadDisplaySettings: 1
+  use2DTemporalWarping: 1
+  displaySettings:
+    DisplayXLoc: 0
+    DisplayYLoc: 0
+    DisplayWidth: 1280
+    DisplayHeight: 720
+    EyeTextureWidth: 1280
+    EyeTextureHeight: 720
+    RendererWindowID: 1
+    Initialized: 0
+  renderTextureSettings:
+    LeftRenderTexture: {fileID: 0}
+    RightRenderTexture: {fileID: 0}
+    LeftCamera: {fileID: 6075467949439196423}
+    RightCamera: {fileID: 6075467950788041349}
+    RequiresRotation: 1
+    LeftProjectionMatrix: []
+    RightProjectionMatrix: []
+    LeftInvProjectionMatrix: []
+    RightInvProjectionMatrix: []
+  LookUpTextureSettings:
+    LeftLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25, type: 3}
+    RightLookUpTexture: {fileID: 2800000, guid: f293566c843f78044b55ffbb92712a25,
+      type: 3}
+  myEyeBorders:
+    minXLeft: 0
+    maxXLeft: 1
+    minYLeft: 0
+    maxYLeft: 1
+    minXRight: 0
+    maxXRight: 1
+    minYRight: 0
+    maxYRight: 1
+    myBorders:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  loadLeapCalibration: 1
+  runInBackgroundInitial: 0
+  calibration:
+    focusDistance: 0
+    baseline: 0
+    left_uv_to_rect_x: []
+    left_uv_to_rect_y: []
+    right_uv_to_rect_x: []
+    right_uv_to_rect_y: []
+    left_eye_offset: []
+    right_eye_offset: []
+    localPositionLeapMotion: []
+    localRotationLeapMotion: []
+  LeapMotionCamera: {fileID: 6075467950660893041}
+  myAttachedTracker: {fileID: 5123193150828458796}
+  RigCenter: {fileID: 0}
+  RenderedGraphicsBrightness: 1
+  TargetRendererRate: 120
+  StartRendererAfterInitializing: 1
 --- !u!1 &6075467950620110355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1504,6 +1506,81 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.032
+--- !u!1001 &769863644
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6075467949922931207}
+    m_Modifications:
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448556, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_Name
+      value: FakeClient
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1d7aba36f098e404c91de4a9cfe790ef, type: 3}
+--- !u!4 &7452955134567579959 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 769863644}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5813933545482212984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2876,6 +2953,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2aa010a1e75292e49a24f3f71bb9cddb, type: 3}
+--- !u!4 &5818403229256799216 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4542260197562760, guid: 2aa010a1e75292e49a24f3f71bb9cddb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5813933546223159928}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5852347243286147838 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114994683550464134, guid: 2aa010a1e75292e49a24f3f71bb9cddb,
@@ -2888,12 +2971,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e0ed5922e911b343b8400997c95409c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &5818403229256799216 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4542260197562760, guid: 2aa010a1e75292e49a24f3f71bb9cddb,
-    type: 3}
-  m_PrefabInstance: {fileID: 5813933546223159928}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5813933546674640690
 PrefabInstance:
   m_ObjectHideFlags: 0

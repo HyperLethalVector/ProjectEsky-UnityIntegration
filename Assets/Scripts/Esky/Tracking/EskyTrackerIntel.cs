@@ -27,11 +27,11 @@ namespace ProjectEsky.Tracking{
         [SerializeField]
 
         public double Frequency;
-        [SerializeField]
+        [SerializeField,Range(0.01f,10f)]
         public double MinimumCutoff;
-        [SerializeField]        
+        [SerializeField, Range(0.1f,100f) ]        
         public double Beta;
-        [SerializeField]        
+        [SerializeField, Range(0f,10f)]        
         public double DCutoff;
 
         double _freq = 20.0;
@@ -77,11 +77,13 @@ namespace ProjectEsky.Tracking{
         public DollaryDooFilterParams RotationFilterParameters;        
         public HeadPosePredictionSettings HeadPosePredictionOffsets;
         bool setParametersFilterFirstTime = false;
+        public bool UseAsyncPosePredictor = false;
         public override void AfterAwake()
         {
             RegisterDebugCallback(OnDebugCallback);    
             LoadCalibration();
             InitializeTrackerObject(TrackerID);       
+            UseAsyncHeadPosePredictor(TrackerID,UseAsyncPosePredictor);            
             RegisterBinaryMapCallback(TrackerID,OnMapCallback);
             RegisterObjectPoseCallback(TrackerID, OnLocalizationPoseReceivedCallback);
             if(UsesDeckXIntegrator){
@@ -491,5 +493,7 @@ namespace ProjectEsky.Tracking{
         }
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetTimeOffset(int Id, float value);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UseAsyncHeadPosePredictor(int ID, bool val);
     }
 }
