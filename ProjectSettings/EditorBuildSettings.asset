@@ -5,9 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Examples/V2-UniversalRendering/HandInteractionExamples.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
+  - enabled: 0
+    path: Assets/Scenes/Examples/Networking/NetworkingP2PExample.unity
+    guid: ba344786805aac64aaaacceddfabed6d
+  - enabled: 0
+    path: Assets/Scenes/Desktop/DesktopWithDocks.unity
+    guid: 14ed76699812f964fb33c3143ce2ad6c
+  - enabled: 1
+    path: Assets/Scenes/DemoDesktop.unity
+    guid: 7871846845ccdb844a48b8b772d41597
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 1ad257b4cc44a2b43921db308f6efb2b,
       type: 2}

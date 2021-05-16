@@ -148,7 +148,7 @@ namespace ProjectEsky.Extras.Modules{
         }
         [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]
         public static void ReceiveImageCallback(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
-            Debug.Log("Received Normal Texture Callback");
+//            Debug.Log("Received Normal Texture Callback");
         }
         [DllImport("libProjectEskyRGBSensorModule")]
         static extern void StartCamera(int camID, float fx, float fy, float cx, float cy, float d1, float d2, float d3, float d4);

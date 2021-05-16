@@ -47,8 +47,25 @@ namespace ProjectEsky.Tracking{
             if(Beta != _beta){_beta = Beta; didChange = true;}            
             if(DCutoff != _dcutoff){_dcutoff = DCutoff; didChange = true;}        
             return didChange;    
-        }
-        
+        }        
+    }
+    [System.Serializable]
+    public class KalmanFilterParams{
+        [SerializeField,Range(0.001f,1)]
+        public double Q;
+        [SerializeField, Range(0.001f,10f) ]        
+        public double R;
+
+        double _q= 1.0;
+        double _r = 0.0;
+        bool changedFirstTime = false;
+        public bool CheckUpdate(){
+            
+            bool didChange = false;
+            if(Q!= _q){_q = Q; didChange = true;}
+            if(R != _r){_r = R; didChange = true;}
+            return didChange;    
+        }        
     }
     [System.Serializable]
     public class HeadPosePredictionSettings{
@@ -75,6 +92,14 @@ namespace ProjectEsky.Tracking{
         public DollaryDooFilterParams TranslationFilterParameters;
 
         public DollaryDooFilterParams RotationFilterParameters;        
+
+        public KalmanFilterParams KTranslationFilterParams;
+        public KalmanFilterParams KRrotationFilterParams;
+        public bool UseDollaryDooFilter = true;
+        public bool UseKalmanFilter = true;
+        bool _useDollaryDooFilter = false;
+        bool _useKalmanFilter = false;
+
         public HeadPosePredictionSettings HeadPosePredictionOffsets;
         bool setParametersFilterFirstTime = false;
         public bool UseAsyncPosePredictor = false;
@@ -167,6 +192,20 @@ namespace ProjectEsky.Tracking{
             if(RotationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
                 UpdateFilterRotationParams(TrackerID,RotationFilterParameters.Frequency,RotationFilterParameters.MinimumCutoff,RotationFilterParameters.Beta,RotationFilterParameters.DCutoff);
             } 
+            if(KTranslationFilterParams.CheckUpdate() || !setParametersFilterFirstTime){
+                UpdateKFilterTranslationParams(TrackerID,KTranslationFilterParams.Q,KTranslationFilterParams.R);
+            }
+            if(KRrotationFilterParams.CheckUpdate() || !setParametersFilterFirstTime){
+                UpdateKFilterRotationParams(TrackerID,KRrotationFilterParams.Q,KRrotationFilterParams.R);
+            }            
+            if(UseKalmanFilter != _useKalmanFilter){
+                _useKalmanFilter = UseKalmanFilter;
+                SetKFilterEnabled(TrackerID,_useKalmanFilter);
+            }
+            if(UseDollaryDooFilter != _useDollaryDooFilter){
+                _useDollaryDooFilter = UseDollaryDooFilter;
+                SetFilterEnabled(TrackerID,_useDollaryDooFilter);
+            }
             if(_filterEnabled != FilterEnabled){_filterEnabled = FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
             if(!setParametersFilterFirstTime)setParametersFilterFirstTime = true;
             if(currentHeadPosePredict != HeadPosePredictionOffsets.HeadPosePredictionOffset){
@@ -495,5 +534,14 @@ namespace ProjectEsky.Tracking{
         static extern void SetTimeOffset(int Id, float value);
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void UseAsyncHeadPosePredictor(int ID, bool val);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateKFilterTranslationParams(int iD, double _q, double _r);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateKFilterRotationParams(int iD, double _q, double _r);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetKFilterEnabled(int ID, bool value);
     }
 }
