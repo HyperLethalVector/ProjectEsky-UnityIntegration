@@ -14801,91 +14801,11 @@ PrefabInstance:
       propertyPath: ModelPool.Array.data[0].IsRightToBeSpawned
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4479119461014067446, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: UseKalmanFilter
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: UseAsyncPosePredictor
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: KRrotationFilterParams.Q
-      value: 0.2919999957084656
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: KRrotationFilterParams.R
-      value: 7.110000133514404
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: UseExternalCameraPreview
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: KTranslationFilterParams.Q
-      value: 0.009999999776482582
-      objectReference: {fileID: 0}
-    - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: KTranslationFilterParams.R
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 5123193150828458796, guid: 3ad8f91bdedd98544b02c8cee2184bef,
         type: 3}
       propertyPath: mapCollectedCallback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7172086403635093314}
-    - target: {fileID: 5211178903457563446, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5793836073396286778, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5813933545709230392, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5813933546038603718, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5813933546441722332, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.032
-      objectReference: {fileID: 0}
-    - target: {fileID: 5813933546481039728, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5813933547075896839, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.032
-      objectReference: {fileID: 0}
-    - target: {fileID: 6075467949439196664, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.032
-      objectReference: {fileID: 0}
     - target: {fileID: 6075467949922931207, guid: 3ad8f91bdedd98544b02c8cee2184bef,
         type: 3}
       propertyPath: m_RootOrder
@@ -14945,71 +14865,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NorthStarRigRealsenseRGB
-      objectReference: {fileID: 0}
-    - target: {fileID: 6075467949922931448, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6075467950788041351, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.032
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.0125
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.00801
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.07425
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.70183617
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.0861746
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.0861746
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.70183617
-      objectReference: {fileID: 0}
-    - target: {fileID: 6569634317303115648, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 6660353328766138292, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6984238509196549752, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822301390238170273, guid: 3ad8f91bdedd98544b02c8cee2184bef,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ad8f91bdedd98544b02c8cee2184bef, type: 3}

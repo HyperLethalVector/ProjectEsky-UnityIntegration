@@ -64,7 +64,7 @@ float polyval2d(float X, float Y, float4x4 C) {
 float2 resolveTemporalWarping(float2 inputUV, float4x4 DeltaPose){
         float4x4 hardCodedBias = {2,0,0,-1.0,0,2,0,-1.0,0,0,2,0,0,0,0,1};  
         float4x4 hardCodedInverseBias = {0.5,0,0, 0.5,0,0.5,0,0.5,0,0,0.5,0,0,0,0,1};          
-        float planeDepth = 0.25;     
+        float planeDepth = 0.025;     
         float4 depthProbe = float4(0.0,0.0,planeDepth,1.0); // Point in initial screen space 1, depth 1
         float4 viewRay = float4(inputUV.x,inputUV.y,planeDepth,1.0); // point in final screen space
         
