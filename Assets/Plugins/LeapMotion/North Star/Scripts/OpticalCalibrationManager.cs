@@ -87,10 +87,6 @@ namespace Leap.Unity.AR {
     }
 
     void Start() {
-      if (loadInputFileOnStart) {
-        LoadCalibration();
-      }
-      else {
         // Load a default setup.
         currentCalibration.leapTracker = new PhysicalComponent(provider.deviceOrigin.ToWorldPose(), provider.gameObject.name);
         if (leftEye != null && leftEye.ellipse != null && leftEye.Screen != null) {
@@ -101,10 +97,14 @@ namespace Leap.Unity.AR {
         if (rightEye != null && rightEye.ellipse != null && rightEye.Screen != null) {
           rightEyeProjectionParams = DEFAULT_PROJECTION_PARAMS;
           currentCalibration.rightEye = constructRightEyeOptics();
-        }
+        }      
+    }
+    void LateUpdate(){      
+      if (loadInputFileOnStart) {
+        loadInputFileOnStart = false;
+        LoadCalibration();
       }
     }
-
     void Update() {
       if ((Application.isEditor || allowSavingInBuild) && Input.GetKeyDown(saveCalibrationKey)
           && (!requireCtrlHeld // Optionally require "Ctrl" key held down
