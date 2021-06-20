@@ -20,7 +20,6 @@ namespace BEERLabs.Esky.Networking.WebAPI
         {
             this.headers = new Headers ();
         }
-
         public static Dictionary<string, MultiPartEntry> Parse (Request request)
         {
             var mps = new Dictionary<string, MultiPartEntry> ();
