@@ -11162,37 +11162,37 @@ MonoBehaviour:
           MinimumCutoff: 10
           Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         RotationFilterParams:
           Frequency: 200
           MinimumCutoff: 10
           Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         VelocityFilterParams:
           Frequency: 200
           MinimumCutoff: 10
           Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         AccelerationFilterParams:
           Frequency: 200
           MinimumCutoff: 10
           Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         RotationVelocityFilterParams:
           Frequency: 200
           MinimumCutoff: 10
           Beta: 69
           DCutoff: 0
-          Enabled: 0
+          Enabled: 1
         RotationAccelerationFilterParams:
           Frequency: 200
           MinimumCutoff: 10
           Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 0
+          Enabled: 1
       kalmanFilterParameters:
         TranslationFilterParams:
           Q: 1
@@ -11220,7 +11220,7 @@ MonoBehaviour:
           Enabled: 1
       slamDFilterEnabled: 1
       slamKFilterEnabled: 1
-      DoUpdateValues: 1
+      DoUpdateValues: 0
     trackingSystemUsed: 1
   UseAsyncPosePredictor: 0
 --- !u!1 &6075467950620110355
