@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UniWebServer
+namespace BEERLabs.Esky.Networking.WebAPI
 {
     public static class MimeTypeMap
     {

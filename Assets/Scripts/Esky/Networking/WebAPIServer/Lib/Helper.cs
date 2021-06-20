@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace UniWebServer
+namespace BEERLabs.Esky.Networking.WebAPI
 {
     public static class Helper
     {

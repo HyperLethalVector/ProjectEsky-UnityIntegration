@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
     [System.Serializable]
     public enum FollowType{
         SixDOF = 0,

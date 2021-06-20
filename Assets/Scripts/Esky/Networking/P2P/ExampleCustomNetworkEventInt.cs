@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
 using ProtoBuf;
-namespace ProjectEsky.Networking{
+namespace BEERLabs.ProjectEsky.Networking{
     public class ExampleCustomNetworkEventInt : NetworkEvent
     {
         public UnityEvent<float> floatEvents;
@@ -31,7 +31,7 @@ namespace ProjectEsky.Networking{
             try{
                 floatEvents.Invoke(System.BitConverter.ToSingle(p.data,0));
             }catch(System.Exception e){
-                Debug.LogError("Something went wrong");
+                Debug.LogError("Something went wrong: " + e.Message);
             }
         }
     }

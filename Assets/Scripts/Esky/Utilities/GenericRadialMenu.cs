@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Leap.Unity;
 using UnityEngine;
-namespace ProjectEsky.Desktop{
+namespace BEERLabs.ProjectEsky.Desktop{
     public class GenericRadialMenu : MonoBehaviour
     {
 

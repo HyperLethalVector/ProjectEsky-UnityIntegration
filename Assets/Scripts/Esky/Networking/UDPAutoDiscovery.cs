@@ -8,13 +8,11 @@ using System.Text;
 using System.Linq;
 using System.ComponentModel;
 using System.Threading;
-using Microsoft.MixedReality.WebRTC;
 using System.Threading.Tasks;
 using UnityEngine.Events;
-using BEERLabs.Esky.Networking;
 using UnityEngine.Networking;
-
-namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
+using BEERLabs.Esky.Networking;
+namespace BEERLabs.Esky.Networking.Discovery{    
     public class NetworkingUtils{
         public static string GetLocalIPAddress()
         {
@@ -28,71 +26,23 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
-    }    
-    public class PackageManagerHookBehaviour : Microsoft.MixedReality.WebRTC.Unity.Signaler{
-        public delegate void BytesReceivedDelegate(byte[] b);
-        public BytesReceivedDelegate BytesReceived;
-        public virtual void SendBytes(byte[] b){
-            
-        }
-        public override Task SendMessageAsync(SdpMessage message)
-        {
-            return null;
-        }
+    }
 
-        /// <inheritdoc/>
-        public override Task SendMessageAsync(IceCandidate candidate)
-        {
-            return null;
-        }
+    public class DiscoveredMachine{
+        string IP;
+        float lastTimePingged;
     }
-    
-
-    [System.Serializable]
-    public class IceMessageWebsocket{
-        public string candidate;
-        public int sdpMlineIndex;
-        public string sdpMid;
-        public IceMessageWebsocket(string cand, int sdpmline, string sdpmid){
-            candidate = cand;
-            sdpMlineIndex = sdpmline;
-            sdpMid = sdpmid;
-        }
-    }
-    [System.Serializable]
-    public class SdpMessageWebsocket{
-        public string sdp;
-        public string type;
-        public SdpMessageWebsocket(string sdpMessage, string sdpType){
-            sdp = sdpMessage;
-            type = sdpType; 
-        }
-    }
-    
-    [System.Serializable]
-    public class WebrtcShakeClass{
-        public List<IceMessageWebsocket> iceMessages;
-        public SdpMessageWebsocket sdpMessage;
-    }
-    public delegate void CreateOfferDelegate();
-    public delegate void CreateResponseDelegate();
-
-    public class WebRTCAutoDiscoveryHandler : PackageManagerHookBehaviour
+    public class UDPAutoDiscovery : MonoBehaviour
     {
-        
-       
         [HideInInspector]
         public bool isAdding = false;
         public Dictionary<string, float> ClientsDiscovered = new Dictionary<string, float>();
         [HideInInspector]
         public List<string> cancellationsToSend = new List<string>();
-        float internalHearbeatRate = 0f;
-        float internalTimeoutRate = 0f;
         [Range(1.0f, 10f)]
         public float TimeoutBeforeReactivatingDiscovery = 5f;//5 second timeout before re-activating auto discovery
         [Range(0.0f,9.0f)]
-        public float HeartbeatRate = 2f;
-
+        public float HeartbeatRate = 2f; // 1 time heartbeat every 2 seconds
         public int ClientsFound = 0;
         public bool isHosting = false;
         [Range(0,5000)]
@@ -102,32 +52,17 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         [Range(0.0f,5f)]
         public float TimeoutBeforeRemovalFromList = 3f;
 
-        public static WebRTCAutoDiscoveryHandler instance;
+        public static UDPAutoDiscovery instance;
         BackgroundWorker objWorkerDiscovery;
         AutoDiscoverySender ads;
         AutoDiscoveryReceiver adr;
         public bool LogInfo;
-        
-        [HideInInspector]
-        public string HostingIP = "";
-        public List<byte[]> messagesQueue = new List<byte[]>();
-        public UnityEvent<byte[]> onDataReceivedFromDataTrack;
-        public UnityEvent onConnectionHandled;
-        public UnityEvent onConnectionDropped;
-        public bool hasMessagePrepared = false;
-        public WebrtcShakeClass shake = new WebrtcShakeClass();
-        bool createOffer = false;
-        bool createAnswer = false;
-        bool receiveAnswer = false;
-        bool receiveOffer = false;
-        bool initConnection = false;
-        bool discConnection = false;
-        SdpMessage sdpOffer = null;
-        SdpMessage sdpAnswer = null;
-        [HideInInspector]
-        public int connected = 0;
+        float internalHearbeatRate = 0f;
+        float internalTimeoutRate = 0f;
         public void Awake(){
             instance = this;
+        }
+        public void Start() {            
             WebAPIInterface.instance.SubscribeWebEvent("StopDiscovery",StopDiscoveryAnswering);
             StartReceiver();
             if(isHosting){
@@ -135,6 +70,15 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }else{
                 WebAPIInterface.instance.SubscribeWebEvent("Heartbeat",ReceiveHeartbeat);
             }
+        }
+        void StartReceiver(){
+            objWorkerDiscovery = new BackgroundWorker();
+            objWorkerDiscovery.WorkerReportsProgress = true;
+            objWorkerDiscovery.WorkerSupportsCancellation = true;
+            adr = new AutoDiscoveryReceiver(ref objWorkerDiscovery,this);
+            objWorkerDiscovery.DoWork += new DoWorkEventHandler(adr.Start);
+            objWorkerDiscovery.ProgressChanged += new ProgressChangedEventHandler(LogProgressChanged);
+            objWorkerDiscovery.RunWorkerAsync();
         }
         public void ReceiveHeartbeat(){
             if(isConnected){
@@ -160,22 +104,38 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                 Debug.Log("We are already connected");
             }
         }
-        public void Start() {
-
+        public void FixedUpdate(){
+            //we should rely on the webapi to do things related to cleanup, but for now letting the list accumulate is OK
+            //iterate over each entry in the clients dictionary
+            if(isHosting){
+                if(ClientsFound > 0){
+                    internalHearbeatRate += Time.fixedDeltaTime;
+                    if(internalHearbeatRate > HeartbeatRate){
+                        internalHearbeatRate = 0;
+                        StartCoroutine(SendHeartbeat());
+                    }
+                }
+            }else{
+                if(isConnected){
+                    internalTimeoutRate += Time.fixedDeltaTime;
+                    if(internalTimeoutRate > TimeoutBeforeReactivatingDiscovery){
+                        Debug.Log("Heartbeat Timeout! Stopping the receiver");
+                        isConnected = false;
+                        StartReceiver();
+                    }
+                }
+            }
+            ClientsFound = ClientsDiscovered.Count;
         }
-        void StartReceiver(){
-            objWorkerDiscovery = new BackgroundWorker();
-            objWorkerDiscovery.WorkerReportsProgress = true;
-            objWorkerDiscovery.WorkerSupportsCancellation = true;
-            adr = new AutoDiscoveryReceiver(ref objWorkerDiscovery,this);
-            objWorkerDiscovery.DoWork += new DoWorkEventHandler(adr.Start);
-            objWorkerDiscovery.ProgressChanged += new ProgressChangedEventHandler(LogProgressChanged);
-            objWorkerDiscovery.RunWorkerAsync();
+        void Update(){
+            while(cancellationsToSend.Count > 0){
+                StartCoroutine(CompleteConnection(cancellationsToSend[0]));
+                cancellationsToSend.RemoveAt(0);
+            }
         }
         public void StartSender(){
             isHosting = true;
             Debug.Log("Starting Sender");
-            shake.iceMessages.Clear();
             if(objWorkerDiscovery != null){
                 objWorkerDiscovery.CancelAsync();
             }
@@ -189,28 +149,38 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             ads = new AutoDiscoverySender(ref objWorkerDiscovery,this);
             objWorkerDiscovery.DoWork += new DoWorkEventHandler(ads.Start);
             objWorkerDiscovery.ProgressChanged += new ProgressChangedEventHandler(LogProgressChanged);
-            objWorkerDiscovery.RunWorkerAsync();          
+            objWorkerDiscovery.RunWorkerAsync();            
         }
-        private void FixedUpdate() {
-            ProcessHeartBeat();
-            if(createOffer){createOffer = false;PeerConnection.StartConnection();}    
-            if(createAnswer){createAnswer = false;PeerConnection.Peer.CreateAnswer();}        
-            if(receiveOffer){receiveOffer = false;
-                PeerConnection.HandleConnectionMessageAsync(sdpOffer).ContinueWith(_ =>
-                {
-                    // If the remote description was successfully applied then immediately send
-                    // back an answer to the remote peer to acccept the offer.
-                    _nativePeer.CreateAnswer();
-                }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);     
+        private void LogProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Report thread messages to Console
+            if(LogInfo)
+            Debug.Log(e.UserState.ToString());
+        }
+        public void OnDestroy(){
+            if(ads != null){
+                ads.Stop();
             }
-            if(receiveAnswer){receiveAnswer = false;
-                connected += 1;
-                PeerConnection.HandleConnectionMessageAsync(sdpAnswer).ContinueWith(_ =>
-                {
-                }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+            if(adr != null){
+                adr.Stop();
             }
-            if(initConnection){initConnection = false;onConnectionHandled.Invoke();}
-            if(discConnection){discConnection = false;onConnectionDropped.Invoke();}
+            objWorkerDiscovery.CancelAsync();
+        }
+        public IEnumerator CompleteConnection(string IP){
+            WWWForm form = new WWWForm();
+            form.AddField("APIType","Base");
+            form.AddField("EventID","StopDiscovery");
+            UnityWebRequest request = UnityWebRequest.Post("http://"+IP+":8079/",form);
+            yield return request.SendWebRequest();
+            if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
+        		Debug.Log("Issue sending complete connect request, trying again: " + request.error);
+                StartCoroutine(CompleteConnection(IP));
+            }
+            
+            else {
+              Debug.Log("Done Sending Completion request");
+            }
+
         }
         public IEnumerator SendHeartbeat(){            
             Debug.Log("Sending Heartbeat");
@@ -237,185 +207,10 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
             
         }
-        public IEnumerator CompleteConnection(string IP){
-            WWWForm form = new WWWForm();
-            form.AddField("APIType","Base");
-            form.AddField("EventID","StopDiscovery");
-            UnityWebRequest request = UnityWebRequest.Post("http://"+IP+":8079/",form);
-            yield return request.SendWebRequest();
-            if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
-        		Debug.Log("Issue sending complete connect request, trying again: " + request.error);
-                StartCoroutine(CompleteConnection(IP));
-            }
-            
-            else {
-              Debug.Log("Done Sending Completion request");
-            }
-
-        }        
-        void ProcessHeartBeat(){
-            //we should rely on the webapi to do things related to cleanup, but for now letting the list accumulate is OK
-            //iterate over each entry in the clients dictionary
-            if(isHosting){
-                if(ClientsFound > 0){
-                    internalHearbeatRate += Time.fixedDeltaTime;
-                    if(internalHearbeatRate > HeartbeatRate){
-                        internalHearbeatRate = 0;
-                        StartCoroutine(SendHeartbeat());
-                    }
-                }
-            }else{
-                if(isConnected){
-                    internalTimeoutRate += Time.fixedDeltaTime;
-                    if(internalTimeoutRate > TimeoutBeforeReactivatingDiscovery){
-                        Debug.Log("Heartbeat Timeout! Stopping the receiver");
-                        isConnected = false;
-                        StartReceiver();
-                    }
-                }
-            }
-            ClientsFound = ClientsDiscovered.Count;
-        }
-        protected override void Update(){
-            base.Update();
-             while(cancellationsToSend.Count > 0){
-                StartCoroutine(CompleteConnection(cancellationsToSend[0]));
-                cancellationsToSend.RemoveAt(0);
-            }            
-            while(messagesQueue.Count > 0){
-                byte[] b = messagesQueue[0];
-                messagesQueue.RemoveAt(0);
-                onDataReceivedFromDataTrack.Invoke(b);
-            }
-        }
-        public void Finish(){
-        }
-        public void ReceivedConnection(){
-        }
-        public void StoppedConnection(){
-                onConnectionDropped.Invoke();
-        }
-        public void ReceiveMessageData(byte[] b){   
-            messagesQueue.Add(b); 
-        }
-        public override void SendBytes(byte[] b){
-                knownDataChannels[1].SendMessage(b);
-        }
-        public void SendBytesReliable(byte[] b){
-                knownDataChannels[1].SendMessage(b);
-        }
-        public void Disconnect(){
-                discConnection = true;
-                isConnected = false;                
-        }
-        public Dictionary<int,DataChannel> knownDataChannels = new Dictionary<int, DataChannel>();
-        public void DataChannelAddedDelegate(DataChannel channel){
-            Debug.LogError("Data Channel Added, ID: " + channel.ID + ", Label: " + channel.Label);
-            channel.MessageReceived += ReceiveMessageData;
-            channel.StateChanged += DataChannelOpen;
-            knownDataChannels.Add(channel.ID,channel);
-        }
-        public void DataChannelOpen(){
-            switch(knownDataChannels[0].State){
-                case DataChannel.ChannelState.Open:
-                initConnection = true;                
-                isConnected = true;
-                break;
-                case DataChannel.ChannelState.Closed:
-                discConnection = true;
-                isConnected = false;
-                break;
-            } 
-        }
-        public override void OnPeerInitialized(){ 
-            Debug.Log("On initialized");
-            base.OnPeerInitialized();
-            PeerConnection.Peer.DataChannelAdded += DataChannelAddedDelegate;
-            PeerConnection.Peer.AddDataChannelAsync(0, "message_transfer", true, true).ContinueWith((prevTask) => 
-            { 
-                if (prevTask.Exception != null) 
-                { 
-                    throw prevTask.Exception; 
-                } 
-            });    
-            PeerConnection.Peer.AddDataChannelAsync(1, "unreliabletransferChannel", true, true).ContinueWith((prevTask) => 
-            { 
-                if (prevTask.Exception != null) 
-                { 
-                    throw prevTask.Exception; 
-                } 
-            });      
-            PeerConnection.Peer.AddDataChannelAsync(2, "reliabletransferChannel", true, true).ContinueWith((prevTask) => 
-            { 
-                if (prevTask.Exception != null) 
-                { 
-                    throw prevTask.Exception; 
-                } 
-            });              
-        }
-        
-        private void LogProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // Report thread messages to Console
-            if(LogInfo)
-            Debug.Log(e.UserState.ToString());
-        }
-
-        public void OnDestroy(){
-            if(ads != null){
-                ads.Stop();
-            }
-            if(adr != null){
-
-                adr.Stop();
-            }
-        }
-        
-        public void CreateOffer(){
-            createOffer = true;
-        }
-        public void CreateAnswer(){
-            createAnswer = true;
-        }
-
-        public void ReceiveCompletedOffer(WebrtcShakeClass receivedClass){
-            ReceiveIceCandidate(receivedClass);            
-            sdpOffer = new SdpMessage { Type = SdpMessageType.Offer, Content = receivedClass.sdpMessage.sdp};
-            receiveOffer = true;
-        }
-        public void ReceiveCompletedAnswer(WebrtcShakeClass receivedClass){
-            ReceiveIceCandidate(receivedClass);
-            sdpAnswer = new SdpMessage { Type = SdpMessageType.Answer, Content = receivedClass.sdpMessage.sdp};                            
-            receiveAnswer = true;
-        }
-        public void ReceiveIceCandidate(WebrtcShakeClass receivedClass){
-            for(int i = 0; i < receivedClass.iceMessages.Count; i++){
-                _nativePeer.AddIceCandidate(new IceCandidate{SdpMid = receivedClass.iceMessages[i].sdpMid,SdpMlineIndex = receivedClass.iceMessages[i].sdpMlineIndex,Content = receivedClass.iceMessages[i].candidate});
-            }
-        }
-        
-        protected override void OnIceCandidateReadyToSend(IceCandidate candidate)
-        {
-          //Data = string.Join(IceSeparatorChar, candidate.Content, candidate.SdpMlineIndex.ToString(), candidate.SdpMid);      
-            IceMessageWebsocket imws = new IceMessageWebsocket(candidate.Content,candidate.SdpMlineIndex,candidate.SdpMid);
-            shake.iceMessages.Add(imws);
-        }
-        protected override void OnSdpOfferReadyToSend(SdpMessage offer)
-        {
-
-            SdpMessageWebsocket sdpws = new SdpMessageWebsocket(offer.Content,"offer");
-            shake.sdpMessage = sdpws;
-        }
-        protected override void OnSdpAnswerReadyToSend(SdpMessage answer)
-        {
-
-            SdpMessageWebsocket sdpws = new SdpMessageWebsocket(answer.Content,"answer");
-            shake.sdpMessage = sdpws;            
-        }
     }
     public class AutoDiscoveryReceiver
     {
-        public WebRTCAutoDiscoveryHandler hookedAutoDiscovery;
+        public UDPAutoDiscovery hookedAutoDiscovery;
         private System.ComponentModel.BackgroundWorker workerUDP;
 
         // Port the UDP server will listen to broadcast packets from UDP Clients.
@@ -434,7 +229,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
 
         private bool disposing = false;
 
-        public AutoDiscoveryReceiver(ref BackgroundWorker workerUDP, WebRTCAutoDiscoveryHandler hookedDiscovery)
+        public AutoDiscoveryReceiver(ref BackgroundWorker workerUDP, UDPAutoDiscovery hookedDiscovery)
         {
             this.workerUDP = workerUDP;
             this.BroadCastDaemonPort = AutoDiscoveryPort;
@@ -477,8 +272,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                             // Here we reply the Service IP and Port (TCP).. 
                             // You must point to your server and service port. For example a webserver: sending the correct IP and port 80.
                             this.workerUDP.ReportProgress(1, "Got discovered, sending response: bleh");
-                            WebRTCAutoDiscoveryHandler.instance.HostingIP = IncomingIP.Address.ToString();
-                            this.workerUDP.ReportProgress(1,"Got response from IP: " + IncomingIP.Address.ToString());
+
                             byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*"+NetworkingUtils.GetLocalIPAddress()); // Acknowledged
                             newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
                             this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
@@ -502,10 +296,10 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
 
         }
-    } 
+    }
     public class AutoDiscoverySender
         {
-            public WebRTCAutoDiscoveryHandler hookedAutoDiscovery;
+            public UDPAutoDiscovery hookedAutoDiscovery;
             public bool disposing = false;
 
             // Fixed Port for broadcast.
@@ -526,7 +320,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
 
             private BackgroundWorker worker;
 
-            public AutoDiscoverySender(ref BackgroundWorker worker, WebRTCAutoDiscoveryHandler hookedDiscovery)
+            public AutoDiscoverySender(ref BackgroundWorker worker, UDPAutoDiscovery hookedDiscovery)
             {
                 this.worker = worker;
                 worker.ReportProgress(1, "AutoDiscoverySender::Started at " + AutoDiscoveryPort + "/UDP");
@@ -604,6 +398,5 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
 
         }
-
 
 }

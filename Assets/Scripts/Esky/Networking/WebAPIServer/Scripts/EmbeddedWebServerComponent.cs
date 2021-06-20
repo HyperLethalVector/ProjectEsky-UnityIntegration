@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 
-namespace UniWebServer
-{
+namespace BEERLabs.Esky.Networking.WebAPI{
 
 
     public class EmbeddedWebServerComponent : MonoBehaviour

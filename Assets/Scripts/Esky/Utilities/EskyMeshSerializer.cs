@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO;
 using SysDiag = System.Diagnostics;
 
-namespace ProjectEsky.Utilities
+namespace BEERLabs.ProjectEsky.Utilities
 {
     /// <summary>
     /// SimpleMeshSerializer converts a UnityEngine.Mesh object to and from an array of bytes.

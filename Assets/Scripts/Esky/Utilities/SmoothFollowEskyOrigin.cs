@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
 public enum SmoothingType{
     Lerp,
     Linear,
@@ -55,7 +55,7 @@ public class SmoothFollowEskyOrigin : MonoBehaviour
             }
 
             }catch(System.NullReferenceException e){
-                Debug.LogError("There was an issue getting the target, does the relavent eskyhandorigin script exist in scene?: " + gameObject.name);
+                Debug.LogError("There was an issue getting the target, does the relavent eskyhandorigin script exist in scene?: " + gameObject.name + "\n" + e.Message);
                 this.enabled = false;
             }
         }

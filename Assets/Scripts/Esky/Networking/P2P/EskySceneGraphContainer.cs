@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using ProtoBuf;
 using System.IO;
-using ProjectEsky.Networking.WebRTC;
+using BEERLabs.ProjectEsky.Networking.WebRTC;
 
-namespace ProjectEsky.Networking{
+namespace BEERLabs.ProjectEsky.Networking{
     public delegate void ItemUpdateDelegate(string key,EskySceneGraphNode value);
     [ProtoContract]
     public enum NetworkOwnership{
@@ -173,7 +173,7 @@ namespace ProjectEsky.Networking{
         public Dictionary<string,NetworkObject> objectsInScene = new Dictionary<string, NetworkObject>();//key is UUID, value is the associated game object
         public EskySynchronizedSceneGraph mySyncedSceneGraph = new EskySynchronizedSceneGraph();
         public static EskySceneGraphContainer instance;
-        public ProjectEsky.Tracking.EskyAnchor SceneOrigin;
+        public BEERLabs.ProjectEsky.Tracking.EskyAnchor SceneOrigin;
         void Awake(){
             instance = this;
             mySyncedSceneGraph.ValueChangedEvent += OnItemUpdated;

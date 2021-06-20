@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectEsky.Networking{
+namespace BEERLabs.ProjectEsky.Networking{
     public class NetworkClient : NetworkObject
     {
 

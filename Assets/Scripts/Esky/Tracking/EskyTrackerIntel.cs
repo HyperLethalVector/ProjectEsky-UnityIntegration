@@ -7,7 +7,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
 
     public enum ComPort{
         COM0 = 0,
@@ -40,8 +40,6 @@ namespace ProjectEsky.Tracking{
         double _beta = 0.0;
         double _dcutoff = 1.0;
         bool _enabled = false;
-        bool changedFirstTime = false;
-
         public bool CheckUpdate(){
             
             bool didChange = false;
@@ -65,7 +63,6 @@ namespace ProjectEsky.Tracking{
         double _r = 0.0;
         bool _enabled = false;
         public bool Enabled = true;
-        bool changedFirstTime = false;
         public bool CheckUpdate(){
             
             bool didChange = false;
@@ -193,7 +190,7 @@ namespace ProjectEsky.Tracking{
         bool canRenderImages = false;     
         public bool UsesDeckXIntegrator;
         public ComPort comPort;
-        public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
+        public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
 
         public HeadPosePredictionSettings HeadPosePredictionOffsets;
         public TrackingSystemFilters trackingSystemFilters;
@@ -219,7 +216,6 @@ namespace ProjectEsky.Tracking{
             if(attachedRenderer != null)
             RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
-            RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
             EnablePassthrough(TrackerID,UseExternalCameraPreview);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();     
@@ -230,8 +226,8 @@ namespace ProjectEsky.Tracking{
         {
             if(attachedRenderer != null){
                 for(int i = 0; i < 16; i++){
-                        leftEyeTransform[i] = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform[i];
-                        rightEyeTransform[i] = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform[i];                                                
+                        leftEyeTransform[i] = BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform[i];
+                        rightEyeTransform[i] = BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform[i];                                                
                 }
                 SetLeftRightEyeTransform(TrackerID,leftEyeTransform,rightEyeTransform);
             }
@@ -523,71 +519,7 @@ namespace ProjectEsky.Tracking{
             ((EskyTrackerIntel)instances[TrackerID]).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
-        static Vector3 translateA = new Vector3();
-        static Vector3 translateB = new Vector3();
-        static Quaternion rotationA = Quaternion.identity;
-        static Quaternion rotationB = Quaternion.identity;
-        static Matrix4x4 A = new Matrix4x4();
-        static Matrix4x4 B = new Matrix4x4();
-        static Matrix4x4 Delta = new Matrix4x4();
-        static Matrix4x4 DeltaInv = new Matrix4x4();
-        static float[] deltaPoseReadbackLeft= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 
-        static float[] deltaPoseReadbackRight= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-
-        [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
-        static void DeltaMatrixConvCallback(int TrackerID, IntPtr writebackArray,bool isLeft, float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
-            
-            //set translations
-            translateA.x = ty_A;            
-            translateA.y = -tx_A;
-            translateA.z = tz_A;
-            
-            translateB.x = ty_B;
-            translateB.y = -tx_B;
-            translateB.z = tz_B; 
-            //set rotations
-            rotationA.x = qy_A;
-            rotationA.y = -qx_A; 
-            rotationA.z = qz_A; 
-            rotationA.w = qw_A;
-            //
-            rotationB.x = qy_B;
-            rotationB.y = -qx_B; 
-            rotationB.z = qz_B; 
-            rotationB.w = qw_B;
-
-            if(qw_A != 0 && qw_B != 0){
-            //set matricies
-                try{
-                    A.SetTRS(translateA,rotationA,Vector3.one);
-                    B.SetTRS(translateB,rotationB,Vector3.one);              
-                    // Relove delta B -> A (final - initial)
-                    if(isLeft){
-                        Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
-                    }else{
-                        Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
-                    }
-                    DeltaInv = Delta.inverse;                        
-                    for(int y = 0; y < 4; y++){
-                        for(int x = 0; x < 4; x++){
-                            if(isLeft){
-                                deltaPoseReadbackLeft[y * 4 + x] = Delta[y,x];  
-                            }else{
-                                deltaPoseReadbackRight[y * 4 + x] = Delta[y,x];
-                            }
-                        }
-                    }
-                    if(isLeft){
-                        Marshal.Copy(deltaPoseReadbackLeft,0,writebackArray,15);                   
-                    }else{
-                        Marshal.Copy(deltaPoseReadbackRight,0,writebackArray,15);                     
-                    }
-                }catch(System.Exception e){
-
-                }
-            }
-        }
         [MonoPInvokeCallback(typeof(DeltaPoseUpdateCallback))]
         static void DeltaMatrixCallback(int TrackerID, IntPtr deltaPoseLeft, IntPtr deltaPoseRight){
             if( ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer != null){         

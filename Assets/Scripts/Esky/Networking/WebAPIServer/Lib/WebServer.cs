@@ -7,7 +7,7 @@ using System.IO;
 using System;
 using System.Text;
 
-namespace UniWebServer
+namespace BEERLabs.Esky.Networking.WebAPI
 {
 
     public class WebServer : IDisposable
@@ -117,18 +117,26 @@ namespace UniWebServer
             
             req.stream = stream;
             if (req.headers.Contains ("Content-Length")) {
+
                 var count = int.Parse (req.headers.Get ("Content-Length"));
+                Debug.Log("Got Content Length!: " + count);                
                 var bytes = new byte[count];
 				var offset = 0;
 				while (count > 0) {
-					offset = stream.Read (bytes, offset, count);
-					count -= offset;
-				}
+                    var bytesRead = stream.Read (bytes, offset, count);
+                    offset += bytesRead;
+                    count -= bytesRead;
+                }
                 req.body = System.Text.Encoding.UTF8.GetString(bytes);
             }
 				
             if (req.headers.Get ("Content-Type").Contains ("multipart/form-data")) {
                 req.formData = MultiPartEntry.Parse (req);
+            }if(req.headers.Get("Content-Type").Contains("application/json")){
+                Debug.Log("Content type was JSON, cannot parse yet");
+            }else{
+                Debug.Log("Content type was unknown, try parsing");
+                req.formData = MultiPartEntry.ParseFields(req);
             }
             
             if (processRequestsInMainThread) {

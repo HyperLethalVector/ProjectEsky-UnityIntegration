@@ -4,9 +4,9 @@ using UnityEngine;
 using ProtoBuf;
 using System.IO;
 using UnityEngine.Events;
-using ProjectEsky.Networking.WebRTC;
+using BEERLabs.ProjectEsky.Networking.WebRTC;
 
-namespace ProjectEsky.Networking{
+namespace BEERLabs.ProjectEsky.Networking{
     [ProtoContract]
     public class NetworkEventPacket{
         [ProtoMember(1)]

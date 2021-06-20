@@ -5,7 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UniWebServer
+namespace BEERLabs.Esky.Networking.WebAPI
 {
 
     public class Response

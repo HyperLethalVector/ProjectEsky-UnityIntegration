@@ -7,7 +7,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Diagnostics;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
     #region 
     using UnityEngine;
     using System.Runtime.Serialization;
@@ -247,8 +247,8 @@ namespace ProjectEsky.Tracking{
                         UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
                     }
                 }
-                ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
-                ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
+                BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
+                BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
             }else{
                 Debug.LogError("Walp, no tracking calibration was loaded, does the file exist?");
             }

@@ -25362,11 +25362,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: WebRTCConnectionManager
       objectReference: {fileID: 0}
-    - target: {fileID: 7172086403288178363, guid: 0648cba404421664390f6dff8b6bcb8f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7172086403288178364, guid: 0648cba404421664390f6dff8b6bcb8f,
         type: 3}
       propertyPath: m_RootOrder

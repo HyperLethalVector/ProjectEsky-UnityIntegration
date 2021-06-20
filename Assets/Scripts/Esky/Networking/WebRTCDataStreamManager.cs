@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using System.IO;
 using System;
 
-namespace ProjectEsky.Networking.WebRTC{
+namespace BEERLabs.ProjectEsky.Networking.WebRTC{
     [ProtoContract]
     public enum WebRTCPacketType{
         Heartbeat = 0,

@@ -11,7 +11,7 @@ using System;
 using AOT;
 using System.IO;
 
-namespace ProjectEsky.Rendering{
+namespace BEERLabs.ProjectEsky.Rendering{
      [System.Serializable]
      public class DisplayCalibration{
         [SerializeField]
@@ -162,7 +162,7 @@ namespace ProjectEsky.Rendering{
         readonly List<int> windowsOn = new List<int>();
         public DisplayCalibration calibration;
         public GameObject LeapMotionCamera;
-        public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
+        public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
         [Range(0,1)]
         public float RenderedGraphicsBrightness = 1.0f;
@@ -255,10 +255,6 @@ namespace ProjectEsky.Rendering{
                 SetEnableFlagWarping(0,use2DTemporalWarping);
             }
         }
-        public void FlagUpdateLookUpTextures(){
-            UpdateLookUpTextures = true;
-        }
-        bool UpdateLookUpTextures = false;
         IEnumerator CallPluginAtEndOfFrame(int id) {
             yield return new WaitForEndOfFrame();
             IntPtr ptrLeft = renderTextureSettings.RightRenderTexture.GetNativeTexturePtr();

@@ -4,7 +4,7 @@ using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
 using UnityEngine.Events;
-namespace ProjectEsky.Utilities{
+namespace BEERLabs.ProjectEsky.Utilities{
     public enum PointerState{
         Entered,
         Stayed,
@@ -48,7 +48,7 @@ namespace ProjectEsky.Utilities{
         // Update is called once per frame
         public void Update()
         {
-            foreach(var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
+            foreach(var source in CoreServices.InputSystem.DetectedInputSources)
             {
                 // Ignore anything that is not a hand because we want articulated hands
                 if (source.SourceType == Microsoft.MixedReality.Toolkit.Input.InputSourceType.Hand)

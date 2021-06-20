@@ -7,7 +7,7 @@ using System.IO;
 using System;
 using System.Text;
 
-namespace UniWebServer
+namespace BEERLabs.Esky.Networking.WebAPI
 {
     public class Request
     {

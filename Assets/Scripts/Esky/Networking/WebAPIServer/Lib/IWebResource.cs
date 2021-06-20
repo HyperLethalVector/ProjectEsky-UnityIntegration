@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace UniWebServer
+namespace BEERLabs.Esky.Networking.WebAPI
 {
 	public interface IWebResource
 	{

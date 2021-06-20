@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-namespace ProjectEsky.Networking{
+namespace BEERLabs.ProjectEsky.Networking{
     public enum PoseSynctype{
         Instant = 0,
         Smooth = 1

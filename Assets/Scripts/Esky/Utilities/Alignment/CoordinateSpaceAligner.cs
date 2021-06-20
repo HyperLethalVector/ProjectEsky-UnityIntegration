@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Leap.Unity;
 
-namespace ProjectEsky.Calibrator
+namespace BEERLabs.ProjectEsky.Calibrator
 {
     public enum CoordinateAlignerStates{
         Idle = 0,

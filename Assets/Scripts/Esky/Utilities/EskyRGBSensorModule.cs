@@ -5,7 +5,7 @@ using System;
 using AOT;
 using UnityEngine;
 
-namespace ProjectEsky.Extras.Modules{
+namespace BEERLabs.ProjectEsky.Extras.Modules{
     public enum Color { red, green, blue, black, white, yellow, orange };
     
     public class EskyRGBSensorModule : SensorImageSource

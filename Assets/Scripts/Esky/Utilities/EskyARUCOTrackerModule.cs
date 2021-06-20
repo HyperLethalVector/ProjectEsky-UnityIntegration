@@ -5,7 +5,7 @@ using System;
 using AOT;
 using UnityEngine;
 
-namespace ProjectEsky.Extras.Modules{
+namespace BEERLabs.ProjectEsky.Extras.Modules{
     [System.Serializable]
     public class ARUCOModuleInfo{
         [SerializeField]

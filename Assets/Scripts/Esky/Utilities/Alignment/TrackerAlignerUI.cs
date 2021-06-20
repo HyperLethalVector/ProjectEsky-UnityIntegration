@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Leap.Unity;
-namespace ProjectEsky.Calibrator
+namespace BEERLabs.ProjectEsky.Calibrator
 {
     public class TrackerAlignerUI : MonoBehaviour
     {
@@ -18,7 +18,7 @@ namespace ProjectEsky.Calibrator
             Show_Message_CalculatingAlignment1,
             Show_Message_CalculatingAlignment2                        
         }
-        public ProjectEsky.Tracking.EskyTracker MyTracker;
+        public BEERLabs.ProjectEsky.Tracking.EskyTracker MyTracker;
 
         public TrackerAligner myDriver;
         string HandInvisible = "Place your right hand in front of the screen, back facing you!";
