@@ -10,7 +10,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
     /// <summary>
     /// A slider that can be moved by grabbing / pinching a slider thumb
     /// </summary>
-    [HelpURL("https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/README_Sliders.html")]
+    [HelpURL("https://docs.microsoft.com/windows/mixed-reality/mrtk-unity/features/ux-building-blocks/sliders")]
     [AddComponentMenu("Scripts/MRTK/SDK/PinchSlider")]
     public class PinchSlider : MonoBehaviour, IMixedRealityPointerHandler, IMixedRealityFocusHandler
     {
@@ -44,11 +44,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 UpdateUI();
                 OnValueUpdated.Invoke(new SliderEventData(oldSliderValue, value, ActivePointer, this));
             }
-        }
-        public void SetFloatWithoutTrigger(float value){
-            sliderValue = value;
-            UpdateUI();          
-//            OnValueUpdatedNoTrigger.Invoke(new SliderEventData(oldSliderValue, value, ActivePointer, this));  
         }
 
         [Header("Slider Axis Visuals")]
@@ -212,7 +207,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
         #region Event Handlers
         [Header("Events")]
         public SliderEvent OnValueUpdated = new SliderEvent();
-        public SliderEvent OnValueUpdatedNoTrigger = new SliderEvent();
         public SliderEvent OnInteractionStarted = new SliderEvent();
         public SliderEvent OnInteractionEnded = new SliderEvent();
         public SliderEvent OnHoverEntered = new SliderEvent();

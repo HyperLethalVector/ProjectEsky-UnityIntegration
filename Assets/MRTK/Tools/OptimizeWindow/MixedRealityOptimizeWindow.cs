@@ -145,7 +145,7 @@ namespace Microsoft.MixedReality.Toolkit.Editor
             PerfTarget = (PerformanceTarget)EditorGUILayout.Popup("Performance Target", (int)this.PerfTarget, PerformanceTargetEnums);
             EditorGUILayout.HelpBox(PerformanceTargetDescriptions[(int)PerfTarget], MessageType.Info);
             EditorGUILayout.Space();
-
+/*
             if (!XRSettingsUtilities.LegacyXREnabled)
             {
                 EditorGUILayout.HelpBox("Virtual reality support is not enabled in player settings", MessageType.Error);
@@ -170,7 +170,7 @@ namespace Microsoft.MixedReality.Toolkit.Editor
                     RenderShaderOptimizations();
                 }
             }
-
+*/
             EditorGUILayout.EndScrollView();
         }
 

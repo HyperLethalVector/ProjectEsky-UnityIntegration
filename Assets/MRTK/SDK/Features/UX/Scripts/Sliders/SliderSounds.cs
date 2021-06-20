@@ -2,11 +2,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Microsoft.MixedReality.Toolkit.UI
 {
@@ -74,7 +70,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
             slider.OnInteractionStarted.AddListener(OnInteractionStarted);
             slider.OnInteractionEnded.AddListener(OnInteractionEnded);
             slider.OnValueUpdated.AddListener(OnValueUpdated);
-            slider.OnValueUpdatedNoTrigger.AddListener(OnValueUpdated);
         }
 
         private void OnValueUpdated(SliderEventData eventData)

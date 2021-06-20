@@ -168,7 +168,7 @@ namespace Microsoft.MixedReality.Toolkit.Input
         /// Ignores bounds handlers for the IsNearObject check.
         /// </summary>
         /// <returns>True if the pointer is near any collider that's both on a grabbable layer mask, and has a NearInteractionGrabbable.</returns>
-        public bool IsNearObject => queryBufferNearObjectRadius.ContainsGrabbable || queryBufferInteractionRadius.NearObjectDetected;
+        public virtual bool IsNearObject => queryBufferNearObjectRadius.ContainsGrabbable || queryBufferInteractionRadius.NearObjectDetected;
 
         /// <summary>
         /// Test if the pointer is within the grabbable radius of collider that's both on a grabbable layer mask, and has a NearInteractionGrabbable.
@@ -301,7 +301,7 @@ namespace Microsoft.MixedReality.Toolkit.Input
         /// <inheritdoc />
         public bool TryGetDistanceToNearestSurface(out float distance)
         {
-            using (TryGetDistanceToNearestSurfacePerfMarker.Auto())
+            using (TryGetNormalToNearestSurfacePerfMarker.Auto())
             {
                 var focusProvider = CoreServices.InputSystem?.FocusProvider;
                 if (focusProvider != null)
@@ -336,8 +336,7 @@ namespace Microsoft.MixedReality.Toolkit.Input
                         return true;
                     }
                 }
-
-                normal = Vector3.forward;
+                normal = Rotation * Vector3.forward;
                 return false;
             }
         }
@@ -450,6 +449,13 @@ namespace Microsoft.MixedReality.Toolkit.Input
                     for (int i = 0; i < numColliders; i++)
                     {
                         Collider collider = queryBuffer[i];
+                        MeshCollider meshCollider = collider as MeshCollider;
+                        if (meshCollider != null && meshCollider.convex == false)
+                        {
+                            // Physics.ClosestPoint is only allowed on a convex collider.
+                            continue;
+                        }
+                        
                         grabbable = collider.GetComponent<NearInteractionGrabbable>();
                         if (grabbable != null)
                         {
