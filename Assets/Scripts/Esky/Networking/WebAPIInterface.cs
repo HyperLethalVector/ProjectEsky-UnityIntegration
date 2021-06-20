@@ -64,7 +64,7 @@ namespace BEERLabs.Esky.Networking{
     public class WebAPIInterface : MonoBehaviour
     {
         public delegate bool HandleRequestExternalHook(Request request, Response response);
-        public List<HandleRequestExternalHook> externalHooks;
+        public List<HandleRequestExternalHook> externalHooks = true;
         public static WebAPIInterface instance;
         public UnityEvent HeartBeatTimeoutEvent;
         public List<BasicWebEvent> BaseWebEvents;
