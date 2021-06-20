@@ -214,6 +214,8 @@ namespace ProjectEsky.Tracking{
         public float smoothingRotation= 0.1f;
         [HideInInspector]
         public float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+        [HideInInspector]
+        public double[] currentRealsensePoseExt = new double[7]{0.0,0.0,0.0,0.0,0.0,0.0,1.0};
         [HideInInspector]        
         public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         [HideInInspector]

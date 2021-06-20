@@ -1215,6 +1215,14 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  currentRealsensePoseExt:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
   currentRealsenseObject:
   - 0
   - 0
@@ -1288,27 +1296,100 @@ MonoBehaviour:
   UsesDeckXIntegrator: 1
   comPort: 5
   attachedRenderer: {fileID: 6097305361081574939}
-  FilterEnabled: 1
-  TranslationFilterParameters:
-    Frequency: 200
-    MinimumCutoff: 10
-    Beta: 0.10000000149011612
-    DCutoff: 0.009999999776482582
-  RotationFilterParameters:
-    Frequency: 200
-    MinimumCutoff: 10
-    Beta: 0.10000000149011612
-    DCutoff: 0.0010000000474974513
-  KTranslationFilterParams:
-    Q: 0.009999999776482582
-    R: 1.5
-  KRrotationFilterParams:
-    Q: 0.2919999957084656
-    R: 7.110000133514404
-  UseDollaryDooFilter: 1
-  UseKalmanFilter: 1
   HeadPosePredictionOffsets:
     HeadPosePredictionOffset: 0.05
+  trackingSystemFilters:
+    oldTrackingSystemFilters:
+      FilterEnabled: 1
+      TranslationFilterParameters:
+        Frequency: 200
+        MinimumCutoff: 10
+        Beta: 0.10000000149011612
+        DCutoff: 0.0010000000474974513
+        Enabled: 1
+      RotationFilterParameters:
+        Frequency: 200
+        MinimumCutoff: 10
+        Beta: 0.10000000149011612
+        DCutoff: 0.0010000000474974513
+        Enabled: 1
+      KTranslationFilterParams:
+        Q: 0.009999999776482582
+        R: 1.5
+        Enabled: 1
+      KRrotationFilterParams:
+        Q: 0.2919999957084656
+        R: 7.110000133514404
+        Enabled: 1
+      UseDollaryDooFilter: 1
+      UseKalmanFilter: 1
+    newTrackingSystemFilters:
+      dollaryDooFilterParams:
+        TranslationFilterParams:
+          Frequency: 0
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
+          DCutoff: 0
+          Enabled: 0
+        RotationFilterParams:
+          Frequency: 0
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
+          DCutoff: 0
+          Enabled: 0
+        VelocityFilterParams:
+          Frequency: 0
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
+          DCutoff: 0
+          Enabled: 0
+        AccelerationFilterParams:
+          Frequency: 0
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
+          DCutoff: 0
+          Enabled: 0
+        RotationVelocityFilterParams:
+          Frequency: 0
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
+          DCutoff: 0
+          Enabled: 0
+        RotationAccelerationFilterParams:
+          Frequency: 0
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
+          DCutoff: 0
+          Enabled: 0
+      kalmanFilterParameters:
+        TranslationFilterParams:
+          Q: 1
+          R: 10
+          Enabled: 0
+        RotationFilterParams:
+          Q: 1
+          R: 0.0010000000474974513
+          Enabled: 0
+        VelocityFilterParams:
+          Q: 0.0010000000474974513
+          R: 0.41999998688697815
+          Enabled: 1
+        AccelerationFilterParams:
+          Q: 0.0010000000474974513
+          R: 5.070000171661377
+          Enabled: 1
+        RotationVelocityFilterParams:
+          Q: 0.0010000000474974513
+          R: 4.070000171661377
+          Enabled: 1
+        RotationAccelerationFilterParams:
+          Q: 0.0010000000474974513
+          R: 5.820000171661377
+          Enabled: 1
+      slamDFilterEnabled: 0
+      slamKFilterEnabled: 1
+      DoUpdateValues: 1
+    trackingSystemUsed: 0
   UseAsyncPosePredictor: 0
 --- !u!1 &5792371030841691909
 GameObject:
