@@ -425,13 +425,15 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         public bool HandleRequest(Request request, Response response){
             string key = request.formData["EventID"].Value.Trim();
             
-            Debug.Log("Checking: " + key + "," + request.formData["EventID"].Value);
+
             switch(key){
                 case "SDPOffer":
+                Debug.Log("Checking: " + key + "," + request.formData["Offer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
                 receiveOffer = true;                
                 return true;
                 case "SDPAnswer":
+                Debug.Log("Checking: " + key + "," + request.formData["Answer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Answer"].Value);
                 receiveAnswer = true;                
                 return true;

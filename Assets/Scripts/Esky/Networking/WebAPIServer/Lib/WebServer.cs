@@ -128,6 +128,7 @@ namespace BEERLabs.Esky.Networking.WebAPI
                     count -= bytesRead;
                 }
                 req.body = System.Text.Encoding.UTF8.GetString(bytes);
+                Debug.Log("Body got!: " + req.body);                         
             }
 				
             if (req.headers.Get ("Content-Type").Contains ("multipart/form-data")) {
