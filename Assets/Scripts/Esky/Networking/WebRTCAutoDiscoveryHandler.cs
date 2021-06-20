@@ -12,6 +12,7 @@ using Microsoft.MixedReality.WebRTC;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 using BEERLabs.Esky.Networking;
+using BEERLabs.Esky.Networking.WebAPI;
 using UnityEngine.Networking;
 
 namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
@@ -117,7 +118,6 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         public bool hasMessagePrepared = false;
         public WebrtcShakeClass shake = new WebrtcShakeClass();
         bool createOffer = false;
-        bool createAnswer = false;
         bool receiveAnswer = false;
         bool receiveOffer = false;
         bool initConnection = false;
@@ -127,14 +127,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         [HideInInspector]
         public int connected = 0;
         public void Awake(){
-            instance = this;
-            WebAPIInterface.instance.SubscribeWebEvent("StopDiscovery",StopDiscoveryAnswering);
-            StartReceiver();
-            if(isHosting){
-                StartSender();
-            }else{
-                WebAPIInterface.instance.SubscribeWebEvent("Heartbeat",ReceiveHeartbeat);
-            }
+            
         }
         public void ReceiveHeartbeat(){
             if(isConnected){
@@ -161,13 +154,21 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
         }
         public void Start() {
-
+            instance = this;
+            WebAPIInterface.instance.SubscribeWebEvent("StopDiscovery",StopDiscoveryAnswering);
+            StartReceiver();
+            if(isHosting){
+                StartSender();
+            }else{
+                WebAPIInterface.instance.SubscribeWebEvent("Heartbeat",ReceiveHeartbeat);
+            }
+            WebAPIInterface.instance.SubscribeEvent(HandleRequest);
         }
         void StartReceiver(){
             objWorkerDiscovery = new BackgroundWorker();
             objWorkerDiscovery.WorkerReportsProgress = true;
             objWorkerDiscovery.WorkerSupportsCancellation = true;
-            adr = new AutoDiscoveryReceiver(ref objWorkerDiscovery,this);
+            adr = new AutoDiscoveryReceiver(ref objWorkerDiscovery,this,CreateOffer);
             objWorkerDiscovery.DoWork += new DoWorkEventHandler(adr.Start);
             objWorkerDiscovery.ProgressChanged += new ProgressChangedEventHandler(LogProgressChanged);
             objWorkerDiscovery.RunWorkerAsync();
@@ -193,13 +194,13 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         }
         private void FixedUpdate() {
             ProcessHeartBeat();
-            if(createOffer){createOffer = false;PeerConnection.StartConnection();}    
-            if(createAnswer){createAnswer = false;PeerConnection.Peer.CreateAnswer();}        
+            if(createOffer){createOffer = false;PeerConnection.StartConnection();}     
             if(receiveOffer){receiveOffer = false;
                 PeerConnection.HandleConnectionMessageAsync(sdpOffer).ContinueWith(_ =>
                 {
                     // If the remote description was successfully applied then immediately send
                     // back an answer to the remote peer to acccept the offer.
+                    waitingToCreateAnswer = true;
                     _nativePeer.CreateAnswer();
                 }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);     
             }
@@ -237,6 +238,11 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
             
         }
+
+        [HideInInspector]
+        public bool waitingToCreateAnswer = false;
+        [HideInInspector]        
+        public bool createdAnswer = false;
         public IEnumerator CompleteConnection(string IP){
             WWWForm form = new WWWForm();
             form.AddField("APIType","Base");
@@ -374,9 +380,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         public void CreateOffer(){
             createOffer = true;
         }
-        public void CreateAnswer(){
-            createAnswer = true;
-        }
+
 
         public void ReceiveCompletedOffer(WebrtcShakeClass receivedClass){
             ReceiveIceCandidate(receivedClass);            
@@ -405,16 +409,76 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
 
             SdpMessageWebsocket sdpws = new SdpMessageWebsocket(offer.Content,"offer");
             shake.sdpMessage = sdpws;
+            StartCoroutine(SendSDPOffer());
         }
         protected override void OnSdpAnswerReadyToSend(SdpMessage answer)
         {
 
             SdpMessageWebsocket sdpws = new SdpMessageWebsocket(answer.Content,"answer");
-            shake.sdpMessage = sdpws;            
+            shake.sdpMessage = sdpws;    
+            StartCoroutine(SendSDPAnswer());
+
+        }
+        public bool HandleRequest(Request request, Response response){
+            string key = request.formData["EventID"].Value.Trim();
+            
+            Debug.Log("Checking: " + key + "," + key);
+            switch(key){
+                case "SDPOffer":
+                shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
+                receiveOffer = true;                
+                return true;
+                case "SDPAnswer":
+                shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
+                receiveAnswer = true;                
+                return true;
+
+            }
+            return false;
+        }
+        public IEnumerator SendSDPOffer(){
+            WWWForm form = new WWWForm();
+            form.AddField("EventID","SDPOffer");                
+            string offer = JsonUtility.ToJson(shake);            
+            string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
+
+            Debug.Log("Sending Offer");
+            form.AddField("Offer",offer);
+            UnityWebRequest request = UnityWebRequest.Post(location,form);
+            yield return request.SendWebRequest();
+            Debug.Log("Issue sending offer to: " + location);            
+            if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
+                Debug.Log("Issue sending offer to: " + location);
+            }                
+            else {
+                Debug.Log("Done Sending offer to: " + location);            
+            } 
+            yield return null;
+        }
+        public IEnumerator SendSDPAnswer(){
+            WWWForm form = new WWWForm();
+            form.AddField("EventID","SDPAnswer");     
+            string answer = JsonUtility.ToJson(shake);
+            Debug.Log("Sending Shake");
+            form.AddField("Answer",answer);    
+            foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
+                string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
+                UnityWebRequest request = UnityWebRequest.Post(location,form);
+                yield return request.SendWebRequest();
+                if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
+                    Debug.Log("Issue sending Answer to: " + location);
+                }                
+                else {
+                    Debug.Log("Done Sending Answer to: " + location);            
+                }
+                yield return null;            
+            }
+
         }
     }
     public class AutoDiscoveryReceiver
     {
+        public CreateOfferDelegate createOfferDelegate;
         public WebRTCAutoDiscoveryHandler hookedAutoDiscovery;
         private System.ComponentModel.BackgroundWorker workerUDP;
 
@@ -434,12 +498,13 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
 
         private bool disposing = false;
 
-        public AutoDiscoveryReceiver(ref BackgroundWorker workerUDP, WebRTCAutoDiscoveryHandler hookedDiscovery)
+        public AutoDiscoveryReceiver(ref BackgroundWorker workerUDP, WebRTCAutoDiscoveryHandler hookedDiscovery, CreateOfferDelegate offerDelegate)
         {
             this.workerUDP = workerUDP;
             this.BroadCastDaemonPort = AutoDiscoveryPort;
             this.addrDaemonListenIP = IPAddress.Parse("0.0.0.0");
             this.hookedAutoDiscovery = hookedDiscovery;
+            createOfferDelegate = offerDelegate;
         }
 
         public void Stop()
@@ -482,6 +547,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                             byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*"+NetworkingUtils.GetLocalIPAddress()); // Acknowledged
                             newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
                             this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
+                            createOfferDelegate.Invoke();
                         }
                         else
                         {
@@ -588,7 +654,6 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                         Debug.Log("Received IP Address: " + returnDataSpl[1]);
                         hookedAutoDiscovery.ClientsDiscovered[returnDataSpl[1]] = hookedAutoDiscovery.TimeoutBeforeRemovalFromList;                             
                         hookedAutoDiscovery.cancellationsToSend.Add(returnDataSpl[1]);
-//                        hookedAutoDiscovery.StartCoroutine(hookedAutoDiscovery.CompleteConnection(returnDataSpl[1]));
                     }else{
                         this.worker.ReportProgress(3,"RECEIVED GARBAGE?");   
                     }
