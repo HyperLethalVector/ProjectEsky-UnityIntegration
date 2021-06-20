@@ -25505,6 +25505,42 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 762479102}
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartMyConnection
+      objectReference: {fileID: 0}
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BEERLabs.ProjectEsky.Networking.WebRTC.Discovery.WebRTCAutoDiscoveryHandler,
+        Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7070303380593889983, guid: 0648cba404421664390f6dff8b6bcb8f,
+        type: 3}
+      propertyPath: OnInitialized.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7172086403288178363, guid: 0648cba404421664390f6dff8b6bcb8f,
         type: 3}
       propertyPath: m_Name

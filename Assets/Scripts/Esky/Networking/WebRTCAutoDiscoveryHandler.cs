@@ -155,6 +155,9 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         }
         public void Start() {
             instance = this;
+            
+        }
+        public void StartMyConnection(){
             WebAPIInterface.instance.SubscribeWebEvent("StopDiscovery",StopDiscoveryAnswering);
             StartReceiver();
             if(isHosting){
@@ -422,14 +425,14 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         public bool HandleRequest(Request request, Response response){
             string key = request.formData["EventID"].Value.Trim();
             
-            Debug.Log("Checking: " + key + "," + key);
+            Debug.Log("Checking: " + key + "," + request.formData["EventID"].Value);
             switch(key){
                 case "SDPOffer":
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
                 receiveOffer = true;                
                 return true;
                 case "SDPAnswer":
-                shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
+                shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Answer"].Value);
                 receiveAnswer = true;                
                 return true;
 
@@ -442,7 +445,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             string offer = JsonUtility.ToJson(shake);            
             string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
 
-            Debug.Log("Sending Offer");
+            Debug.Log("Sending Offer: " + offer);
             form.AddField("Offer",offer);
             UnityWebRequest request = UnityWebRequest.Post(location,form);
             yield return request.SendWebRequest();
@@ -459,7 +462,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             WWWForm form = new WWWForm();
             form.AddField("EventID","SDPAnswer");     
             string answer = JsonUtility.ToJson(shake);
-            Debug.Log("Sending Shake");
+            Debug.Log("Sending Answer: " + answer);
             form.AddField("Answer",answer);    
             foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
                 string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
