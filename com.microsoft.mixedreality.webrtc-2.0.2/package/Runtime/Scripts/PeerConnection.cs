@@ -473,6 +473,7 @@ namespace Microsoft.MixedReality.WebRTC.Unity
             // First apply the remote description
             try
             {
+                Debug.Log("Peer?: " + Peer == null);
                 await Peer.SetRemoteDescriptionAsync(message);
             }
             catch (Exception ex)

@@ -430,6 +430,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                 case "SDPOffer":
                 Debug.Log("Checking: " + key + "," + request.formData["Offer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
+                ReceiveCompletedOffer(shake);
                 receiveOffer = true;                
                 response.statusCode = 200;
                 response.message = "OK";
@@ -438,6 +439,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                 case "SDPAnswer":
                 Debug.Log("Checking: " + key + "," + request.formData["Answer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Answer"].Value);
+                ReceiveCompletedAnswer(shake);                
                 receiveAnswer = true;                
                 response.statusCode = 200;
                 response.message = "OK";
@@ -453,12 +455,12 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             jsonreq.ModifyRequest("EventID","SDPOffer");
             jsonreq.ModifyRequest("Offer",offer);            
             string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
+            Debug.Log("Sending IP:" + HostingIP);
             UnityWebRequest request = UnityWebRequest.Get(location);
             request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
             request.uploadHandler.contentType = "application/json";
             request.SetRequestHeader("Content-Type","application/json");
-            yield return request.SendWebRequest();
-            Debug.Log("Issue sending offer to: " + location);            
+            yield return request.SendWebRequest();     
             if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
                 Debug.Log("Issue sending offer to: " + location);
             }                
