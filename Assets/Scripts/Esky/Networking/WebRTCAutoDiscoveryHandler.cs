@@ -447,7 +447,9 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             jsonreq.ModifyRequest("EventID","SDPOffer");
             jsonreq.ModifyRequest("Offer",offer);            
             string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
-            UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
+            UnityWebRequest request = UnityWebRequest.Get(location);
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
+            request.uploadHandler.contentType = "application/json";
             request.SetRequestHeader("Content-Type","application/json");
             yield return request.SendWebRequest();
             Debug.Log("Issue sending offer to: " + location);            
@@ -466,7 +468,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             jsonreq.ModifyRequest("Answer",offer);       
             foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
                 string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
-                UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
+             UnityWebRequest request = UnityWebRequest.Get(location);
                 yield return request.SendWebRequest();
                 if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
                     Debug.Log("Issue sending Answer to: " + location);
