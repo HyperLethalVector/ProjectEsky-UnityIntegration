@@ -442,14 +442,13 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             return false;
         }
         public IEnumerator SendSDPOffer(){
-            WWWForm form = new WWWForm();
-            form.AddField("EventID","SDPOffer");                
+            JSONRequest jsonreq = new JSONRequest();
             string offer = JsonUtility.ToJson(shake);            
+            jsonreq.ModifyRequest("EventID","SDPOffer");
+            jsonreq.ModifyRequest("Offer",offer);            
             string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
-
-            Debug.Log("Sending Offer: " + offer);
-            form.AddField("Offer",offer);
-            UnityWebRequest request = UnityWebRequest.Post(location,form);
+            UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
+            request.SetRequestHeader("Content-Type","application/json");
             yield return request.SendWebRequest();
             Debug.Log("Issue sending offer to: " + location);            
             if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
@@ -461,14 +460,13 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             yield return null;
         }
         public IEnumerator SendSDPAnswer(){
-            WWWForm form = new WWWForm();
-            form.AddField("EventID","SDPAnswer");     
-            string answer = JsonUtility.ToJson(shake);
-            Debug.Log("Sending Answer: " + answer);
-            form.AddField("Answer",answer);    
+            JSONRequest jsonreq = new JSONRequest();
+            string offer = JsonUtility.ToJson(shake);            
+            jsonreq.ModifyRequest("EventID","SDPAnswer");
+            jsonreq.ModifyRequest("Answer",offer);       
             foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
                 string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
-                UnityWebRequest request = UnityWebRequest.Post(location,form);
+                UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
                 yield return request.SendWebRequest();
                 if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
                     Debug.Log("Issue sending Answer to: " + location);

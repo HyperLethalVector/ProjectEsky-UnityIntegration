@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using System.Collections;
 using System.Net.Sockets;
@@ -9,6 +10,53 @@ using System.Text;
 
 namespace BEERLabs.Esky.Networking.WebAPI
 {
+    [System.Serializable]
+    public class DataPair{
+        [SerializeField]        
+        public string Key;
+        [SerializeField]        
+        public string Value;
+        public DataPair(string key, string value){
+            Key = key;
+            Value = value;
+        }
+    }
+    [System.Serializable]
+    public class JSONRequest{
+        [SerializeField]
+        List<DataPair> Request = new List<DataPair>();
+        public (bool, DataPair) ContainsKey(string key){
+            foreach(DataPair pair in Request){
+                if(pair.Key == key){
+                    return (true, pair);
+                }
+            }
+            return (false, null);
+        }
+        public void ModifyRequest(string key, string value){
+            (bool, DataPair) val = ContainsKey(key);
+            if(!val.Item1){
+                Request.Add(new DataPair(key,value));
+            }else{
+                val.Item2.Value = value;
+            }
+        }
+        public override string ToString(){
+            string s = "Request json>>:\r\n";
+            foreach(DataPair pair in Request){
+                s += "Key: " + pair.Key + "," + pair.Value + "\n\r";
+            }
+            s += ":<<End Request json\r\n";
+            return s;
+        }
+        public void FillMultipartRequest(ref Dictionary<string,MultiPartEntry> data){
+            foreach(DataPair pair in Request){
+                MultiPartEntry mpe = new MultiPartEntry();
+                mpe.Value = pair.Value;
+                data.Add(pair.Key,mpe);
+            }
+        }
+    }
     public class Request
     {
         public string method, path, protocol, query, fragment;
@@ -17,7 +65,6 @@ namespace BEERLabs.Esky.Networking.WebAPI
         public string body;
         public NetworkStream stream;
         public Dictionary<string, MultiPartEntry> formData = null;
-
         public void Write(Response response)
         {
             if (response.useBytes)

@@ -8,9 +8,6 @@ using BEERLabs.Esky.Networking.WebAPI;
 namespace BEERLabs.Esky.Networking{
 
     #region Events
-    public class NetworkFollowThroughEvents: UnityEvent<Request,Response>{
-
-    }
     [System.Serializable]
     public class StringEvent: UnityEvent<string>{
         
@@ -78,11 +75,12 @@ namespace BEERLabs.Esky.Networking{
         public int workerThreads = 2;
         public bool processRequestsInMainThread = true;
         public bool logRequests = true;
-        
+        public JSONRequest requestToSerialize;
         WebServer server;
         Dictionary<string, IWebResource> resources = new Dictionary<string, IWebResource> ();
         void Awake(){
             instance = this;
+            Debug.Log(JsonUtility.ToJson(requestToSerialize));
         }
         void Start ()
         {

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 using System.Collections;
 using System.Net.Sockets;
@@ -9,7 +10,6 @@ using System.Text;
 
 namespace BEERLabs.Esky.Networking.WebAPI
 {
-
     public class WebServer : IDisposable
     {
         public readonly int port = 8079;
@@ -134,9 +134,9 @@ namespace BEERLabs.Esky.Networking.WebAPI
             if (req.headers.Get ("Content-Type").Contains ("multipart/form-data")) {
                 req.formData = MultiPartEntry.Parse (req);
             }if(req.headers.Get("Content-Type").Contains("application/json")){
-                Debug.Log("Content type was JSON, cannot parse yet");
+                JSONRequest q = JsonUtility.FromJson<JSONRequest>(req.body);
+                req.formData = MultiPartEntry.ParseJson(q);
             }else{
-                Debug.Log("Content type was unknown, try parsing");
                 req.formData = MultiPartEntry.ParseFields(req);
             }
             
