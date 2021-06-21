@@ -477,6 +477,8 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
                 string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
                 UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
+                request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
+                request.uploadHandler.contentType = "application/json";                 
                 yield return request.SendWebRequest();
                 if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
                     Debug.Log("Issue sending Answer to: " + location);
