@@ -54,8 +54,7 @@ namespace BEERLabs.ProjectEsky.Networking{
 
                 Debug.Log("Obtaining map from: " + mapLoc);
                 WWWForm form = new WWWForm();
-                form.AddField("APIType","Base");
-                form.AddField("EventID","Heartbeat");                 
+                form.AddField("EventID","GetMap");                 
                 UnityWebRequest www = UnityWebRequest.Post(mapLoc,form);
                 
                 yield return www.SendWebRequest();        

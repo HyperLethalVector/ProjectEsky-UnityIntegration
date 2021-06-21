@@ -431,11 +431,17 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                 Debug.Log("Checking: " + key + "," + request.formData["Offer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
                 receiveOffer = true;                
+                response.statusCode = 200;
+                response.message = "OK";
+                response.Write(request.uri.LocalPath + " OK");                
                 return true;
                 case "SDPAnswer":
                 Debug.Log("Checking: " + key + "," + request.formData["Answer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Answer"].Value);
                 receiveAnswer = true;                
+                response.statusCode = 200;
+                response.message = "OK";
+                response.Write(request.uri.LocalPath + " OK");                
                 return true;
 
             }
@@ -468,7 +474,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             jsonreq.ModifyRequest("Answer",offer);       
             foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
                 string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
-             UnityWebRequest request = UnityWebRequest.Get(location);
+                UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
                 yield return request.SendWebRequest();
                 if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
                     Debug.Log("Issue sending Answer to: " + location);
