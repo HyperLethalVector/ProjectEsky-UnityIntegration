@@ -80,7 +80,6 @@ namespace BEERLabs.ProjectEsky.Networking{
         Dictionary<string, IWebResource> resources = new Dictionary<string, IWebResource> ();
         void Awake(){
             instance = this;
-            Debug.Log(JsonUtility.ToJson(requestToSerialize));
         }
         void Start ()
         {

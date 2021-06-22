@@ -5,14 +5,117 @@ using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
 {
-    
+    [System.Serializable]
+    public class RGBSensorModuleCalibrations{
+        [SerializeField]
+        public int camID;
+        [SerializeField]        
+        public float fx;
+        [SerializeField]        
+        public float fy;
+        [SerializeField]        
+        public float cx;
+        [SerializeField]        
+        public float cy;
+        [SerializeField]        
+        public float d1;
+        [SerializeField]        
+        public float d2;
+        [SerializeField]        
+        public float d3;
+        [SerializeField]        
+        public float d4;        
+        [SerializeField]
+        public int SensorWidth;
+        [SerializeField]
+        public int SensorHeight;
+        [SerializeField]
+        public int SensorChannels;
+        [SerializeField]
+        public float SensorFoV;
+    }
+    [System.Serializable]
+    public struct ReflectorOptics {
+      [SerializeField]      
+      public float ellipseMinorAxis;
+      [SerializeField]
+      public float ellipseMajorAxis;
+      [SerializeField]
+      public Vector3 screenForward;
+      [SerializeField]
+      public Vector3 screenPosition;
+      [SerializeField]
+      public Vector3 eyePosition;
+      [SerializeField]
+      public Quaternion eyeRotation;
+      public Vector4 cameraProjection;
+      [HideInInspector]      
+      public Matrix4x4 sphereToWorldSpace;
+      [HideInInspector]      
+      public Matrix4x4 worldToScreenSpace;
+    }
+    [System.Serializable]
+    public struct EskyV1DisplayCalibrations {
+      [SerializeField]
+      public ReflectorOptics leftEye;
+      [SerializeField]
+      public ReflectorOptics rightEye;
+    }
+    [System.Serializable]
+    public class DisplayWindowSettings{
+        public int DisplayXLoc;
+        public int DisplayYLoc;
+        public int DisplayWidth;
+        public int DisplayHeight;
+        public int EyeTextureWidth;
+        public int EyeTextureHeight;        
+    }
+
+    [System.Serializable]
+    public class DisplayCalibrationV2{
+        [SerializeField]         
+        public float[] left_uv_to_rect_x ;
+        [SerializeField]
+        public float[] left_uv_to_rect_y ;
+        [SerializeField]
+        public float[] right_uv_to_rect_x;
+        [SerializeField]
+        public float[] right_uv_to_rect_y;
+        [SerializeField]
+        public float[] left_eye_offset;
+        [SerializeField]
+        public float[] right_eye_offset;
+    }
+    [System.Serializable]
+    public class EskySensorOffsets{
+
+        [SerializeField]
+        public Vector3 TranslationFromTracker;
+
+        [SerializeField]
+        public Quaternion RotationFromTracker;
+        [SerializeField]
+        public Vector3 RGBSensorTranslationFromTracker;
+        [SerializeField]
+        public Vector3 RGBSensorRotationFromTracker;
+    }
+    [System.Serializable]
+    public enum V2ShaderToUse{
+        NoUndistortion,
+        V2Undistortion,
+        LookUpTextureUndistortion
+    }
+    [System.Serializable]
+    public enum FilterSystemToUse{
+        NEW,
+        OLD        
+    }
     [System.Serializable]
     public enum RigToUse{
         NorthStarV2,
         NorthStarV1,
         Ariel,
-        Custom
-        
+        Custom        
     }
     [System.Serializable]
     public enum TrackingFilterToUse{
@@ -35,6 +138,27 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
     public class EskySettings{
         [SerializeField]
         public RigToUse rigToUse;
+        [SerializeField]
+        public TargetApplicationFrameRate targetFrameRate;
+        [SerializeField]
+        public TemporalReprojectionSettings reprojectionSettings;
+        [SerializeField]
+        public V2ShaderToUse v2ShaderToUse;
+
+        [SerializeField]
+        public EskySensorOffsets myOffsets;
+        [SerializeField]
+        public DisplayCalibrationV2 v2CalibrationValues;
+        [SerializeField]
+        public EskyV1DisplayCalibrations v1CalibrationValues;
+        [SerializeField]
+        public DisplayWindowSettings displayWindowSettings;
+        [SerializeField]
+        public RGBSensorModuleCalibrations sensorModuleCalibrations;        
+        [SerializeField]
+        public bool usesExternalRGBCamera = false;
+        [SerializeField]
+        public bool UsesCameraPreview;
     }
     /// <summary>
     /// The profile for the Leap Motion Device Manager. The settings for this profile can be viewed if the Leap Motion Device Manager input data provider is 
@@ -104,19 +228,136 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
             get => exitPinchDistance;
             set => exitPinchDistance = value;
         }
+
+        // Esky specific configurations
         [SerializeField]
+        [Tooltip("The rig spawned by Project Esky for use with your headset")]        
         private RigToUse rigToUse = RigToUse.NorthStarV2;
         
         [SerializeField]
+        [Tooltip("If you are using a custom rig, spawn it here")]                
         private GameObject customRig = null;
+
+        [SerializeField]
+        [Tooltip("The between sensor offsets")]
+        private EskySensorOffsets sensorOffsets;
+
+        [SerializeField]
+        [Tooltip("Do we use the internal camera preview!")]        
+        private bool usesCameraPreview;
+
+        [SerializeField]
+        [Tooltip("The unity frame rate used")]                
+        private TargetApplicationFrameRate targetFrameRate;
+        
+        
+        [SerializeField]
+        [Tooltip("Do we use temporal reprojection? (Where applicable)")]                        
+        private TemporalReprojectionSettings reprojectionSettings;
+        [SerializeField]
+        [Tooltip("The undistortion representation")]                                
+        private V2ShaderToUse v2ShaderToUse;
+
+        [SerializeField]
+        [Tooltip("Device sensor offsets")] 
+        private EskySensorOffsets myOffsets;
+        [SerializeField]
+        [Tooltip("V2 Display calibrations")]         
+        private DisplayCalibrationV2 v2CalibrationValues;
+        [SerializeField]
+        [Tooltip("V1 Display calibrations")]         
+        private EskyV1DisplayCalibrations v1CalibrationValues;
+        [SerializeField]
+        [Tooltip("Display window settings")]        
+        private DisplayWindowSettings displayWindowSettings;
+        [SerializeField]
+        [Tooltip("RGB Sensor module calibrations")]        
+        private RGBSensorModuleCalibrations sensorModuleCalibrations;        
+        [SerializeField]
+        [Tooltip("Do we use the RGB sensor module?")]                
+        private bool usesExternalRGBCamera = false;
+        [SerializeField]
+        [Tooltip("What pose filter system do we want?")]
+        private FilterSystemToUse filterSystemToUse;
+        [SerializeField]
+        [Tooltip("Should we dump the current settings to file on play in editor?")]
+        private bool saveOnPlay;
+        [SerializeField]
+        public bool SaveOnPlay{
+            get => saveOnPlay;
+            set => saveOnPlay = value;
+        }
+        [SerializeField]
+        public FilterSystemToUse FilterSystemToUse{
+            get => filterSystemToUse;
+            set => filterSystemToUse = value;
+        }
+        [SerializeField]
         public RigToUse RigToUse{
             get => rigToUse;
             set => rigToUse = value;            
         }
-
+        [SerializeField]
         public GameObject CustomRig{
             get => customRig;
             set => customRig = value;
+        }
+        [SerializeField]
+        public EskySensorOffsets SensorOffsets{
+            get => sensorOffsets;
+            set => sensorOffsets = value;
+        }
+        [SerializeField]
+        public bool UsesCameraPreview{
+            get => usesCameraPreview;
+            set => usesCameraPreview = value;
+        }
+
+        [SerializeField]
+        public TargetApplicationFrameRate TargetFrameRate{
+            get => targetFrameRate;
+            set => targetFrameRate = value;
+        }
+        
+        
+        [SerializeField]
+        public TemporalReprojectionSettings ReprojectionSettings{
+            get => reprojectionSettings;
+            set => reprojectionSettings = value;
+        }
+        
+        [SerializeField]
+        public V2ShaderToUse V2ShaderToUse{
+            get => v2ShaderToUse;
+            set => v2ShaderToUse = value;
+        }
+
+        [SerializeField]
+        public DisplayCalibrationV2 V2CalibrationValues{
+            get => v2CalibrationValues;
+            set => v2CalibrationValues = value;
+        }
+
+
+        [SerializeField]
+        public EskyV1DisplayCalibrations V1CalibrationValues{
+            get => v1CalibrationValues;
+            set => v1CalibrationValues = value;
+        }
+        [SerializeField]
+        public DisplayWindowSettings DisplayWindowSettings{
+            get => displayWindowSettings;
+            set => displayWindowSettings = value;
+        }
+        [SerializeField]
+        public RGBSensorModuleCalibrations SensorModuleCalibrations{
+            get => sensorModuleCalibrations;
+            set => sensorModuleCalibrations = value;
+        }
+        [SerializeField]
+        public bool UsesExternalRGBCamera{
+            get => usesExternalRGBCamera;
+            set => usesExternalRGBCamera = value;
         }
 
     }

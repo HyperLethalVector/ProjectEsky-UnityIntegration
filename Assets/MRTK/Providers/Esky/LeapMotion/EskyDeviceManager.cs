@@ -115,30 +115,46 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         private AttachmentHand rightAttachmentHand = null;
 
         private static readonly ProfilerMarker UpdatePerfMarker = new ProfilerMarker("[MRTK] LeapMotionDeviceManager.Update");
-
+        GameObject g;
+        bool spawnedEskyRig = false;
         /// <inheritdoc />
         /// p
         public override void Enable()
         {
+            g = CameraCache.Main.gameObject;
             Debug.Log("Doing awake!");
-            GameObject g = CameraCache.Main.gameObject;
-            switch(rigToUse){
+             switch(rigToUse){
                 case RigToUse.NorthStarV2:
-                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigRealsenseRGB") as GameObject);
+                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigV2") as GameObject);
+                spawnedEskyRig = true;                
                 break;
-                case RigToUse.Ariel:
-                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/Ariel") as GameObject);                
+                case RigToUse.Ariel:                
+                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/ArielRig") as GameObject);                
+                spawnedEskyRig = true;                
                 break;
                 case RigToUse.NorthStarV1:
-                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V1Rigs/V1RigIntel") as GameObject);
+                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V1Rigs/NorthStarRigV1") as GameObject);
+                spawnedEskyRig = true;                
                 break;
                 case RigToUse.Custom:
                 g = GameObject.Instantiate<GameObject>(customRig);                
+                spawnedEskyRig = true;                
                 break;
             }
+            EskySettings es = new EskySettings();
+            es.reprojectionSettings = SettingsProfile.ReprojectionSettings;
+            es.rigToUse = SettingsProfile.RigToUse;
+            es.targetFrameRate = SettingsProfile.TargetFrameRate;
+            es.displayWindowSettings = SettingsProfile.DisplayWindowSettings;
+            string message = JsonUtility.ToJson(es,true);
+            if(SettingsProfile.SaveOnPlay){
+                System.IO.File.WriteAllText("EskySettings.json",message);
+            }
+            g.SendMessage("ReceiveConfig",message);            
             g.transform.position = CameraCache.Main.transform.position;
             g.transform.rotation = CameraCache.Main.transform.rotation;
             GameObject.DestroyImmediate(CameraCache.Main.gameObject);
+            g.SetActive(true);
             base.Enable();
             switch(leapControllerOrientation){
                 case EskyLeapControllerOrientation.Headset:                
@@ -192,7 +208,9 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 {
                     GameObject.Destroy(leapAttachmentHands.gameObject);
                 }
-
+                if(spawnedEskyRig){
+                    GameObject.Destroy(g);
+                }
                 if (LeapMotionServiceProvider != null)
                 {
                     // Destroy the LeapProvider GameObject if the controller orientation is the desk

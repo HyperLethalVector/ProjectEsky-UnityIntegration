@@ -24,6 +24,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
     }
     [System.Serializable]
     public class DollaryDooFilterParams{
+        
         [SerializeField]
 
         public double Frequency;

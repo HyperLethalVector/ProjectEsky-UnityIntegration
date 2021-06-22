@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.﻿
 
 using Microsoft.MixedReality.Toolkit.Editor;
+
 using Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input;
 using Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities.Editor;
@@ -28,6 +29,19 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
         protected SerializedProperty exitPinchDistance;
         protected SerializedProperty rigToUse;
         protected SerializedProperty customRig;
+        
+        protected SerializedProperty sensorOffsets;
+        protected SerializedProperty usesCameraPreview;
+        protected SerializedProperty targetFrameRate;
+
+        protected SerializedProperty reprojectionSettings;
+        protected SerializedProperty v2ShaderToUse;
+        protected SerializedProperty filterSystemToUse;
+
+        protected SerializedProperty displayWindowSettings;
+        protected SerializedProperty sensorModuleCalibrations;
+        protected SerializedProperty usesExternalRGBCamera;
+        protected SerializedProperty saveOnPlay;
 
         private const string leapDocURL = "https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/CrossPlatform/LeapMotionMRTK.html";
         protected override void Awake(){
@@ -44,8 +58,22 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
             leapControllerOffset = serializedObject.FindProperty("leapControllerOffset");
             enterPinchDistance = serializedObject.FindProperty("enterPinchDistance");
             exitPinchDistance = serializedObject.FindProperty("exitPinchDistance");
+            
             rigToUse = serializedObject.FindProperty("rigToUse"); 
             customRig = serializedObject.FindProperty("customRig");     
+            
+            sensorOffsets =             serializedObject.FindProperty("sensorOffsets");
+            usesCameraPreview =         serializedObject.FindProperty("usesCameraPreview");
+            targetFrameRate =           serializedObject.FindProperty("targetFrameRate");
+
+            reprojectionSettings =      serializedObject.FindProperty("reprojectionSettings");
+            v2ShaderToUse =             serializedObject.FindProperty("v2ShaderToUse");
+            displayWindowSettings =     serializedObject.FindProperty("displayWindowSettings");
+
+            sensorModuleCalibrations =  serializedObject.FindProperty("sensorModuleCalibrations");
+            usesExternalRGBCamera =     serializedObject.FindProperty("usesExternalRGBCamera");
+            filterSystemToUse =         serializedObject.FindProperty("filterSystemToUse");
+            saveOnPlay =                serializedObject.FindProperty("saveOnPlay");
         }
 
         /// <summary>
@@ -82,22 +110,39 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                 else
                 {
                     serializedObject.Update();
-                    EditorGUILayout.PropertyField(rigToUse); 
+                    //might be useful later for optical calibrations??
+                    EditorGUILayout.PropertyField(rigToUse);                     
+                    EditorGUILayout.PropertyField(filterSystemToUse);
+                    
+                    switch(instance.RigToUse){
+                        case RigToUse.NorthStarV1:
+                        EditorGUILayout.PropertyField(reprojectionSettings);                        
+                        break;
+                        case RigToUse.NorthStarV2:
+                        EditorGUILayout.PropertyField(reprojectionSettings);
+                        EditorGUILayout.PropertyField(v2ShaderToUse);
+                        break;
+                    }
                     if(instance.RigToUse == RigToUse.Custom){
                         EditorGUILayout.PropertyField(customRig);
                     }
                     EditorGUILayout.PropertyField(leapControllerOrientation);
-
-                    if (instance.LeapControllerOrientation == EskyLeapControllerOrientation.Desk)
-                    {
+                    if (instance.LeapControllerOrientation != EskyLeapControllerOrientation.Esky)
+                    {                        
                         EditorGUILayout.PropertyField(leapControllerOffset);
+                    }else{
+                        EditorGUILayout.PropertyField(sensorOffsets);
                     }
+
+
 
                     EditorGUILayout.PropertyField(enterPinchDistance);
 
                     EditorGUILayout.PropertyField(exitPinchDistance);
-
+                    EditorGUILayout.PropertyField(saveOnPlay);
+                    
                     serializedObject.ApplyModifiedProperties();
+
                 }
             }
         }
