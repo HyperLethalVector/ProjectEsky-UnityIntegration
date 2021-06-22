@@ -76,6 +76,8 @@ namespace BEERLabs.ProjectEsky.Tracking{
                         break;
                     }
                 }
+            }else{
+                Start();
             }
         }
     }

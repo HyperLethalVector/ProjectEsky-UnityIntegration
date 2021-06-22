@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
     public static class MimeTypeMap
     {

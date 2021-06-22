@@ -5,7 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
 
     public class Response

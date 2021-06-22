@@ -6,17 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Examples/V2-UniversalRendering/HandInteractionExamples.unity
+    path: Assets/Scenes/Examples/HandInteractionExamples.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
-  - enabled: 0
-    path: Assets/Scenes/Examples/Networking/NetworkingP2PExample.unity
+  - enabled: 1
+    path: Assets/Scenes/Examples/NetworkingP2PExample.unity
     guid: ba344786805aac64aaaacceddfabed6d
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 1ad257b4cc44a2b43921db308f6efb2b,
       type: 2}
@@ -25,4 +19,6 @@ EditorBuildSettings:
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 319ad04777f2b71438e11ff700fb2129,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 2a463f9177d856b43a128d198511bf1c,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: c0be661ab45f5da4d8618415aec2067a,
       type: 2}

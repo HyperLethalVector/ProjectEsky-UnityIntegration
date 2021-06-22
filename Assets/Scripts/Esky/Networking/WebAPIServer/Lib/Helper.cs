@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
     public static class Helper
     {

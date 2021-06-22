@@ -11,8 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.Networking;
-using BEERLabs.Esky.Networking;
-namespace BEERLabs.Esky.Networking.Discovery{    
+using BEERLabs.ProjectEsky.Networking;
+namespace BEERLabs.ProjectEsky.Networking.Discovery{    
     public class NetworkingUtils{
         public static string GetLocalIPAddress()
         {

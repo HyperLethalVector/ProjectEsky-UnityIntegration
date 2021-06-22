@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
     /// <summary>
     /// Headers is a collection class for HTTP style headers.

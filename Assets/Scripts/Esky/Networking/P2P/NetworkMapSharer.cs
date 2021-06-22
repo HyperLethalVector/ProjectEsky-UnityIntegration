@@ -5,19 +5,29 @@ using BEERLabs.ProjectEsky.Networking.WebRTC.Discovery;
 using BEERLabs.ProjectEsky.Tracking;
 using UnityEngine;
 using UnityEngine.Networking;
-using BEERLabs.Esky.Networking;
-using BEERLabs.Esky.Networking.WebAPI;
+using BEERLabs.ProjectEsky.Networking;
+using BEERLabs.ProjectEsky.Networking.WebAPI;
 
 namespace BEERLabs.ProjectEsky.Networking{
     public class NetworkMapSharer : MonoBehaviour
     {
         public static NetworkMapSharer instance;
+        public int HookedTrackerID;
+        BEERLabs.ProjectEsky.Tracking.EskyTracker myAttachedTracker;
         bool receivedMap = false;
         byte[] mapBytes;
         public void Awake(){
             instance = this;
         }
-        public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
+
+        void Start(){
+            try{
+                myAttachedTracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
+            }catch(System.Exception e){
+                Debug.LogError("Couldn't auto attach to the tracker");
+            }
+            SubscribeEvent();            
+        }
         public void ObtainMap(){
             StartCoroutine(GetMap());
         }
@@ -28,25 +38,25 @@ namespace BEERLabs.ProjectEsky.Networking{
             WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);            
         }
         public void TriggerObtainMap(){
-            myAttachedTracker.SaveEskyMapInformation();
+            if(WebRTCAutoDiscoveryHandler.instance.isHosting){
+                myAttachedTracker.SaveEskyMapInformation();
+            }
         }
 //        EmbeddedWebServerComponent server;
         
-        void Start()
-        {
-
-            SubscribeEvent();
-//            server = GetComponent<EmbeddedWebServerComponent>();
-//            server.AddResource("getMap", this);
-//            server.SubscribeResourceAndStart(HandleRequest);
-        }
-
         void FixedUpdate(){
-            if(receivedMap){
+            if(receivedMap){ 
                 receivedMap = false;
                 EskyMap m = new EskyMap();
                 m.mapBLOB = mapBytes;
                 myAttachedTracker.LoadEskyMap(m);
+            }
+            if(myAttachedTracker == null){
+                try{
+                    myAttachedTracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
+                }catch(System.Exception e){
+                    Debug.LogError("Couldn't auto attach to the tracker");
+                }
             }
         }
         IEnumerator GetMap() {

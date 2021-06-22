@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
-using BEERLabs.Esky.Networking.WebAPI;
-namespace BEERLabs.Esky.Networking{
+using BEERLabs.ProjectEsky.Networking.WebAPI;
+namespace BEERLabs.ProjectEsky.Networking{
 
     #region Events
     [System.Serializable]

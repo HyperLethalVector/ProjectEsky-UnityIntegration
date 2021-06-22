@@ -8,7 +8,7 @@ using System.IO;
 using System;
 using System.Text;
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
     public class WebServer : IDisposable
     {

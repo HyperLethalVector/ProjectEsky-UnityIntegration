@@ -5,7 +5,7 @@ using System.IO;
 using UnityEngine;
 
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
     [RequireComponent(typeof(EmbeddedWebServerComponent))]
     public class FileServer : MonoBehaviour, IWebResource

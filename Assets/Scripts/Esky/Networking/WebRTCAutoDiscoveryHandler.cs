@@ -11,8 +11,8 @@ using System.Threading;
 using Microsoft.MixedReality.WebRTC;
 using System.Threading.Tasks;
 using UnityEngine.Events;
-using BEERLabs.Esky.Networking;
-using BEERLabs.Esky.Networking.WebAPI;
+using BEERLabs.ProjectEsky.Networking;
+using BEERLabs.ProjectEsky.Networking.WebAPI;
 using UnityEngine.Networking;
 
 namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{

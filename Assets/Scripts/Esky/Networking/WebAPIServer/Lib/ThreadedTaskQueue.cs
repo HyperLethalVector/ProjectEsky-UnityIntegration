@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System;
 
-namespace BEERLabs.Esky.Networking.WebAPI
+namespace BEERLabs.ProjectEsky.Networking.WebAPI
 {
 
     public class ThreadedTaskQueue : IDisposable

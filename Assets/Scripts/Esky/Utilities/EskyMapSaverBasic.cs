@@ -6,13 +6,20 @@ namespace BEERLabs.ProjectEsky.Utilities{
     
     public class EskyMapSaverBasic : MonoBehaviour
     {
-        public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public int HookedTrackerID;
         public string MapName;
         public bool loadMap = false;
         public bool saveMap = false;
         public bool loadBlob = false;
-        
+        bool hasSubscribed = false;
+
+        void Start(){
+            try{
+                BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].mapCollectedCallback.AddListener(ReceiveFile);
+            }catch(System.Exception e){
+                Debug.LogError("Couldn't auto attach to the tracker");
+            }
+        }
         // Update is called once per frame
         void Update()
         {
@@ -54,7 +61,7 @@ namespace BEERLabs.ProjectEsky.Utilities{
             byte[] dataInfo = System.IO.File.ReadAllBytes("temp.raw");
             BEERLabs.ProjectEsky.Tracking.EskyMap myMap = new BEERLabs.ProjectEsky.Tracking.EskyMap();
             myMap.mapBLOB = dataInfo;
-            myAttachedTracker.LoadEskyMap(myMap);
+            BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].LoadEskyMap(myMap);
         }
     }
 }
