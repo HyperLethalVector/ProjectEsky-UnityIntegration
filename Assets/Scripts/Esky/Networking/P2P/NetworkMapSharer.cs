@@ -24,7 +24,7 @@ namespace BEERLabs.ProjectEsky.Networking{
             try{
                 myAttachedTracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
             }catch(System.Exception e){
-                Debug.LogError("Couldn't auto attach to the tracker");
+                Debug.LogError("Couldn't auto attach to the tracker:" + e.Message);
             }
             SubscribeEvent();            
         }
@@ -55,7 +55,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 try{
                     myAttachedTracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
                 }catch(System.Exception e){
-                    Debug.LogError("Couldn't auto attach to the tracker");
+                    Debug.LogError("Couldn't auto attach to the tracker:" + e.Message);
                 }
             }
         }

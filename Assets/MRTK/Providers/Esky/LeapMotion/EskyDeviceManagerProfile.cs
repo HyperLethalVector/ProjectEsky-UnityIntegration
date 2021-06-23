@@ -88,7 +88,10 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
     }
     [System.Serializable]
     public class EskySensorOffsets{
-
+        [SerializeField]
+        public Vector3 TranslationEyeToLeapMotion;
+        [SerializeField]
+        public Quaternion RotationEyeToLeapMotion;
         [SerializeField]
         public Vector3 TranslationFromTracker;
 
@@ -97,10 +100,10 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         [SerializeField]
         public Vector3 RGBSensorTranslationFromTracker;
         [SerializeField]
-        public Vector3 RGBSensorRotationFromTracker;
+        public Quaternion RGBSensorRotationFromTracker;
     }
     [System.Serializable]
-    public enum V2ShaderToUse{
+    public enum NativeShaderToUse{
         NoUndistortion,
         V2Undistortion,
         LookUpTextureUndistortion
@@ -143,7 +146,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         [SerializeField]
         public TemporalReprojectionSettings reprojectionSettings;
         [SerializeField]
-        public V2ShaderToUse v2ShaderToUse;
+        public NativeShaderToUse nativeShaderToUse;
 
         [SerializeField]
         public EskySensorOffsets myOffsets;
@@ -159,6 +162,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         public bool usesExternalRGBCamera = false;
         [SerializeField]
         public bool UsesCameraPreview;
+        [SerializeField]
+        public bool UseTrackerOffsets;
     }
     /// <summary>
     /// The profile for the Leap Motion Device Manager. The settings for this profile can be viewed if the Leap Motion Device Manager input data provider is 
@@ -256,7 +261,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         private TemporalReprojectionSettings reprojectionSettings;
         [SerializeField]
         [Tooltip("The undistortion representation")]                                
-        private V2ShaderToUse v2ShaderToUse;
+        private NativeShaderToUse nativeShaderToUse;
 
         [SerializeField]
         [Tooltip("Device sensor offsets")] 
@@ -279,13 +284,22 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         [SerializeField]
         [Tooltip("What pose filter system do we want?")]
         private FilterSystemToUse filterSystemToUse;
+
+
         [SerializeField]
-        [Tooltip("Should we dump the current settings to file on play in editor?")]
-        private bool saveOnPlay;
+        [Tooltip("Should we load the Rig Center to Tracker offsets?")]
+        private bool useTrackerOffsets;
+        public bool UseTrackerOffsets{
+            get => useTrackerOffsets;
+            set => useTrackerOffsets = value;
+        }
         [SerializeField]
-        public bool SaveOnPlay{
-            get => saveOnPlay;
-            set => saveOnPlay = value;
+        [Tooltip("Should we dump the current settins after stopping the 'play in editor?'")]
+        private bool saveAfterStoppingEditor;
+        [SerializeField]
+        public bool SaveAfterStoppingEditor{
+            get => saveAfterStoppingEditor;
+            set => saveAfterStoppingEditor = value;
         }
         [SerializeField]
         public FilterSystemToUse FilterSystemToUse{
@@ -327,9 +341,9 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         }
         
         [SerializeField]
-        public V2ShaderToUse V2ShaderToUse{
-            get => v2ShaderToUse;
-            set => v2ShaderToUse = value;
+        public NativeShaderToUse NativeShaderToUse{
+            get => nativeShaderToUse;
+            set => nativeShaderToUse = value;
         }
 
         [SerializeField]

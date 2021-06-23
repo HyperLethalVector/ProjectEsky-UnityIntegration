@@ -396,6 +396,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
         public override void SaveEskyMapInformation(){
             ObtainMap(TrackerID);
         }
+        static bool hasNotifiedDeviceNotConnected = false;
         [MonoPInvokeCallback(typeof(debugCallback))]
         static void OnDebugCallback(IntPtr request, int color, int size)
         {
@@ -411,6 +412,13 @@ namespace BEERLabs.ProjectEsky.Tracking{
                 debug_string,
                 "</color>"
                 );
+            if(debug_string.Contains("No device connected")){
+                if(hasNotifiedDeviceNotConnected){
+                    return;
+                }else{
+                    hasNotifiedDeviceNotConnected = true;
+                }
+            }
             #if ZED_SDK
             UnityEngine.Debug.Log("ZED Tracker: " + debug_string);
             #else

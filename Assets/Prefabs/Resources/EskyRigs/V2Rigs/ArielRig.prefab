@@ -610,6 +610,7 @@ Transform:
   - {fileID: 8965850885421205188}
   - {fileID: 3272187556739830788}
   - {fileID: 2225032306288617897}
+  - {fileID: 158582741685586140}
   m_Father: {fileID: 5792371030647735930}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1913,7 +1914,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5792371030647735930
 Transform:
   m_ObjectHideFlags: 0
@@ -1941,11 +1942,143 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 263c972569b4dd04298cf39d41a69630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instance: {fileID: 0}
-  LeapMotionController: {fileID: 0}
-  RGBSensor: {fileID: 0}
-  NetworkingObject: {fileID: 0}
+  v1WindowManager: {fileID: 0}
+  v1Renderer: {fileID: 0}
+  nativeDirectXrenderer: {fileID: 4809383123179201830}
+  RGBSensorModule: {fileID: 3154007030212663259}
+  LeapMotionController: {fileID: 1105260953839632240}
+  RigCenter: {fileID: 2195500023215910039}
+  RGBSensor: {fileID: 8751034474085287370}
+  NetworkingObject: {fileID: 158582741685586140}
   Rig: {fileID: 1807523069345152420}
+  LoadedSettings:
+    rigToUse: 0
+    targetFrameRate: 0
+    reprojectionSettings: 0
+    nativeShaderToUse: 0
+    myOffsets:
+      TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
+      RotationEyeToLeapMotion: {x: 0, y: 0, z: 0, w: 0}
+      TranslationFromTracker: {x: 0, y: 0, z: 0}
+      RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
+      RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
+      RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
+    v2CalibrationValues:
+      left_uv_to_rect_x: []
+      left_uv_to_rect_y: []
+      right_uv_to_rect_x: []
+      right_uv_to_rect_y: []
+      left_eye_offset: []
+      right_eye_offset: []
+    v1CalibrationValues:
+      leftEye:
+        ellipseMinorAxis: 0
+        ellipseMajorAxis: 0
+        screenForward: {x: 0, y: 0, z: 0}
+        screenPosition: {x: 0, y: 0, z: 0}
+        eyePosition: {x: 0, y: 0, z: 0}
+        eyeRotation: {x: 0, y: 0, z: 0, w: 0}
+        cameraProjection: {x: 0, y: 0, z: 0, w: 0}
+        sphereToWorldSpace:
+          e00: 0
+          e01: 0
+          e02: 0
+          e03: 0
+          e10: 0
+          e11: 0
+          e12: 0
+          e13: 0
+          e20: 0
+          e21: 0
+          e22: 0
+          e23: 0
+          e30: 0
+          e31: 0
+          e32: 0
+          e33: 0
+        worldToScreenSpace:
+          e00: 0
+          e01: 0
+          e02: 0
+          e03: 0
+          e10: 0
+          e11: 0
+          e12: 0
+          e13: 0
+          e20: 0
+          e21: 0
+          e22: 0
+          e23: 0
+          e30: 0
+          e31: 0
+          e32: 0
+          e33: 0
+      rightEye:
+        ellipseMinorAxis: 0
+        ellipseMajorAxis: 0
+        screenForward: {x: 0, y: 0, z: 0}
+        screenPosition: {x: 0, y: 0, z: 0}
+        eyePosition: {x: 0, y: 0, z: 0}
+        eyeRotation: {x: 0, y: 0, z: 0, w: 0}
+        cameraProjection: {x: 0, y: 0, z: 0, w: 0}
+        sphereToWorldSpace:
+          e00: 0
+          e01: 0
+          e02: 0
+          e03: 0
+          e10: 0
+          e11: 0
+          e12: 0
+          e13: 0
+          e20: 0
+          e21: 0
+          e22: 0
+          e23: 0
+          e30: 0
+          e31: 0
+          e32: 0
+          e33: 0
+        worldToScreenSpace:
+          e00: 0
+          e01: 0
+          e02: 0
+          e03: 0
+          e10: 0
+          e11: 0
+          e12: 0
+          e13: 0
+          e20: 0
+          e21: 0
+          e22: 0
+          e23: 0
+          e30: 0
+          e31: 0
+          e32: 0
+          e33: 0
+    displayWindowSettings:
+      DisplayXLoc: 0
+      DisplayYLoc: 0
+      DisplayWidth: 0
+      DisplayHeight: 0
+      EyeTextureWidth: 0
+      EyeTextureHeight: 0
+    sensorModuleCalibrations:
+      camID: 0
+      fx: 0
+      fy: 0
+      cx: 0
+      cy: 0
+      d1: 0
+      d2: 0
+      d3: 0
+      d4: 0
+      SensorWidth: 0
+      SensorHeight: 0
+      SensorChannels: 0
+      SensorFoV: 0
+    usesExternalRGBCamera: 0
+    UsesCameraPreview: 0
+    UseTrackerOffsets: 0
 --- !u!1 &6039318582912602084
 GameObject:
   m_ObjectHideFlags: 0
@@ -4189,6 +4322,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e0ed5922e911b343b8400997c95409c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &7304083355234821687
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4861868213263301163}
+    m_Modifications:
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1d7aba36f098e404c91de4a9cfe790ef, type: 3}
+--- !u!4 &158582741685586140 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 7304083355234821687}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9203142408802007486
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -304,7 +304,7 @@ namespace Leap.Unity.AR {
         foreach (ARRaytracer raytracer in raytracers) {
           raytracer.ScheduleCreateDistortionMesh();
         }
-        Debug.Log("Headset calibration successfully loaded from " + inputCalibrationFile);
+        Debug.Log("V1 Headset calibration successfully loaded from Esky");
         return true;
     }
     public bool TryLoadCalibrationFromPath(string inputFilePath,

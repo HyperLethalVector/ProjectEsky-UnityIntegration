@@ -17,22 +17,26 @@ MonoBehaviour:
   leapControllerOffset: {x: 0, y: -0.2, z: 0.2}
   enterPinchDistance: 0.02
   exitPinchDistance: 0.05
-  rigToUse: 1
+  rigToUse: 2
   customRig: {fileID: 0}
   sensorOffsets:
+    TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
+    RotationEyeToLeapMotion: {x: 0, y: 0, z: 0, w: 0}
     TranslationFromTracker: {x: 0, y: 0, z: 0}
     RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
     RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
-    RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0}
+    RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
   usesCameraPreview: 0
   targetFrameRate: 0
   reprojectionSettings: 0
-  v2ShaderToUse: 0
+  nativeShaderToUse: 1
   myOffsets:
+    TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
+    RotationEyeToLeapMotion: {x: 0, y: 0, z: 0, w: 0}
     TranslationFromTracker: {x: 0, y: 0, z: 0}
     RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
     RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
-    RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0}
+    RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
   v2CalibrationValues:
     left_uv_to_rect_x: []
     left_uv_to_rect_y: []
@@ -148,4 +152,5 @@ MonoBehaviour:
     SensorFoV: 0
   usesExternalRGBCamera: 0
   filterSystemToUse: 0
-  saveOnPlay: 1
+  useTrackerOffsets: 0
+  saveAfterStoppingEditor: 1

@@ -119,10 +119,12 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         bool spawnedEskyRig = false;
         /// <inheritdoc />
         /// p
+        /// 
+        /// 
+        EskySettings es = new EskySettings();
         public override void Enable()
         {
             g = CameraCache.Main.gameObject;
-            Debug.Log("Doing awake!");
              switch(rigToUse){
                 case RigToUse.NorthStarV2:
                 g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigV2") as GameObject);
@@ -141,15 +143,21 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 spawnedEskyRig = true;                
                 break;
             }
-            EskySettings es = new EskySettings();
+            try{
+                es = JsonUtility.FromJson<EskySettings>(System.IO.File.ReadAllText("EskySettings.json"));
+            }catch(System.Exception e){
+                Debug.LogError("Couldn't load the esky config:" + e.Message);
+            }
+            #if UNITY_EDITOR
             es.reprojectionSettings = SettingsProfile.ReprojectionSettings;
             es.rigToUse = SettingsProfile.RigToUse;
             es.targetFrameRate = SettingsProfile.TargetFrameRate;
-            es.displayWindowSettings = SettingsProfile.DisplayWindowSettings;
+            es.UsesCameraPreview = SettingsProfile.UsesCameraPreview;
+            es.usesExternalRGBCamera = SettingsProfile.UsesExternalRGBCamera;
+            es.UseTrackerOffsets = SettingsProfile.UseTrackerOffsets;
+            #endif
             string message = JsonUtility.ToJson(es,true);
-            if(SettingsProfile.SaveOnPlay){
-                System.IO.File.WriteAllText("EskySettings.json",message);
-            }
+            g.SendMessage("DumpSettingsConfig",SettingsProfile.SaveAfterStoppingEditor);
             g.SendMessage("ReceiveConfig",message);            
             g.transform.position = CameraCache.Main.transform.position;
             g.transform.rotation = CameraCache.Main.transform.rotation;

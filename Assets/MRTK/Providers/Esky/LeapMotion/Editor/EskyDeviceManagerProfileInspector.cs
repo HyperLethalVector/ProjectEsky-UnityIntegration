@@ -35,14 +35,14 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
         protected SerializedProperty targetFrameRate;
 
         protected SerializedProperty reprojectionSettings;
-        protected SerializedProperty v2ShaderToUse;
+        protected SerializedProperty nativeShaderToUse;
         protected SerializedProperty filterSystemToUse;
 
         protected SerializedProperty displayWindowSettings;
         protected SerializedProperty sensorModuleCalibrations;
         protected SerializedProperty usesExternalRGBCamera;
-        protected SerializedProperty saveOnPlay;
-
+        protected SerializedProperty saveAfterStoppingEditor;
+        protected SerializedProperty useTrackerOffsets;
         private const string leapDocURL = "https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/CrossPlatform/LeapMotionMRTK.html";
         protected override void Awake(){
             base.Awake();
@@ -67,13 +67,14 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
             targetFrameRate =           serializedObject.FindProperty("targetFrameRate");
 
             reprojectionSettings =      serializedObject.FindProperty("reprojectionSettings");
-            v2ShaderToUse =             serializedObject.FindProperty("v2ShaderToUse");
+            nativeShaderToUse =             serializedObject.FindProperty("nativeShaderToUse");
             displayWindowSettings =     serializedObject.FindProperty("displayWindowSettings");
 
             sensorModuleCalibrations =  serializedObject.FindProperty("sensorModuleCalibrations");
             usesExternalRGBCamera =     serializedObject.FindProperty("usesExternalRGBCamera");
             filterSystemToUse =         serializedObject.FindProperty("filterSystemToUse");
-            saveOnPlay =                serializedObject.FindProperty("saveOnPlay");
+            saveAfterStoppingEditor =                serializedObject.FindProperty("saveAfterStoppingEditor");
+            useTrackerOffsets =         serializedObject.FindProperty("useTrackerOffsets");
         }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                         break;
                         case RigToUse.NorthStarV2:
                         EditorGUILayout.PropertyField(reprojectionSettings);
-                        EditorGUILayout.PropertyField(v2ShaderToUse);
+                        EditorGUILayout.PropertyField(nativeShaderToUse);
                         break;
                     }
                     if(instance.RigToUse == RigToUse.Custom){
@@ -131,7 +132,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                     {                        
                         EditorGUILayout.PropertyField(leapControllerOffset);
                     }else{
-                        EditorGUILayout.PropertyField(sensorOffsets);
+//                        EditorGUILayout.PropertyField(sensorOffsets);
                     }
 
 
@@ -139,8 +140,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                     EditorGUILayout.PropertyField(enterPinchDistance);
 
                     EditorGUILayout.PropertyField(exitPinchDistance);
-                    EditorGUILayout.PropertyField(saveOnPlay);
-                    
+                    EditorGUILayout.PropertyField(saveAfterStoppingEditor);
+                    EditorGUILayout.PropertyField(useTrackerOffsets);
                     serializedObject.ApplyModifiedProperties();
 
                 }

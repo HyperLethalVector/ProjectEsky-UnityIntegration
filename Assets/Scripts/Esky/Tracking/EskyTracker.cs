@@ -237,21 +237,8 @@ namespace BEERLabs.ProjectEsky.Tracking{
         }
         // Start is called before the first frame update
         public virtual void LoadCalibration(){
-            if(File.Exists(TrackerCalibrationsFolder + TrackerCalibrationFileName)){
-                myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText(TrackerCalibrationsFolder + TrackerCalibrationFileName));
-                myOffsets.SetCalibrationLoaded();
-                if(applyDisplayTransform){
-                    if(RigCenter != null){
-                        RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
-                        RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
-                        UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
-                    }
-                }
-                BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
-                BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
-            }else{
-                Debug.LogError("Walp, no tracking calibration was loaded, does the file exist?");
-            }
+            BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
+            BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
         }
         public virtual void SaveCalibration(){
             string json = JsonUtility.ToJson(myOffsets,true);

@@ -11,13 +11,12 @@ namespace BEERLabs.ProjectEsky.Utilities{
         public bool loadMap = false;
         public bool saveMap = false;
         public bool loadBlob = false;
-        bool hasSubscribed = false;
 
         void Start(){
             try{
                 BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].mapCollectedCallback.AddListener(ReceiveFile);
             }catch(System.Exception e){
-                Debug.LogError("Couldn't auto attach to the tracker");
+                Debug.LogError("Couldn't auto attach to the tracker:" + e.Message);
             }
         }
         // Update is called once per frame

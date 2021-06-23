@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Leap.Unity.AR.OpticalCalibrationManager;
+
 namespace BEERLabs.ProjectEsky.Configurations{
 
     [System.Serializable]
@@ -86,7 +88,10 @@ namespace BEERLabs.ProjectEsky.Configurations{
     }
     [System.Serializable]
     public class EskySensorOffsets{
-
+        [SerializeField]
+        public Vector3 TranslationEyeToLeapMotion;
+        [SerializeField]
+        public Quaternion RotationEyeToLeapMotion;
         [SerializeField]
         public Vector3 TranslationFromTracker;
 
@@ -95,10 +100,10 @@ namespace BEERLabs.ProjectEsky.Configurations{
         [SerializeField]
         public Vector3 RGBSensorTranslationFromTracker;
         [SerializeField]
-        public Vector3 RGBSensorRotationFromTracker;
+        public Quaternion RGBSensorRotationFromTracker;
     }
     [System.Serializable]
-    public enum V2ShaderToUse{
+    public enum NativeShaderToUse{
         NoUndistortion,
         V2Undistortion,
         LookUpTextureUndistortion
@@ -141,7 +146,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
         [SerializeField]
         public TemporalReprojectionSettings reprojectionSettings;
         [SerializeField]
-        public V2ShaderToUse v2ShaderToUse;
+        public NativeShaderToUse nativeShaderToUse;
 
         [SerializeField]
         public EskySensorOffsets myOffsets;
@@ -157,28 +162,113 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public bool usesExternalRGBCamera = false;
         [SerializeField]
         public bool UsesCameraPreview;
+        [SerializeField]
+        public bool UseTrackerOffsets;
     }
     public class EskyRig : MonoBehaviour
     {
+        public Leap.Unity.AR.WindowOffsetManager v1WindowManager;
+        public Leap.Unity.AR.OpticalCalibrationManager v1Renderer;
+        public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer nativeDirectXrenderer;
+        public BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule RGBSensorModule;
+
         public static EskyRig instance;
         public Transform LeapMotionController;
+        public Transform RigCenter;
         public Transform RGBSensor;
         public Transform NetworkingObject;
         public GameObject Rig;
         public EskySettings LoadedSettings;
+        bool dumpSettings = true;
         // Start is called before the first frame update
         void Start(){
             instance = this;
         }
-        public void ReceiveConfig(string config){
-            LoadedSettings = JsonUtility.FromJson<EskySettings>(config);
-            Debug.Log(config);
-            Rig.SetActive(true);
+        public void DumpSettingsConfig(bool shouldDumpSettings){
+            Debug.Log("Receiving dump settings config");
+            dumpSettings = shouldDumpSettings;
         }
-        // Update is called once per frame
-        void Update()
-        {
-            
+        public void ReceiveConfig(string config){
+            Debug.Log("Receiving rig config");
+            LoadedSettings = JsonUtility.FromJson<EskySettings>(config);
+            LeapMotionController.localPosition = LoadedSettings.myOffsets.TranslationEyeToLeapMotion;
+            LeapMotionController.localRotation = LoadedSettings.myOffsets.RotationEyeToLeapMotion;
+            if(LoadedSettings.UseTrackerOffsets){
+                RigCenter.localPosition = LoadedSettings.myOffsets.TranslationFromTracker;
+                RigCenter.localRotation = LoadedSettings.myOffsets.RotationFromTracker;
+            }
+
+
+            if(nativeDirectXrenderer != null){
+                nativeDirectXrenderer.displaySettings.DisplayWidth = LoadedSettings.displayWindowSettings.DisplayWidth;
+                nativeDirectXrenderer.displaySettings.DisplayHeight = LoadedSettings.displayWindowSettings.DisplayHeight;
+                nativeDirectXrenderer.displaySettings.DisplayXLoc = LoadedSettings.displayWindowSettings.DisplayXLoc;
+                nativeDirectXrenderer.displaySettings.DisplayYLoc = LoadedSettings.displayWindowSettings.DisplayYLoc;
+                nativeDirectXrenderer.displaySettings.EyeTextureHeight = LoadedSettings.displayWindowSettings.EyeTextureHeight;
+                nativeDirectXrenderer.displaySettings.EyeTextureWidth = LoadedSettings.displayWindowSettings.EyeTextureWidth;
+                nativeDirectXrenderer.displaySettings.RendererWindowID = 0;              
+                nativeDirectXrenderer.calibration.left_uv_to_rect_x = LoadedSettings.v2CalibrationValues.left_uv_to_rect_x;  
+                nativeDirectXrenderer.calibration.left_uv_to_rect_y = LoadedSettings.v2CalibrationValues.left_uv_to_rect_y;  
+                nativeDirectXrenderer.calibration.right_uv_to_rect_x = LoadedSettings.v2CalibrationValues.right_uv_to_rect_x;
+                nativeDirectXrenderer.calibration.right_uv_to_rect_y = LoadedSettings.v2CalibrationValues.right_uv_to_rect_y;                                
+                nativeDirectXrenderer.calibration.left_eye_offset = LoadedSettings.v2CalibrationValues.left_eye_offset;
+                nativeDirectXrenderer.calibration.right_eye_offset = LoadedSettings.v2CalibrationValues.right_eye_offset;
+            }
+            if(LoadedSettings.usesExternalRGBCamera){
+                RGBSensor.gameObject.SetActive(true);
+                RGBSensor.localPosition = LoadedSettings.myOffsets.RGBSensorTranslationFromTracker;
+                RGBSensor.localRotation = LoadedSettings.myOffsets.RGBSensorRotationFromTracker;
+                ProjectEsky.RGBSensorModuleCalibrations rsmc = new ProjectEsky.RGBSensorModuleCalibrations();
+                rsmc.camID = LoadedSettings.sensorModuleCalibrations.camID;                
+                rsmc.cx = LoadedSettings.sensorModuleCalibrations.camID;
+                rsmc.cy = LoadedSettings.sensorModuleCalibrations.camID;
+                rsmc.fx = LoadedSettings.sensorModuleCalibrations.camID;
+                rsmc.fy = LoadedSettings.sensorModuleCalibrations.camID;                
+                rsmc.d1 = LoadedSettings.sensorModuleCalibrations.d1;
+                rsmc.d2 = LoadedSettings.sensorModuleCalibrations.d2;
+                rsmc.d3 = LoadedSettings.sensorModuleCalibrations.d3;
+                rsmc.d4 = LoadedSettings.sensorModuleCalibrations.d4;                
+                rsmc.SensorChannels = LoadedSettings.sensorModuleCalibrations.SensorChannels;
+                rsmc.SensorFoV = LoadedSettings.sensorModuleCalibrations.SensorFoV;
+                rsmc.SensorWidth = LoadedSettings.sensorModuleCalibrations.SensorWidth;
+                rsmc.SensorHeight = LoadedSettings.sensorModuleCalibrations.SensorHeight;
+                RGBSensor.GetComponent<BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule>().myCalibrations = rsmc;
+            }
+            Rig.SetActive(true);
+            if(v1Renderer != null){
+                HeadsetCalibration hc = new HeadsetCalibration();
+                hc.leftEye.cameraProjection = LoadedSettings.v1CalibrationValues.leftEye.cameraProjection;// = LoadedSettings.v1CalibrationValues.leftEye;
+                hc.leftEye.ellipseMajorAxis = LoadedSettings.v1CalibrationValues.leftEye.ellipseMajorAxis;
+                hc.leftEye.ellipseMinorAxis = LoadedSettings.v1CalibrationValues.leftEye.ellipseMinorAxis;     
+                hc.leftEye.eyePosition = LoadedSettings.v1CalibrationValues.leftEye.eyePosition;     
+                hc.leftEye.eyeRotation = LoadedSettings.v1CalibrationValues.leftEye.eyeRotation;     
+                hc.leftEye.screenForward = LoadedSettings.v1CalibrationValues.leftEye.screenForward; 
+                hc.leftEye.screenPosition = LoadedSettings.v1CalibrationValues.leftEye.screenPosition;
+                hc.leftEye.sphereToWorldSpace = LoadedSettings.v1CalibrationValues.leftEye.sphereToWorldSpace;
+                hc.leftEye.worldToScreenSpace = LoadedSettings.v1CalibrationValues.leftEye.worldToScreenSpace;
+                //right eye
+                hc.rightEye.cameraProjection = LoadedSettings.v1CalibrationValues.rightEye.cameraProjection;// = LoadedSettings.v1CalibrationValues.rightEye;
+                hc.rightEye.ellipseMajorAxis = LoadedSettings.v1CalibrationValues.rightEye.ellipseMajorAxis;
+                hc.rightEye.ellipseMinorAxis = LoadedSettings.v1CalibrationValues.rightEye.ellipseMinorAxis;     
+                hc.rightEye.eyePosition = LoadedSettings.v1CalibrationValues.rightEye.eyePosition;     
+                hc.rightEye.eyeRotation = LoadedSettings.v1CalibrationValues.rightEye.eyeRotation;     
+                hc.rightEye.screenForward = LoadedSettings.v1CalibrationValues.rightEye.screenForward; 
+                hc.rightEye.screenPosition = LoadedSettings.v1CalibrationValues.rightEye.screenPosition;
+                hc.rightEye.sphereToWorldSpace = LoadedSettings.v1CalibrationValues.rightEye.sphereToWorldSpace;
+                hc.rightEye.worldToScreenSpace = LoadedSettings.v1CalibrationValues.rightEye.worldToScreenSpace;
+                v1Renderer.TryLoadCalibrationFromEsky(hc,false);                
+            }
+            if(v1WindowManager != null){
+                Leap.Unity.AR.WindowOffsetManager.SetPosition(LoadedSettings.displayWindowSettings.DisplayXLoc,LoadedSettings.displayWindowSettings.DisplayYLoc,LoadedSettings.displayWindowSettings.DisplayWidth,LoadedSettings.displayWindowSettings.DisplayHeight);
+            }
+        }
+        public void OnDestroy(){
+            if(dumpSettings){
+                Debug.Log("Saving Settings");
+                string message = JsonUtility.ToJson(LoadedSettings,true);
+                System.IO.File.WriteAllText("EskySettings.json",message);
+            }
         }
     }
+    
 }
