@@ -144,7 +144,9 @@ namespace Leap.Unity {
         }
       }
     }
-
+    public void SetLeapProvider(LeapProvider leapProvider){
+      this.leapProvider = leapProvider;
+    }
     [SerializeField]
     [Tooltip("To add a new set of Hand Models, first add the Left and Right objects as "
            + "children of this object. Then create a new Model Pool entry referencing "

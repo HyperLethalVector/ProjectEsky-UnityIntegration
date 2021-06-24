@@ -1,19 +1,19 @@
 {
-    "rigToUse": 2,
+    "rigToUse": 0,
     "targetFrameRate": 0,
     "reprojectionSettings": 0,
     "nativeShaderToUse": 0,
     "myOffsets": {
         "TranslationEyeToLeapMotion": {
-            "x": 0.03200000151991844,
-            "y": 0.0,
-            "z": 0.02500000037252903
+            "x": -0.002040371298789978,
+            "y": 0.07525337487459183,
+            "z": 0.09259902685880661
         },
         "RotationEyeToLeapMotion": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
+            "x": 0.04397745057940483,
+            "y": 0.02938256785273552,
+            "z": -0.08629350364208222,
+            "w": 0.9948649406433106
         },
         "TranslationFromTracker": {
             "x": 0.0,
@@ -258,7 +258,7 @@
     },
     "displayWindowSettings": {
         "DisplayXLoc": 0,
-        "DisplayYLoc": 0,
+        "DisplayYLoc": 1080,
         "DisplayWidth": 2880,
         "DisplayHeight": 1600,
         "EyeTextureWidth": 1600,
@@ -280,6 +280,6 @@
         "SensorFoV": 0.0
     },
     "usesExternalRGBCamera": false,
-    "UsesCameraPreview": false,
-    "UseTrackerOffsets": false
+    "UsesCameraPreview": true,
+    "UseTrackerOffsets": true
 }

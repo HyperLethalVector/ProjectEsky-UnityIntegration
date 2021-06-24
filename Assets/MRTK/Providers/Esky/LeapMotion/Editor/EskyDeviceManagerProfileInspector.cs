@@ -43,6 +43,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
         protected SerializedProperty usesExternalRGBCamera;
         protected SerializedProperty saveAfterStoppingEditor;
         protected SerializedProperty useTrackerOffsets;
+
         private const string leapDocURL = "https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/CrossPlatform/LeapMotionMRTK.html";
         protected override void Awake(){
             base.Awake();
@@ -120,6 +121,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                         EditorGUILayout.PropertyField(reprojectionSettings);                        
                         break;
                         case RigToUse.NorthStarV2:
+                        case RigToUse.Ariel:
                         EditorGUILayout.PropertyField(reprojectionSettings);
                         EditorGUILayout.PropertyField(nativeShaderToUse);
                         break;
@@ -142,6 +144,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                     EditorGUILayout.PropertyField(exitPinchDistance);
                     EditorGUILayout.PropertyField(saveAfterStoppingEditor);
                     EditorGUILayout.PropertyField(useTrackerOffsets);
+                    EditorGUILayout.PropertyField(usesCameraPreview);
+                    EditorGUILayout.PropertyField(usesExternalRGBCamera);
                     serializedObject.ApplyModifiedProperties();
 
                 }

@@ -124,24 +124,28 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         EskySettings es = new EskySettings();
         public override void Enable()
         {
-            g = CameraCache.Main.gameObject;
-             switch(rigToUse){
-                case RigToUse.NorthStarV2:
-                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigV2") as GameObject);
-                spawnedEskyRig = true;                
-                break;
-                case RigToUse.Ariel:                
-                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/ArielRig") as GameObject);                
-                spawnedEskyRig = true;                
-                break;
-                case RigToUse.NorthStarV1:
-                g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V1Rigs/NorthStarRigV1") as GameObject);
-                spawnedEskyRig = true;                
-                break;
-                case RigToUse.Custom:
-                g = GameObject.Instantiate<GameObject>(customRig);                
-                spawnedEskyRig = true;                
-                break;
+            g = GameObject.Find("CalibrationRig");
+            if(g == null){
+                switch(rigToUse){
+                    case RigToUse.NorthStarV2:
+                    g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigV2") as GameObject);
+                    spawnedEskyRig = true;                
+                    break;
+                    case RigToUse.Ariel:                
+                    g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/ArielRig") as GameObject);                
+                    spawnedEskyRig = true;                
+                    break;
+                    case RigToUse.NorthStarV1:
+                    g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V1Rigs/NorthStarRigV1") as GameObject);
+                    spawnedEskyRig = true;                
+                    break;
+                    case RigToUse.Custom:
+                    g = GameObject.Instantiate<GameObject>(customRig);                
+                    spawnedEskyRig = true;                
+                    break;
+                }
+            }else{
+                spawnedEskyRig = true;
             }
             try{
                 es = JsonUtility.FromJson<EskySettings>(System.IO.File.ReadAllText("EskySettings.json"));
@@ -178,14 +182,16 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 LeapMotionServiceProvider.transform.position += leapHandsOffset;                
                 break;
                 case EskyLeapControllerOrientation.Esky:
-                GameObject LeapProviderEsky = GameObject.Find("LeapMotion");
+                GameObject LeapProviderEsky =  g.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
                 if(LeapProviderEsky != null){
                     LeapMotionServiceProvider = LeapProviderEsky.GetComponent<LeapXRServiceProvider>();
                 }else{
-                    Debug.LogError("Couldn't find a 'LeapMotion' game object in scene, the Esky Leapmotion provider needs this!");
+                    Debug.LogError("Couldn't find a 'LeapMotion' game object in scene, the Esky Leapmotion provider needs this, did you modify the transform structure???");
                 }
                 break;
             }
+
+
             // Add the attachment hands to the scene for the purpose of getting the tracking state of each hand and joint positions
             GameObject leapAttachmentHandsGameObject = new GameObject("LeapAttachmentHands");
             leapAttachmentHands = leapAttachmentHandsGameObject.AddComponent<AttachmentHands>();
@@ -249,8 +255,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 var leapHand = new EskyLeapMotionArticulatedHand(TrackingState.Tracked, handedness, inputSource);
 
                 // Set pinch thresholds
-                leapHand.handDefinition.EnterPinchDistance = enterPinchDistance;
-                leapHand.handDefinition.ExitPinchDistance = exitPinchDistance;
+                leapHand.HandDefinition.EnterPinchDistance = enterPinchDistance;
+                leapHand.HandDefinition.ExitPinchDistance = exitPinchDistance;
 
                 // Set the leap attachment hand to the corresponding handedness
                 if (handedness == Handedness.Left)

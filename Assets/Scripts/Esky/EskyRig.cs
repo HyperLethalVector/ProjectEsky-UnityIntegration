@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Leap.Unity;
 using UnityEngine;
 using static Leap.Unity.AR.OpticalCalibrationManager;
 
@@ -139,6 +140,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
     }
     [System.Serializable] 
     public class EskySettings{
+
         [SerializeField]
         public RigToUse rigToUse;
         [SerializeField]
@@ -176,28 +178,35 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public Transform LeapMotionController;
         public Transform RigCenter;
         public Transform RGBSensor;
+        public Transform SensorPreview;
         public Transform NetworkingObject;
         public GameObject Rig;
         public EskySettings LoadedSettings;
         bool dumpSettings = true;
+        bool didLoadSettings = false;
         // Start is called before the first frame update
         void Start(){
             instance = this;
         }
         public void DumpSettingsConfig(bool shouldDumpSettings){
-            Debug.Log("Receiving dump settings config");
             dumpSettings = shouldDumpSettings;
         }
+        public void SaveSettings(){
+            LoadedSettings.myOffsets.TranslationEyeToLeapMotion = LeapMotionController.localPosition;
+            LoadedSettings.myOffsets.RotationEyeToLeapMotion = LeapMotionController.localRotation;            
+            Debug.Log("Saved Esky rig settings!");
+        }
         public void ReceiveConfig(string config){
-            Debug.Log("Receiving rig config");
+            didLoadSettings = true;
             LoadedSettings = JsonUtility.FromJson<EskySettings>(config);
             LeapMotionController.localPosition = LoadedSettings.myOffsets.TranslationEyeToLeapMotion;
             LeapMotionController.localRotation = LoadedSettings.myOffsets.RotationEyeToLeapMotion;
-            if(LoadedSettings.UseTrackerOffsets){
-                RigCenter.localPosition = LoadedSettings.myOffsets.TranslationFromTracker;
-                RigCenter.localRotation = LoadedSettings.myOffsets.RotationFromTracker;
-            }
-
+  //          GameObject gg = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/HandModels") as GameObject);
+//            gg.GetComponent<HandModelManager>().leapProvider = LeapMotionController.GetComponent<LeapXRServiceProvider>();
+           // if(LoadedSettings.UseTrackerOffsets){
+           //     RigCenter.localPosition = LoadedSettings.myOffsets.TranslationFromTracker;
+          //      RigCenter.localRotation = LoadedSettings.myOffsets.RotationFromTracker;
+           // }
 
             if(nativeDirectXrenderer != null){
                 nativeDirectXrenderer.displaySettings.DisplayWidth = LoadedSettings.displayWindowSettings.DisplayWidth;
@@ -214,25 +223,34 @@ namespace BEERLabs.ProjectEsky.Configurations{
                 nativeDirectXrenderer.calibration.left_eye_offset = LoadedSettings.v2CalibrationValues.left_eye_offset;
                 nativeDirectXrenderer.calibration.right_eye_offset = LoadedSettings.v2CalibrationValues.right_eye_offset;
             }
+            
+            if(LoadedSettings.UsesCameraPreview){
+                if(SensorPreview != null){
+                    SensorPreview.gameObject.SetActive(true);
+                }
+            }
+
             if(LoadedSettings.usesExternalRGBCamera){
-                RGBSensor.gameObject.SetActive(true);
-                RGBSensor.localPosition = LoadedSettings.myOffsets.RGBSensorTranslationFromTracker;
-                RGBSensor.localRotation = LoadedSettings.myOffsets.RGBSensorRotationFromTracker;
-                ProjectEsky.RGBSensorModuleCalibrations rsmc = new ProjectEsky.RGBSensorModuleCalibrations();
-                rsmc.camID = LoadedSettings.sensorModuleCalibrations.camID;                
-                rsmc.cx = LoadedSettings.sensorModuleCalibrations.camID;
-                rsmc.cy = LoadedSettings.sensorModuleCalibrations.camID;
-                rsmc.fx = LoadedSettings.sensorModuleCalibrations.camID;
-                rsmc.fy = LoadedSettings.sensorModuleCalibrations.camID;                
-                rsmc.d1 = LoadedSettings.sensorModuleCalibrations.d1;
-                rsmc.d2 = LoadedSettings.sensorModuleCalibrations.d2;
-                rsmc.d3 = LoadedSettings.sensorModuleCalibrations.d3;
-                rsmc.d4 = LoadedSettings.sensorModuleCalibrations.d4;                
-                rsmc.SensorChannels = LoadedSettings.sensorModuleCalibrations.SensorChannels;
-                rsmc.SensorFoV = LoadedSettings.sensorModuleCalibrations.SensorFoV;
-                rsmc.SensorWidth = LoadedSettings.sensorModuleCalibrations.SensorWidth;
-                rsmc.SensorHeight = LoadedSettings.sensorModuleCalibrations.SensorHeight;
-                RGBSensor.GetComponent<BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule>().myCalibrations = rsmc;
+                if(RGBSensor != null){
+                    RGBSensor.gameObject.SetActive(true);
+                    RGBSensor.localPosition = LoadedSettings.myOffsets.RGBSensorTranslationFromTracker;
+                    RGBSensor.localRotation = LoadedSettings.myOffsets.RGBSensorRotationFromTracker;
+                    ProjectEsky.RGBSensorModuleCalibrations rsmc = new ProjectEsky.RGBSensorModuleCalibrations();
+                    rsmc.camID = LoadedSettings.sensorModuleCalibrations.camID;                
+                    rsmc.cx = LoadedSettings.sensorModuleCalibrations.camID;
+                    rsmc.cy = LoadedSettings.sensorModuleCalibrations.camID;
+                    rsmc.fx = LoadedSettings.sensorModuleCalibrations.camID;
+                    rsmc.fy = LoadedSettings.sensorModuleCalibrations.camID;                
+                    rsmc.d1 = LoadedSettings.sensorModuleCalibrations.d1;
+                    rsmc.d2 = LoadedSettings.sensorModuleCalibrations.d2;
+                    rsmc.d3 = LoadedSettings.sensorModuleCalibrations.d3;
+                    rsmc.d4 = LoadedSettings.sensorModuleCalibrations.d4;                
+                    rsmc.SensorChannels = LoadedSettings.sensorModuleCalibrations.SensorChannels;
+                    rsmc.SensorFoV = LoadedSettings.sensorModuleCalibrations.SensorFoV;
+                    rsmc.SensorWidth = LoadedSettings.sensorModuleCalibrations.SensorWidth;
+                    rsmc.SensorHeight = LoadedSettings.sensorModuleCalibrations.SensorHeight;
+                    RGBSensor.GetComponent<BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule>().myCalibrations = rsmc;
+                }
             }
             Rig.SetActive(true);
             if(v1Renderer != null){

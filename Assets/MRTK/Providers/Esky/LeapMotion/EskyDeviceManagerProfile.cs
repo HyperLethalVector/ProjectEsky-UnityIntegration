@@ -296,6 +296,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         [SerializeField]
         [Tooltip("Should we dump the current settins after stopping the 'play in editor?'")]
         private bool saveAfterStoppingEditor;
+
+
         [SerializeField]
         public bool SaveAfterStoppingEditor{
             get => saveAfterStoppingEditor;
