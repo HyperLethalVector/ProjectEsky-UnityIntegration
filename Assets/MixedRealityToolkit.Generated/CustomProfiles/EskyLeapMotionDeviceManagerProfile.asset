@@ -17,3 +17,140 @@ MonoBehaviour:
   leapControllerOffset: {x: 0, y: -0.2, z: 0.2}
   enterPinchDistance: 0.02
   exitPinchDistance: 0.05
+  rigToUse: 0
+  customRig: {fileID: 0}
+  sensorOffsets:
+    TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
+    RotationEyeToLeapMotion: {x: 0, y: 0, z: 0, w: 0}
+    TranslationFromTracker: {x: 0, y: 0, z: 0}
+    RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
+    RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
+    RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
+  usesCameraPreview: 1
+  targetFrameRate: 0
+  reprojectionSettings: 0
+  nativeShaderToUse: 1
+  myOffsets:
+    TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
+    RotationEyeToLeapMotion: {x: 0, y: 0, z: 0, w: 0}
+    TranslationFromTracker: {x: 0, y: 0, z: 0}
+    RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
+    RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
+    RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
+  v2CalibrationValues:
+    left_uv_to_rect_x: []
+    left_uv_to_rect_y: []
+    right_uv_to_rect_x: []
+    right_uv_to_rect_y: []
+    left_eye_offset: []
+    right_eye_offset: []
+  v1CalibrationValues:
+    leftEye:
+      ellipseMinorAxis: 0
+      ellipseMajorAxis: 0
+      screenForward: {x: 0, y: 0, z: 0}
+      screenPosition: {x: 0, y: 0, z: 0}
+      eyePosition: {x: 0, y: 0, z: 0}
+      eyeRotation: {x: 0, y: 0, z: 0, w: 0}
+      cameraProjection: {x: 0, y: 0, z: 0, w: 0}
+      sphereToWorldSpace:
+        e00: 0
+        e01: 0
+        e02: 0
+        e03: 0
+        e10: 0
+        e11: 0
+        e12: 0
+        e13: 0
+        e20: 0
+        e21: 0
+        e22: 0
+        e23: 0
+        e30: 0
+        e31: 0
+        e32: 0
+        e33: 0
+      worldToScreenSpace:
+        e00: 0
+        e01: 0
+        e02: 0
+        e03: 0
+        e10: 0
+        e11: 0
+        e12: 0
+        e13: 0
+        e20: 0
+        e21: 0
+        e22: 0
+        e23: 0
+        e30: 0
+        e31: 0
+        e32: 0
+        e33: 0
+    rightEye:
+      ellipseMinorAxis: 0
+      ellipseMajorAxis: 0
+      screenForward: {x: 0, y: 0, z: 0}
+      screenPosition: {x: 0, y: 0, z: 0}
+      eyePosition: {x: 0, y: 0, z: 0}
+      eyeRotation: {x: 0, y: 0, z: 0, w: 0}
+      cameraProjection: {x: 0, y: 0, z: 0, w: 0}
+      sphereToWorldSpace:
+        e00: 0
+        e01: 0
+        e02: 0
+        e03: 0
+        e10: 0
+        e11: 0
+        e12: 0
+        e13: 0
+        e20: 0
+        e21: 0
+        e22: 0
+        e23: 0
+        e30: 0
+        e31: 0
+        e32: 0
+        e33: 0
+      worldToScreenSpace:
+        e00: 0
+        e01: 0
+        e02: 0
+        e03: 0
+        e10: 0
+        e11: 0
+        e12: 0
+        e13: 0
+        e20: 0
+        e21: 0
+        e22: 0
+        e23: 0
+        e30: 0
+        e31: 0
+        e32: 0
+        e33: 0
+  displayWindowSettings:
+    DisplayXLoc: 0
+    DisplayYLoc: 0
+    DisplayWidth: 0
+    DisplayHeight: 0
+    EyeTextureWidth: 0
+    EyeTextureHeight: 0
+  sensorModuleCalibrations:
+    camID: 0
+    fx: 0
+    fy: 0
+    cx: 0
+    cy: 0
+    d1: 0
+    d2: 0
+    d3: 0
+    d4: 0
+    SensorWidth: 0
+    SensorHeight: 0
+    SensorChannels: 0
+    SensorFoV: 0
+  usesExternalRGBCamera: 0
+  filterSystemToUse: 0
+  useTrackerOffsets: 1
+  saveAfterStoppingEditor: 1

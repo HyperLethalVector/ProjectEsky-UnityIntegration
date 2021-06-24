@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
     [System.Serializable]
     public enum FollowType{
         SixDOF = 0,
         FourDOF_Y_Rotation = 1,
         ThreeDOF_Translation = 2,
         ThreeDOF_Rotation = 3,
-        Floor_FourDOF_Y_ROTATION = 4
+        Floor_FourDOF_Y_ROTATION = 4,
+        ThreeDOF_Translation_FaceHMD = 5
     }
     [System.Serializable]
     public enum FollowTarget{
@@ -19,6 +20,7 @@ namespace ProjectEsky.Tracking{
     public class FollowEskyOrigin : MonoBehaviour
     {
         Transform myOrigin;
+        Transform hmdOrigin;
         [SerializeField]
         public FollowTarget  targetType;
         [SerializeField]        
@@ -44,6 +46,7 @@ namespace ProjectEsky.Tracking{
             }catch(System.NullReferenceException e){
                 Debug.LogError("There was an issue getting the target, does the relavent eskyhandorigin script exist in scene?: " + e);
             }
+            hmdOrigin = EskyHMDOrigin.instance.transform;
         }
 
         // Update is called once per frame
@@ -67,8 +70,14 @@ namespace ProjectEsky.Tracking{
                         transform.position = myOrigin.transform.position + ( myOrigin.transform.rotation * TranslationOffset);
                         transform.rotation = Quaternion.Euler(new Vector3(0,myOrigin.transform.eulerAngles.y,0))* Quaternion.Euler(RotationOffset);
                         break;
+                        case FollowType.ThreeDOF_Translation_FaceHMD:
+                        transform.position = myOrigin.transform.position + ( myOrigin.transform.rotation * TranslationOffset);                        
+                        transform.rotation = Quaternion.LookRotation(myOrigin.transform.position - hmdOrigin.transform.position,hmdOrigin.transform.up) * Quaternion.Euler(RotationOffset);
+                        break;
                     }
                 }
+            }else{
+                Start();
             }
         }
     }

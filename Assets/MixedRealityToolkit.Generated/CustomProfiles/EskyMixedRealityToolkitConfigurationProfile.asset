@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: EskyMixedRealityToolkitConfigurationProfile
   m_EditorClassIdentifier: 
   isCustomProfile: 1
+  experienceSettingsProfile: {fileID: 11400000, guid: 1ccbb3b1d759d6a49b4161a958329d9d,
+    type: 2}
   targetExperienceScale: 3
   enableCameraSystem: 0
-  cameraProfile: {fileID: 11400000, guid: 0447581e7bd59f64fbb28151c65a3dc4, type: 2}
+  cameraProfile: {fileID: 11400000, guid: 6d8face473a227c43b8c2b4bba9c9204, type: 2}
   cameraSystemType:
     reference: Microsoft.MixedReality.Toolkit.CameraSystem.MixedRealityCameraSystem,
       Microsoft.MixedReality.Toolkit.Services.CameraSystem
@@ -27,6 +29,8 @@ MonoBehaviour:
   boundarySystemType:
     reference: Microsoft.MixedReality.Toolkit.Boundary.MixedRealityBoundarySystem,
       Microsoft.MixedReality.Toolkit.Services.BoundarySystem
+  xrsdkBoundarySystemType:
+    reference: 
   boundaryVisualizationProfile: {fileID: 11400000, guid: 6d28cce596b44bd3897ca86f8b24e076,
     type: 2}
   enableTeleportSystem: 0
@@ -52,3 +56,4 @@ MonoBehaviour:
   registeredServiceProvidersProfile: {fileID: 0}
   useServiceInspectors: 0
   renderDepthBuffer: 0
+  enableVerboseLogging: 0

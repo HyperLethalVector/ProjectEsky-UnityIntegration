@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LeftHand
-  m_Shader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _EMISSION _ISLEFTHAND_ON
+  m_Shader: {fileID: 4800000, guid: 7a052d2ba7d176348be6de56c061b21d, type: 3}
+  m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -67,6 +67,9 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PressIntensity: 1
+    - _PressRimPower: 7.6
+    - _RimPower: 8
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -74,6 +77,8 @@ Material:
     - _ZWrite: 1
     - _isLeftHand: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PressRimColor: {r: 0, g: 0.8217403, b: 0.9528302, a: 1}
+    - _RimColor: {r: 0, g: 0.031219006, b: 1, a: 0}
   m_BuildTextureStacks: []

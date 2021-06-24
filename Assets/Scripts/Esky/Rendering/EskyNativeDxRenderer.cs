@@ -11,7 +11,7 @@ using System;
 using AOT;
 using System.IO;
 
-namespace ProjectEsky.Rendering{
+namespace BEERLabs.ProjectEsky.Rendering{
      [System.Serializable]
      public class DisplayCalibration{
         [SerializeField]
@@ -162,7 +162,7 @@ namespace ProjectEsky.Rendering{
         readonly List<int> windowsOn = new List<int>();
         public DisplayCalibration calibration;
         public GameObject LeapMotionCamera;
-        public ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
+        public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
         public GameObject RigCenter;
         [Range(0,1)]
         public float RenderedGraphicsBrightness = 1.0f;
@@ -173,20 +173,19 @@ namespace ProjectEsky.Rendering{
 
             SetupDebugDelegate();
             runInBackgroundInitial = Application.runInBackground;
-            LoadCalibration();
+
         }
         void Start(){            
+            LoadCalibration();            
             ShowExternalWindow(0);
         }
         void LoadCalibration(){
-            calibration = new DisplayCalibration();
-            calibration.baseline = 0.0f;
-
+/*
             if(LoadDisplaySettings){
                 if(File.Exists("DisplaySettings.json")){
                     displaySettings = JsonUtility.FromJson<DisplaySettings>(File.ReadAllText("DisplaySettings.json"));
                 }
-            }            
+            } 
             if(File.Exists(OpticalCalibrationsFolder+"DisplayCalibration.json")){
                 calibration = JsonUtility.FromJson<DisplayCalibration>(File.ReadAllText(OpticalCalibrationsFolder+"DisplayCalibration.json")); 
                 if(calibration.baseline == 0.0f){
@@ -204,26 +203,27 @@ namespace ProjectEsky.Rendering{
                         Debug.LogError("Couldn't find the leapmotion object, did you modify the rig???");
                     }
                 }            
-                renderTextureSettings.LeftCamera.transform.localPosition=new Vector3(-(calibration.baseline/2.0f),0,0);
-                renderTextureSettings.RightCamera.transform.localPosition=new Vector3((calibration.baseline/2.0f),0,0);
-                if(renderTextureSettings.RequiresRotation){
-                    renderTextureSettings.LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
-                    renderTextureSettings.RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
-                }
-                renderTextureSettings.LeftRenderTexture = new RenderTexture(displaySettings.EyeTextureWidth, displaySettings.EyeTextureHeight, 24, renderTextureFormat);
-                renderTextureSettings.RightRenderTexture = new RenderTexture(displaySettings.EyeTextureWidth, displaySettings.EyeTextureHeight, 24, renderTextureFormat);
-                renderTextureSettings.LeftCamera.targetTexture = renderTextureSettings.LeftRenderTexture;
-                renderTextureSettings.RightCamera.targetTexture = renderTextureSettings.RightRenderTexture;
-                myEyeBorders.UpdateBorders();
-                renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.LeftCamera.projectionMatrix,true);// = renderTextureSettings..renderTextureSettings.LeftCamera.projectionMatrix,renderTextureSettings.RightCamera.projectionMatrix;
-                renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.RightCamera.projectionMatrix,false);//
+
       //          if(renderTextureSettings.RequiresRotation){
     //                renderTextureSettings.LeftCamera.fieldOfView = 43.01793f;//52.75 for 1.5 weighting
   //                  renderTextureSettings.RightCamera.fieldOfView = 43.01793f;//Pre-CALCULATED                
 //                }
             }else{
                 Debug.LogError("Waah! My display calibration file is missing :(");
-            } 
+            } */
+            renderTextureSettings.LeftCamera.transform.localPosition=new Vector3(-0.032f,0,0);
+            renderTextureSettings.RightCamera.transform.localPosition=new Vector3(0.032f,0,0);
+            if(renderTextureSettings.RequiresRotation){
+                renderTextureSettings.LeftCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);
+                renderTextureSettings.RightCamera.transform.Rotate(new Vector3(0,0,90),Space.Self);        
+            }
+            renderTextureSettings.LeftRenderTexture = new RenderTexture(displaySettings.EyeTextureWidth, displaySettings.EyeTextureHeight, 24, renderTextureFormat);
+            renderTextureSettings.RightRenderTexture = new RenderTexture(displaySettings.EyeTextureWidth, displaySettings.EyeTextureHeight, 24, renderTextureFormat);
+            renderTextureSettings.LeftCamera.targetTexture = renderTextureSettings.LeftRenderTexture;
+            renderTextureSettings.RightCamera.targetTexture = renderTextureSettings.RightRenderTexture;
+            myEyeBorders.UpdateBorders();
+            renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.LeftCamera.projectionMatrix,true);// 
+            renderTextureSettings.UpdateProjectionMatrix(renderTextureSettings.RightCamera.projectionMatrix,false);//            
         }
         public void SaveCalibration(){
             if(LeapMotionCamera != null){
@@ -255,10 +255,6 @@ namespace ProjectEsky.Rendering{
                 SetEnableFlagWarping(0,use2DTemporalWarping);
             }
         }
-        public void FlagUpdateLookUpTextures(){
-            UpdateLookUpTextures = true;
-        }
-        bool UpdateLookUpTextures = false;
         IEnumerator CallPluginAtEndOfFrame(int id) {
             yield return new WaitForEndOfFrame();
             IntPtr ptrLeft = renderTextureSettings.RightRenderTexture.GetNativeTexturePtr();

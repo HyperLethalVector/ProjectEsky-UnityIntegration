@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Leap.Unity;
 
-namespace ProjectEsky.Calibrator
+namespace BEERLabs.ProjectEsky.Calibrator
 {
     public class TrackerAligner : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace ProjectEsky.Calibrator
         public KeyCode takeCalibrationSampleKey;
         public KeyCode solveForRelativeTransformKey;
 
-        public ProjectEsky.Tracking.EskyTracker Tracker; // for when the leap is inside HMD, and you want to align entire HMD to reference Tracker space
+        public BEERLabs.ProjectEsky.Tracking.EskyTracker Tracker; // for when the leap is inside HMD, and you want to align entire HMD to reference Tracker space
         public bool inverseSolve = false;
         public int minSamplePointsNeeded = 3;
         public Transform[] referenceTracker; //e.g. positions to store and compare aginst leap data each sample. MUST MATCH ORDER AND QTY OF HAND REFERNECE POINTS
@@ -65,7 +65,7 @@ namespace ProjectEsky.Calibrator
             finalPoints = new List<Vector3>();
             if (Tracker == null)
             {
-                Tracker = ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
+                Tracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
             }
             CreateLineMaterial();
             initialPosition = transform.position;

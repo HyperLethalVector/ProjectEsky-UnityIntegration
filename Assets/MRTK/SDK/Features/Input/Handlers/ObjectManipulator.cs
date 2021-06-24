@@ -4,7 +4,6 @@
 using Microsoft.MixedReality.Toolkit.Experimental.Physics;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.Physics;
-using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
 using System.Collections.Generic;
@@ -20,9 +19,9 @@ namespace Microsoft.MixedReality.Toolkit.UI
     /// You may also configure the script on only enable certain manipulations. The script works with
     /// both HoloLens' gesture input and immersive headset's motion controller input.
     /// </summary>
-    [HelpURL("https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/README_ObjectManipulator.html")]
+    [HelpURL("https://docs.microsoft.com/windows/mixed-reality/mrtk-unity/features/ux-building-blocks/object-manipulator")]
     [RequireComponent(typeof(ConstraintManager))]
-    public class ObjectManipulator : MonoBehaviour, IMixedRealityPointerHandler, IMixedRealityFocusChangedHandler
+    public class ObjectManipulator : MonoBehaviour, IMixedRealityPointerHandler, IMixedRealityFocusChangedHandler, IMixedRealitySourcePoseHandler
     {
         #region Public Enums
 
@@ -185,6 +184,11 @@ namespace Microsoft.MixedReality.Toolkit.UI
             get => smoothingFar;
             set => smoothingFar = value;
         }
+
+        [SerializeField]
+        [Tooltip("The concrete type of TransformSmoothingLogic to use for smoothing between transforms.")]
+        [Implements(typeof(ITransformSmoothingLogic), TypeGrouping.ByNamespaceFlat)]
+        private SystemType transformSmoothingLogicType = typeof(DefaultTransformSmoothingLogic);
 
         [FormerlySerializedAs("smoothingActive")]
         [SerializeField]
@@ -362,6 +366,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
         private ManipulationMoveLogic moveLogic;
         private TwoHandScaleLogic scaleLogic;
         private TwoHandRotateLogic rotateLogic;
+        private ITransformSmoothingLogic smoothingLogic;
 
         /// <summary>
         /// Holds the pointer and the initial intersection point of the pointer ray
@@ -397,6 +402,9 @@ namespace Microsoft.MixedReality.Toolkit.UI
         private bool IsOneHandedManipulationEnabled => manipulationType.HasFlag(ManipulationHandFlags.OneHanded) && pointerIdToPointerMap.Count == 1;
         private bool IsTwoHandedManipulationEnabled => manipulationType.HasFlag(ManipulationHandFlags.TwoHanded) && pointerIdToPointerMap.Count > 1;
 
+        private Quaternion leftHandRotation;
+        private Quaternion rightHandRotation;
+
         #endregion Private Properties
 
         #region MonoBehaviour Functions
@@ -406,6 +414,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
             moveLogic = new ManipulationMoveLogic();
             rotateLogic = new TwoHandRotateLogic();
             scaleLogic = new TwoHandScaleLogic();
+            smoothingLogic = Activator.CreateInstance(transformSmoothingLogicType) as ITransformSmoothingLogic;
 
             if (elasticsManager)
             {
@@ -418,6 +427,15 @@ namespace Microsoft.MixedReality.Toolkit.UI
             if (constraintsManager == null && EnableConstraints)
             {
                 constraintsManager = gameObject.EnsureComponent<ConstraintManager>();
+            }
+
+            // Get child objects with NearInteractionGrabbable attached
+            var children = GetComponentsInChildren<NearInteractionGrabbable>();
+
+            if (children.Length == 0)
+            {
+                Debug.Log($"Near interactions are not enabled for {gameObject.name}. To enable near interactions, add a " +
+                    $"{nameof(NearInteractionGrabbable)} component to {gameObject.name} or to a child object of {gameObject.name} that contains a collider.");
             }
         }
 
@@ -846,6 +864,8 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
         private void ApplyTargetTransform(MixedRealityTransform targetTransform)
         {
+            bool applySmoothing = isSmoothing && smoothingLogic != null;
+
             if (rigidBody == null)
             {
                 TransformFlags transformUpdated = 0;
@@ -853,19 +873,19 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 {
                     transformUpdated = elasticsManager.ApplyTargetTransform(targetTransform);
                 }
-
                 if (!transformUpdated.HasFlag(TransformFlags.Move))
                 {
-                    HostTransform.position = isSmoothing ? Smoothing.SmoothTo(HostTransform.position, targetTransform.Position, moveLerpTime, Time.deltaTime) : targetTransform.Position;
+                    HostTransform.position = applySmoothing ? smoothingLogic.SmoothPosition(HostTransform.position, targetTransform.Position, moveLerpTime, Time.deltaTime) : targetTransform.Position;
                 }
                 if (!transformUpdated.HasFlag(TransformFlags.Rotate))
                 {
-                    HostTransform.rotation = isSmoothing ? Smoothing.SmoothTo(HostTransform.rotation, targetTransform.Rotation, rotateLerpTime, Time.deltaTime) : targetTransform.Rotation;
+                    HostTransform.rotation = applySmoothing ? smoothingLogic.SmoothRotation(HostTransform.rotation, targetTransform.Rotation, rotateLerpTime, Time.deltaTime) : targetTransform.Rotation;
                 }
                 if (!transformUpdated.HasFlag(TransformFlags.Scale))
                 {
-                    HostTransform.localScale = isSmoothing ? Smoothing.SmoothTo(HostTransform.localScale, targetTransform.Scale, scaleLerpTime, Time.deltaTime) : targetTransform.Scale;
+                    HostTransform.localScale = applySmoothing ? smoothingLogic.SmoothScale(HostTransform.localScale, targetTransform.Scale, scaleLerpTime, Time.deltaTime) : targetTransform.Scale;
                 }
+                
             }
             else
             {
@@ -875,10 +895,10 @@ namespace Microsoft.MixedReality.Toolkit.UI
                     // This is a near manipulation and we're not using forces
                     // Apply direct updates but account for smoothing
 
-                    if (isSmoothing)
+                    if (applySmoothing)
                     {
-                        rigidBody.MovePosition(Smoothing.SmoothTo(rigidBody.position, targetTransform.Position, moveLerpTime, Time.deltaTime));
-                        rigidBody.MoveRotation(Smoothing.SmoothTo(rigidBody.rotation, targetTransform.Rotation, rotateLerpTime, Time.deltaTime));
+                        rigidBody.MovePosition(smoothingLogic.SmoothPosition(rigidBody.position, targetTransform.Position, moveLerpTime, Time.deltaTime));
+                        rigidBody.MoveRotation(smoothingLogic.SmoothRotation(rigidBody.rotation, targetTransform.Rotation, rotateLerpTime, Time.deltaTime));
                     }
                     else
                     {
@@ -894,7 +914,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
                     var relativeRotation = targetTransform.Rotation * Quaternion.Inverse(HostTransform.rotation);
                     relativeRotation.ToAngleAxis(out float angle, out Vector3 axis);
-                    
+
                     if (axis.IsValidVector())
                     {
                         if (angle > 180f)
@@ -905,7 +925,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
                     }
                 }
 
-                HostTransform.localScale = isSmoothing ? Smoothing.SmoothTo(HostTransform.localScale, targetTransform.Scale, scaleLerpTime, Time.deltaTime) : targetTransform.Scale;
+                HostTransform.localScale = applySmoothing ? smoothingLogic.SmoothScale(HostTransform.localScale, targetTransform.Scale, scaleLerpTime, Time.deltaTime) : targetTransform.Scale;
             }
         }
 
@@ -963,14 +983,19 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 rigidBody.useGravity = wasGravity;
                 rigidBody.isKinematic = wasKinematic;
 
-                if (releaseBehavior.HasFlag(ReleaseBehaviorType.KeepVelocity))
+                // Match the object's velocity to the controller for near interactions
+                // Otherwise keep the objects current velocity so that it's not dampened unnaturally
+                if (isNearManipulation)
                 {
-                    rigidBody.velocity = velocity;
-                }
+                    if (releaseBehavior.HasFlag(ReleaseBehaviorType.KeepVelocity))
+                    {
+                        rigidBody.velocity = velocity;
+                    }
 
-                if (releaseBehavior.HasFlag(ReleaseBehaviorType.KeepAngularVelocity))
-                {
-                    rigidBody.angularVelocity = angularVelocity;
+                    if (releaseBehavior.HasFlag(ReleaseBehaviorType.KeepAngularVelocity))
+                    {
+                        rigidBody.angularVelocity = angularVelocity;
+                    }
                 }
             }
         }
@@ -984,17 +1009,65 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
         private bool TryGetGripRotation(IMixedRealityPointer pointer, out Quaternion rotation)
         {
-            for (int i = 0; i < (pointer.Controller?.Interactions?.Length ?? 0); i++)
-            {
-                if (pointer.Controller.Interactions[i].InputType == DeviceInputType.SpatialGrip)
-                {
-                    rotation = pointer.Controller.Interactions[i].RotationData;
-                    return true;
-                }
-            }
             rotation = Quaternion.identity;
-            return false;
+            switch (pointer.Controller?.ControllerHandedness)
+            {
+                case Handedness.Left:
+                    rotation = leftHandRotation;
+                    break;
+                case Handedness.Right:
+                    rotation = rightHandRotation;
+                    break;
+                default:
+                    return false;
+            }
+            return true;
         }
+
+        #endregion
+
+        #region Source Pose Handler Implementation
+        /// <summary>
+        /// Raised when the source pose tracking state is changed.
+        /// </summary>
+        public void OnSourcePoseChanged(SourcePoseEventData<TrackingState> eventData) { }
+
+        /// <summary>
+        /// Raised when the source position is changed.
+        /// </summary>
+        public void OnSourcePoseChanged(SourcePoseEventData<Vector2> eventData) { }
+
+        /// <summary>
+        /// Raised when the source position is changed.
+        /// </summary>
+        public void OnSourcePoseChanged(SourcePoseEventData<Vector3> eventData) { }
+
+        /// <summary>
+        /// Raised when the source rotation is changed.
+        /// </summary>
+        public void OnSourcePoseChanged(SourcePoseEventData<Quaternion> eventData) { }
+
+        /// <summary>
+        /// Raised when the source pose is changed.
+        /// </summary>
+        public void OnSourcePoseChanged(SourcePoseEventData<MixedRealityPose> eventData)
+        {
+            switch (eventData.Controller?.ControllerHandedness)
+            {
+                case Handedness.Left:
+                    leftHandRotation = eventData.SourceData.Rotation;
+                    break;
+                case Handedness.Right:
+                    rightHandRotation = eventData.SourceData.Rotation;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnSourceDetected(SourceStateEventData eventData) { }
+
+        public void OnSourceLost(SourceStateEventData eventData) { }
 
         #endregion
     }

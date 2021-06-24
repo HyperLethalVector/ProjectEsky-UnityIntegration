@@ -5,10 +5,13 @@ using Microsoft.MixedReality.Toolkit.Input;
 using System;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Experimental.Dwell
+namespace Microsoft.MixedReality.Toolkit.Dwell
 {
+    /// <summary>
+    /// Profile used by dwell handler to configure the various thresholds.
+    /// </summary>
     [MixedRealityServiceProfile(typeof(DwellProfile))]
-    [CreateAssetMenu(menuName = "Mixed Reality Toolkit/Profiles/Dwell Profile", fileName = "DwellProfile", order = 100)]
+    [CreateAssetMenu(menuName = "Mixed Reality/Toolkit/Profiles/Dwell Profile", fileName = "DwellProfile", order = 100)]
     [Serializable]
     public class DwellProfile : ScriptableObject
     {
@@ -31,49 +34,65 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.Dwell
         [Range(0, 20)]
         private float timeToCompleteDwell = 4;
 
-        [Tooltip("Time in seconds when focus can fall off the target and come back to resume an ongoing dwell.This only comes into play after DwellStarted state but before DwellCompleted is invoked.")]
+        [Tooltip("Time in seconds when focus can fall off the target and come back to resume an ongoing dwell. This only comes into play after DwellStarted state but before DwellCompleted is invoked.")]
         [SerializeField]
         [Range(0, 20)]
         private float timeToAllowDwellResume = 0;
 
+        [Tooltip("Whether the dwell timer decays when not in focus. If false, all dwell progress is lost at once after timeToAllowDwellResume elapses. Otherwise, the dwell progress decreases over time. ")]
+        [SerializeField]
+        private bool decayDwellOverTime = false;
+
+
+        /// <summary>
+        /// Pointer type to use for triggering a dwell interaction
+        /// </summary>
         public InputSourceType DwellPointerType
         {
-            get
-            {
-                return dwellTriggerPointerType;
-            }
+            get => dwellTriggerPointerType;
+            set => dwellTriggerPointerType = value;
         }
 
-        public TimeSpan DwellIntentDelay
+        /// <summary>
+        /// Delay in seconds until it is determined that the user intends to interact with the target.
+        /// </summary>
+        public float DwellIntentDelay
         {
-            get
-            {
-                return TimeSpan.FromSeconds(dwellIntentDelay);
-            }
+            get => dwellIntentDelay;
+            set => dwellIntentDelay = value;
         }
 
-        public TimeSpan DwellStartDelay
+        /// <summary>
+        /// Delay in seconds until DwellStarted event is invoked.
+        /// </summary>
+        public float DwellStartDelay
         {
-            get
-            {
-                return TimeSpan.FromSeconds(dwellStartDelay);
-            }
+            get => dwellStartDelay;
+            set => dwellStartDelay = value;
         }
 
-        public TimeSpan TimeToCompleteDwell
+        /// <summary>
+        /// Additional time in seconds (not including the dwellStartDelay) the user needs to keep looking at the UI to trigger select on it. Raises DwellCompleted event.
+        /// </summary>
+        public float TimeToCompleteDwell
         {
-            get
-            {
-                return TimeSpan.FromSeconds(timeToCompleteDwell);
-            }
+            get => timeToCompleteDwell;
+            set => timeToCompleteDwell = value;
         }
 
-        public TimeSpan TimeToAllowDwellResume
+        /// <summary>
+        /// Time in seconds when focus can fall off the target and come back to resume an ongoing dwell. This only comes into play after DwellStarted state but before DwellCompleted is invoked.
+        /// </summary>
+        public float TimeToAllowDwellResume
         {
-            get
-            {
-                return TimeSpan.FromSeconds(timeToAllowDwellResume);
-            }
+            get => timeToAllowDwellResume;
+            set => timeToAllowDwellResume = value;
+        }
+
+        public bool DecayDwellOverTime
+        {
+            get => decayDwellOverTime;
+            set => decayDwellOverTime = value;
         }
     }
 }

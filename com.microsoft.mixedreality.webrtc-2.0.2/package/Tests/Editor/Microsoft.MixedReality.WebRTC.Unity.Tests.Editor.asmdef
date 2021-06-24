@@ -1,0 +1,20 @@
+{
+    "name": "Microsoft.MixedReality.WebRTC.Unity.Tests.Editor",
+    "references": [
+        "Microsoft.MixedReality.WebRTC.Unity"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "Microsoft.MixedReality.WebRTC.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

@@ -14,32 +14,51 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
     {
         [SerializeField]
         private Renderer TargetRenderer;
+        public float red;
+        public float green;
 
+        public float blue;
+        bool updated = false;
+        HandInteractionTouch htt;
+        void Start(){
+            htt = GetComponent<HandInteractionTouch>();
+        }
+        private void FixedUpdate() {
+            if(updated){
+                TargetRenderer = GetComponentInChildren<Renderer>();                
+                updated = false;
+                htt.SetHighlightedColor(red,green,blue);
+            }  
+        }
+
+        public void OnSliderUpdateRedNetwork(float newVal){
+            red = newVal;
+            updated = true;
+        }
+        public void OnSliderUpdateGreenNetwork(float newVal){
+            green = newVal;
+            updated = true;            
+        }
+        public void OnSliderUpdateBlueNetwork(float newVal){
+            blue = newVal;
+            updated = true;            
+        }        
         public void OnSliderUpdatedRed(SliderEventData eventData)
         {
-            TargetRenderer = GetComponentInChildren<Renderer>();
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(eventData.NewValue, TargetRenderer.sharedMaterial.color.g, TargetRenderer.sharedMaterial.color.b);
-            }
+            red = eventData.NewValue;
+            updated = true;            
         }
 
         public void OnSliderUpdatedGreen(SliderEventData eventData)
         {
-            TargetRenderer = GetComponentInChildren<Renderer>();
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(TargetRenderer.sharedMaterial.color.r, eventData.NewValue, TargetRenderer.sharedMaterial.color.b);
-            }
+            green = eventData.NewValue;
+            updated = true;            
         }
 
         public void OnSliderUpdateBlue(SliderEventData eventData)
         {
-            TargetRenderer = GetComponentInChildren<Renderer>();
-            if ((TargetRenderer != null) && (TargetRenderer.material != null))
-            {
-                TargetRenderer.material.color = new Color(TargetRenderer.sharedMaterial.color.r, TargetRenderer.sharedMaterial.color.g, eventData.NewValue);
-            }
+            blue = eventData.NewValue;
+            updated = true;            
         }
     }
 }

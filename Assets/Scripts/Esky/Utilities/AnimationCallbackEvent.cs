@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-namespace ProjectEsky.Utilities{    
+namespace BEERLabs.ProjectEsky.Utilities{    
     public class AnimationCallbackEvent : MonoBehaviour
     {
         public UnityEvent callbackEvent;

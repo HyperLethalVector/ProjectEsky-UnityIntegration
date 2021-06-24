@@ -8,6 +8,7 @@ TagManager:
   - UI
   - FxTemporaire
   - zomBunny
+  - HandInteractionObject
   layers:
   - Default
   - TransparentFX

@@ -1,0 +1,240 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7172086403288178363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7172086403288178364}
+  - component: {fileID: 7172086403288178366}
+  - component: {fileID: 7172086403288178365}
+  - component: {fileID: 7172086403288178367}
+  - component: {fileID: 7172086403635093314}
+  - component: {fileID: 7172086403635093315}
+  m_Layer: 0
+  m_Name: WebRTCConnectionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7172086403288178364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 7171898672000543329}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7172086403288178366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3711a2a33b7aa3c43834cdc36a9f4bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PeerConnection: {fileID: 7070303380593889983}
+  isAdding: 0
+  cancellationsToSend: []
+  TimeoutBeforeReactivatingDiscovery: 5
+  HeartbeatRate: 2
+  ClientsFound: 0
+  isHosting: 0
+  TimeMSBetweenChecks: 0
+  isConnected: 0
+  TimeoutBeforeRemovalFromList: 3
+  LogInfo: 1
+  HostingIP: 
+  onDataReceivedFromDataTrack:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7172086403288178365}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
+          Assembly-CSharp
+        m_MethodName: OnReceiveByte
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onConnectionHandled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7172086403288178365}
+        m_TargetAssemblyTypeName: ProjectEsky.Networking.WebRTC.WebRTCDataStreamManager,
+          Assembly-CSharp
+        m_MethodName: OnConnected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onConnectionDropped:
+    m_PersistentCalls:
+      m_Calls: []
+  hasMessagePrepared: 0
+  shake:
+    iceMessages: []
+    sdpMessage:
+      sdp: 
+      type: 
+  connected: 0
+--- !u!114 &7172086403288178365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5bced301a14ff479d0dee785135995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sendHeartBeat: 1
+  ClientUUID: 
+  isConnected: 0
+  canTimeout: 1
+  onCustomPacketReceive:
+    m_PersistentCalls:
+      m_Calls: []
+  HeartBeatInterval: 1
+  DisconnectTimeout: 30
+--- !u!114 &7172086403288178367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee25a9d1e23f52048a8ed36f4afeaf77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RegisteredClient: {fileID: 7452955135043448552, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+    type: 3}
+  RegisteredPrefabs:
+  - {fileID: 7707916433225267816, guid: 339947f220abd7d4990e84b3f59e6962, type: 3}
+  SceneOrigin: {fileID: 0}
+--- !u!114 &7172086403635093314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 769405f78ebb32849ba748a06a93005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myAttachedTracker: {fileID: 0}
+--- !u!114 &7172086403635093315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7172086403288178363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84711fdb0dcf94f46800ed2558cb2085, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HeartBeatTimeoutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  BaseWebEvents: []
+  StringWebEvents: []
+  IntWebEvents: []
+  FloatWebEvents: []
+  ByteWebEvents: []
+  startOnAwake: 1
+  port: 8079
+  workerThreads: 2
+  processRequestsInMainThread: 1
+  logRequests: 1
+--- !u!1 &7173804419566142921
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7171898672000543329}
+  - component: {fileID: 7070303380593889983}
+  m_Layer: 0
+  m_Name: PeerConnection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &7171898672000543329
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7173804419566142921}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7172086403288178364}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7070303380593889983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7173804419566142921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64dff3d25ffa2ee4f907d396ed9c1ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoCreateOfferOnRenegotiationNeeded: 0
+  AutoLogErrorsToUnityConsole: 1
+  IceServers:
+  - Type: 1
+    Uri: stun.l.google.com:19302
+  IceUsername: 
+  IceCredential: 
+  OnInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShutdown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnError:
+    m_PersistentCalls:
+      m_Calls: []
+  _mediaLines: []

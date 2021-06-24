@@ -4,11 +4,13 @@
  using UnityEngine;
  using System;
  using System.IO;
- namespace ProjectEsky{
-    class BuildPreProcessor : IPreprocessBuild
+using UnityEditor.Build.Reporting;
+
+namespace BEERLabs.ProjectEsky{
+    class BuildPreProcessor : IPreprocessBuildWithReport
     {
         public int callbackOrder { get { return 0; } }
-        public void OnPreprocessBuild(BuildTarget target, string path) {
+        /*public void OnPreprocessBuild(BuildTarget target, string path) {
         // Do the preprocessing here
             Debug.Log(path);
             string outputpath = path.Substring(0, path.LastIndexOf("/"));
@@ -17,7 +19,7 @@
             Copy("./TrackingCalibrations/",Path.Combine(outputpath,"TrackingCalibrations/"));
             File.Copy("shaders.shader",Path.Combine(outputpath, "shaders.shader"));
             File.Copy("DisplaySettings.json",Path.Combine(outputpath, "DisplaySettings.json"));            
-        }
+        }*/
         public static void Copy(string sourceDirectory, string targetDirectory)
         {
             DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
@@ -44,6 +46,15 @@
                     target.CreateSubdirectory(diSourceSubDir.Name);
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
+        }
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            Debug.Log(report.summary.outputPath);
+            string outputpath = report.summary.outputPath.Substring(0, report.summary.outputPath.LastIndexOf("/"));
+            Debug.Log(outputpath);
+            File.Copy("shaders.shader",Path.Combine(outputpath, "shaders.shader"));
+            File.Copy("EskySettings.json",Path.Combine(outputpath, "EskySettings.json"));            
         }
     }
  }

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
     public class EskyAnchor : MonoBehaviour
     {
         public int AnchorID;
@@ -38,7 +38,7 @@ namespace ProjectEsky.Tracking{
             }
             MeshFilter[] meshFiltersInChild = meshRoot.GetComponentsInChildren<MeshFilter>();
             Debug.Log("Serializing this count of meshes: " + meshFiltersInChild.Length);
-            b = ProjectEsky.Utilities.EskyMeshSerializer.Serialize(meshFiltersInChild,meshRoot.transform);
+            b = BEERLabs.ProjectEsky.Utilities.EskyMeshSerializer.Serialize(meshFiltersInChild,meshRoot.transform);
             Debug.Log("Serialized meshes to binary size: " +b.Length);
             return (retMapInfo,b);
         }
@@ -55,7 +55,7 @@ namespace ProjectEsky.Tracking{
                 List<Mesh> meshes = new List<Mesh>();
                 try
                 {
-                    meshes = (List<Mesh>)ProjectEsky.Utilities.EskyMeshSerializer.Deserialize(information.meshDataArray);
+                    meshes = (List<Mesh>)BEERLabs.ProjectEsky.Utilities.EskyMeshSerializer.Deserialize(information.meshDataArray);
                 }
                 catch (System.Exception e)
                 {
@@ -80,7 +80,7 @@ namespace ProjectEsky.Tracking{
                     gg.GetComponent<MeshCollider>().sharedMesh = meshes[j];
                 }
             }
-            ProjectEsky.Utilities.EskyMeshSerializer.Deserialize(information.meshDataArray);
+            BEERLabs.ProjectEsky.Utilities.EskyMeshSerializer.Deserialize(information.meshDataArray);
             
         }
         public static void Subscribe(int ID, EskyAnchorContent contenttosubscribe){

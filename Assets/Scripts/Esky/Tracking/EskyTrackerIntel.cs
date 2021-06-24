@@ -7,7 +7,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
 
     public enum ComPort{
         COM0 = 0,
@@ -24,21 +24,23 @@ namespace ProjectEsky.Tracking{
     }
     [System.Serializable]
     public class DollaryDooFilterParams{
+        
         [SerializeField]
 
         public double Frequency;
-        [SerializeField]
+        [SerializeField,Range(0.01f,10f)]
         public double MinimumCutoff;
-        [SerializeField]        
+        [SerializeField, Range(0.1f,100f) ]        
         public double Beta;
-        [SerializeField]        
+        [SerializeField, Range(0f,10f)]        
         public double DCutoff;
-
+        [SerializeField]
+        public bool Enabled = true;
         double _freq = 20.0;
         double _mincutoff = 1.0;//double _freq, double _mincutoff = 1.0, double _beta = 0.0, double _dcutoff = 1.0
         double _beta = 0.0;
         double _dcutoff = 1.0;
-        bool changedFirstTime = false;
+        bool _enabled = false;
         public bool CheckUpdate(){
             
             bool didChange = false;
@@ -46,9 +48,129 @@ namespace ProjectEsky.Tracking{
             if(MinimumCutoff != _mincutoff){_mincutoff = MinimumCutoff; didChange = true;}
             if(Beta != _beta){_beta = Beta; didChange = true;}            
             if(DCutoff != _dcutoff){_dcutoff = DCutoff; didChange = true;}        
+            if(Enabled != _enabled){_enabled = Enabled; didChange = true;}
             return didChange;    
+        }        
+
+    }
+    [System.Serializable]
+    public class KalmanFilterParams{
+        [SerializeField,Range(0.001f,1)]
+        public double Q;
+        [SerializeField, Range(0.001f,10f) ]        
+        public double R;
+
+        double _q= 1.0;
+        double _r = 0.0;
+        bool _enabled = false;
+        public bool Enabled = true;
+        public bool CheckUpdate(){
+            
+            bool didChange = false;
+            if(Q!= _q){_q = Q; didChange = true;}
+            if(R != _r){_r = R; didChange = true;}
+            if(Enabled != _enabled){_enabled = Enabled; didChange = true;}
+            return didChange;    
+        }        
+    }
+    [System.Serializable]
+    public enum TrackingSystemUsed{
+        OLD = 0,
+        NEW = 1
+    }
+    [System.Serializable]
+    public class OldTrackingSystemFilters{
+        [SerializeField]
+
+        public bool FilterEnabled = true;
+        [SerializeField]        
+        public DollaryDooFilterParams TranslationFilterParameters;
+        [SerializeField]        
+        public DollaryDooFilterParams RotationFilterParameters;        
+        [SerializeField]        
+        public KalmanFilterParams KTranslationFilterParams; 
+        [SerializeField]        
+        public KalmanFilterParams KRrotationFilterParams;
+        public bool UseDollaryDooFilter = true;
+        public bool UseKalmanFilter = true;
+    }
+    
+    [System.Serializable]
+    public class NewDollaryDooFilters{
+        [SerializeField]        
+        public DollaryDooFilterParams TranslationFilterParams; 
+        [SerializeField]        
+        public DollaryDooFilterParams RotationFilterParams;
+
+        [SerializeField]        
+        public DollaryDooFilterParams VelocityFilterParams;
+        [SerializeField]        
+        public DollaryDooFilterParams AccelerationFilterParams;
+
+        [SerializeField]        
+        public DollaryDooFilterParams RotationVelocityFilterParams;
+        [SerializeField]        
+        public DollaryDooFilterParams RotationAccelerationFilterParams;   
+        public bool HadUpdatedValues(){
+            return TranslationFilterParams.CheckUpdate() || RotationFilterParams.CheckUpdate() || VelocityFilterParams.CheckUpdate() || AccelerationFilterParams.CheckUpdate() || RotationVelocityFilterParams.CheckUpdate() || RotationAccelerationFilterParams.CheckUpdate();
         }
-        
+    }
+
+    [System.Serializable]
+    public class NewKalmanFilters{
+        [SerializeField]        
+        public KalmanFilterParams TranslationFilterParams; 
+        [SerializeField]        
+        public KalmanFilterParams RotationFilterParams;
+
+        [SerializeField]        
+        public KalmanFilterParams VelocityFilterParams;
+        [SerializeField]        
+        public KalmanFilterParams AccelerationFilterParams;
+
+        [SerializeField]        
+        public KalmanFilterParams RotationVelocityFilterParams;
+        [SerializeField]        
+        public KalmanFilterParams RotationAccelerationFilterParams;
+        public bool HadUpdatedValues(){
+            return TranslationFilterParams.CheckUpdate() || RotationFilterParams.CheckUpdate() || VelocityFilterParams.CheckUpdate() || AccelerationFilterParams.CheckUpdate() || RotationVelocityFilterParams.CheckUpdate() || RotationAccelerationFilterParams.CheckUpdate();
+        }        
+    }
+    [System.Serializable]
+    public class NewTrackingSystemFilters{
+        [SerializeField]
+        public NewDollaryDooFilters dollaryDooFilterParams;
+        [SerializeField]        
+        public NewKalmanFilters kalmanFilterParameters;
+        [SerializeField]
+        public bool slamDFilterEnabled = true;
+        [SerializeField]
+        public bool slamKFilterEnabled = true;
+        [SerializeField]
+        public bool DoUpdateValues = false;
+        bool hasUpdatedValuesInitially = false;
+        public bool ShouldUpdateValues(){
+            if(dollaryDooFilterParams.HadUpdatedValues() || kalmanFilterParameters.HadUpdatedValues()){
+                return true;
+            }
+            if(!hasUpdatedValuesInitially){
+                hasUpdatedValuesInitially = true;
+                return true;
+            }
+            if(DoUpdateValues){
+                DoUpdateValues = false;
+                return true;
+            }
+            return false;
+        }
+    }
+    [System.Serializable]
+    public class TrackingSystemFilters{
+        [SerializeField]
+        public OldTrackingSystemFilters oldTrackingSystemFilters;
+        [SerializeField]        
+        public NewTrackingSystemFilters newTrackingSystemFilters;
+        public TrackingSystemUsed trackingSystemUsed;
     }
     [System.Serializable]
     public class HeadPosePredictionSettings{
@@ -69,19 +191,24 @@ namespace ProjectEsky.Tracking{
         bool canRenderImages = false;     
         public bool UsesDeckXIntegrator;
         public ComPort comPort;
-        public ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
-        public bool FilterEnabled = true;
-        bool _filterEnabled;
-        public DollaryDooFilterParams TranslationFilterParameters;
+        public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer attachedRenderer;
 
-        public DollaryDooFilterParams RotationFilterParameters;        
         public HeadPosePredictionSettings HeadPosePredictionOffsets;
+        public TrackingSystemFilters trackingSystemFilters;
         bool setParametersFilterFirstTime = false;
+        public bool UseAsyncPosePredictor = false;
+        
+        bool _useDollaryDooFilter = false;
+        bool _useKalmanFilter = false;
+        bool _filterEnabled;        
         public override void AfterAwake()
         {
             RegisterDebugCallback(OnDebugCallback);    
             LoadCalibration();
+            Debug.Log("Initializing track");
             InitializeTrackerObject(TrackerID);       
+            Debug.Log("Done initializing tracker object");            
+//            UseAsyncHeadPosePredictor(TrackerID,UseAsyncPosePredictor);            
             RegisterBinaryMapCallback(TrackerID,OnMapCallback);
             RegisterObjectPoseCallback(TrackerID, OnLocalizationPoseReceivedCallback);
             if(UsesDeckXIntegrator){
@@ -90,24 +217,27 @@ namespace ProjectEsky.Tracking{
             if(attachedRenderer != null)
             RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
-            RegisterMatrixDeltaConvCallback(TrackerID, DeltaMatrixConvCallback);
             EnablePassthrough(TrackerID,UseExternalCameraPreview);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();     
             SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
+            UpdateNewFilterValues();            
         }
         public override void AfterStart()
         {
             if(attachedRenderer != null){
                 for(int i = 0; i < 16; i++){
-                        leftEyeTransform[i] = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform[i];
-                        rightEyeTransform[i] = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform[i];                                                
+                        leftEyeTransform[i] = BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform[i];
+                        rightEyeTransform[i] = BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform[i];                                                
                 }
                 SetLeftRightEyeTransform(TrackerID,leftEyeTransform,rightEyeTransform);
             }
-            UpdateFilterTranslationParams(TrackerID,TranslationFilterParameters.Frequency,TranslationFilterParameters.MinimumCutoff,TranslationFilterParameters.Beta,TranslationFilterParameters.DCutoff);
-            UpdateFilterRotationParams(TrackerID, RotationFilterParameters.Frequency,RotationFilterParameters.MinimumCutoff,RotationFilterParameters.Beta,RotationFilterParameters.DCutoff);            
-            if(_filterEnabled != FilterEnabled){_filterEnabled = FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
+            UpdateFilterTranslationParams(TrackerID,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.Frequency,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.MinimumCutoff,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.Beta,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.DCutoff);
+            UpdateFilterRotationParams(TrackerID, trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.Frequency,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.MinimumCutoff,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.Beta,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.DCutoff);            
+            if(_filterEnabled != trackingSystemFilters.oldTrackingSystemFilters.FilterEnabled){_filterEnabled = trackingSystemFilters.oldTrackingSystemFilters.FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
+            if(trackingSystemFilters.trackingSystemUsed == TrackingSystemUsed.NEW){
+                UseNewTrackingSystemForParams(TrackerID);
+            }
         }
         public override void LoadEskyMap(EskyMap m){
             retEskyMap = m;
@@ -159,31 +289,114 @@ namespace ProjectEsky.Tracking{
             else{
                 hasInitializedTracker = true;
             }
-            if(TranslationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
-                UpdateFilterTranslationParams(TrackerID,TranslationFilterParameters.Frequency,TranslationFilterParameters.MinimumCutoff,TranslationFilterParameters.Beta,TranslationFilterParameters.DCutoff);
+            switch(trackingSystemFilters.trackingSystemUsed){
+                case TrackingSystemUsed.NEW:
+                #region setting new tracking params
+                if(trackingSystemFilters.newTrackingSystemFilters.ShouldUpdateValues()){
+                    UpdateNewFilterValues();
+
+                }
+                #endregion
+                break;
+                case TrackingSystemUsed.OLD:
+                #region setting old tracking params
+                    if(trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
+                        UpdateFilterTranslationParams(TrackerID,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.Frequency,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.MinimumCutoff,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.Beta,trackingSystemFilters.oldTrackingSystemFilters.TranslationFilterParameters.DCutoff);
+                    }
+                    if(trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
+                        UpdateFilterRotationParams(TrackerID,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.Frequency,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.MinimumCutoff,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.Beta,trackingSystemFilters.oldTrackingSystemFilters.RotationFilterParameters.DCutoff);
+                    } 
+                    if(trackingSystemFilters.oldTrackingSystemFilters.KTranslationFilterParams.CheckUpdate() || !setParametersFilterFirstTime){
+                        UpdateKFilterTranslationParams(TrackerID,trackingSystemFilters.oldTrackingSystemFilters.KTranslationFilterParams.Q,trackingSystemFilters.oldTrackingSystemFilters.KTranslationFilterParams.R);
+                    }
+                    if(trackingSystemFilters.oldTrackingSystemFilters.KRrotationFilterParams.CheckUpdate() || !setParametersFilterFirstTime){
+                        UpdateKFilterRotationParams(TrackerID,trackingSystemFilters.oldTrackingSystemFilters.KRrotationFilterParams.Q,trackingSystemFilters.oldTrackingSystemFilters.KRrotationFilterParams.R);
+                    }            
+                    if(trackingSystemFilters.oldTrackingSystemFilters.UseKalmanFilter != _useKalmanFilter){
+                        _useKalmanFilter = trackingSystemFilters.oldTrackingSystemFilters.UseKalmanFilter;
+                        SetKFilterEnabled(TrackerID,_useKalmanFilter);
+                    }
+                    if(trackingSystemFilters.oldTrackingSystemFilters.UseDollaryDooFilter != _useDollaryDooFilter){
+                        _useDollaryDooFilter = trackingSystemFilters.oldTrackingSystemFilters.UseDollaryDooFilter;
+                        SetFilterEnabled(TrackerID,_useDollaryDooFilter);
+                    }
+                    if(_filterEnabled != trackingSystemFilters.oldTrackingSystemFilters.FilterEnabled){_filterEnabled = trackingSystemFilters.oldTrackingSystemFilters.FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
+                    if(!setParametersFilterFirstTime)setParametersFilterFirstTime = true;
+                    if(currentHeadPosePredict != HeadPosePredictionOffsets.HeadPosePredictionOffset){
+                        currentHeadPosePredict = HeadPosePredictionOffsets.HeadPosePredictionOffset;
+                        SetTimeOffset(TrackerID,currentHeadPosePredict);
+                    }
+                #endregion
+                break;
             }
-            if(RotationFilterParameters.CheckUpdate() || !setParametersFilterFirstTime){
-                UpdateFilterRotationParams(TrackerID,RotationFilterParameters.Frequency,RotationFilterParameters.MinimumCutoff,RotationFilterParameters.Beta,RotationFilterParameters.DCutoff);
-            } 
-            if(_filterEnabled != FilterEnabled){_filterEnabled = FilterEnabled; SetFilterEnabled(TrackerID,_filterEnabled); Debug.Log("Setting Filtered Enabled: " + _filterEnabled);} 
-            if(!setParametersFilterFirstTime)setParametersFilterFirstTime = true;
-            if(currentHeadPosePredict != HeadPosePredictionOffsets.HeadPosePredictionOffset){
-                currentHeadPosePredict = HeadPosePredictionOffsets.HeadPosePredictionOffset;
-                SetTimeOffset(TrackerID,currentHeadPosePredict);
-            }
+        }
+        void UpdateNewFilterValues(){
+                    NewTrackingSystemFilters newTrackingSystemFilters = trackingSystemFilters.newTrackingSystemFilters;
+                    NewDollaryDooFilters dollaryDooFilters = trackingSystemFilters.newTrackingSystemFilters.dollaryDooFilterParams;
+                    NewKalmanFilters kalmanFilters = trackingSystemFilters.newTrackingSystemFilters.kalmanFilterParameters;
+                    
+                    //update dollarydoo filter parameters
+                    UpdateTransFilterDollaryDooParams(TrackerID,
+                    dollaryDooFilters.TranslationFilterParams.Frequency,dollaryDooFilters.TranslationFilterParams.MinimumCutoff,dollaryDooFilters.TranslationFilterParams.Beta, dollaryDooFilters.TranslationFilterParams.DCutoff,
+                    dollaryDooFilters.VelocityFilterParams.Frequency,dollaryDooFilters.VelocityFilterParams.MinimumCutoff,dollaryDooFilters.VelocityFilterParams.Beta, dollaryDooFilters.VelocityFilterParams.DCutoff,
+                    dollaryDooFilters.AccelerationFilterParams.Frequency,dollaryDooFilters.AccelerationFilterParams.MinimumCutoff,dollaryDooFilters.AccelerationFilterParams.Beta, dollaryDooFilters.AccelerationFilterParams.DCutoff);
+
+                    UpdateRotFilterDollaryDooParams(TrackerID,
+                    dollaryDooFilters.RotationFilterParams.Frequency,dollaryDooFilters.RotationFilterParams.MinimumCutoff,dollaryDooFilters.RotationFilterParams.Beta, dollaryDooFilters.RotationFilterParams.DCutoff,
+                    dollaryDooFilters.RotationVelocityFilterParams.Frequency,dollaryDooFilters.RotationVelocityFilterParams.MinimumCutoff,dollaryDooFilters.RotationVelocityFilterParams.Beta, dollaryDooFilters.RotationVelocityFilterParams.DCutoff,
+                    dollaryDooFilters.RotationAccelerationFilterParams.Frequency,dollaryDooFilters.RotationAccelerationFilterParams.MinimumCutoff,dollaryDooFilters.RotationAccelerationFilterParams.Beta, dollaryDooFilters.RotationAccelerationFilterParams.DCutoff);
+                    
+                    //update kalman filter paramters
+                    UpdateTransFilterKParams(TrackerID,
+                        kalmanFilters.TranslationFilterParams.Q,kalmanFilters.TranslationFilterParams.R,
+                        kalmanFilters.VelocityFilterParams.Q,kalmanFilters.VelocityFilterParams.R,
+                        kalmanFilters.AccelerationFilterParams.Q,kalmanFilters.AccelerationFilterParams.R                    
+                    );
+
+                    UpdateRotFilterKParams(TrackerID,
+                        kalmanFilters.RotationFilterParams.Q,kalmanFilters.RotationFilterParams.R,
+                        kalmanFilters.RotationVelocityFilterParams.Q,kalmanFilters.RotationVelocityFilterParams.R,
+                        kalmanFilters.RotationAccelerationFilterParams.Q,kalmanFilters.RotationAccelerationFilterParams.R
+                    );
+
+                    //enable/disable any dollarydoo filters
+                    SetFilterEnabledExt(TrackerID,
+                    newTrackingSystemFilters.slamDFilterEnabled,                    
+                    dollaryDooFilters.TranslationFilterParams.Enabled,
+                    dollaryDooFilters.AccelerationFilterParams.Enabled,
+                    dollaryDooFilters.RotationVelocityFilterParams.Enabled,
+                    dollaryDooFilters.RotationAccelerationFilterParams.Enabled);
+                    
+                    //enable/disable any kalman filters
+                    SetKFilterEnabledExt(TrackerID,newTrackingSystemFilters.slamKFilterEnabled,
+                    kalmanFilters.TranslationFilterParams.Enabled,
+                    kalmanFilters.AccelerationFilterParams.Enabled,
+                    kalmanFilters.RotationVelocityFilterParams.Enabled,
+                    kalmanFilters.RotationAccelerationFilterParams.Enabled
+                    );
         }
         public override void ObtainPose(){
             if(ApplyPoses){
-                IntPtr ptr = GetLatestPose(TrackerID);                 
-                Marshal.Copy(ptr, currentRealsensePose, 0, 7);
-                transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]);
-                Vector3 eulerRet = new Vector3(currentRealsensePose[5],currentRealsensePose[4],currentRealsensePose[3]); 
-                transform.rotation = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]); 
+                switch(trackingSystemFilters.trackingSystemUsed){
+                    case TrackingSystemUsed.NEW:
+                        IntPtr ptr = GetLatestTimestampPose(TrackerID);                 
+                        Marshal.Copy(ptr, currentRealsensePoseExt, 0, 7);
+                        transform.position =  new Vector3((float)currentRealsensePoseExt[0],(float)currentRealsensePoseExt[1],-(float)currentRealsensePoseExt[2]);
+                        transform.rotation = new Quaternion(-(float)currentRealsensePoseExt[3],-(float)currentRealsensePoseExt[4],(float)currentRealsensePoseExt[5],(float)currentRealsensePoseExt[6]);                     
+                        break;
+                    case TrackingSystemUsed.OLD:
+                        IntPtr ptr2 = GetLatestPose(TrackerID);                 
+                        Marshal.Copy(ptr2, currentRealsensePose, 0, 7);
+                        transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]);
+                        transform.rotation = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]); 
+                        break;
+                }
             }
         } 
         public override void SaveEskyMapInformation(){
             ObtainMap(TrackerID);
         }
+        static bool hasNotifiedDeviceNotConnected = false;
         [MonoPInvokeCallback(typeof(debugCallback))]
         static void OnDebugCallback(IntPtr request, int color, int size)
         {
@@ -199,6 +412,13 @@ namespace ProjectEsky.Tracking{
                 debug_string,
                 "</color>"
                 );
+            if(debug_string.Contains("No device connected")){
+                if(hasNotifiedDeviceNotConnected){
+                    return;
+                }else{
+                    hasNotifiedDeviceNotConnected = true;
+                }
+            }
             #if ZED_SDK
             UnityEngine.Debug.Log("ZED Tracker: " + debug_string);
             #else
@@ -308,71 +528,7 @@ namespace ProjectEsky.Tracking{
             ((EskyTrackerIntel)instances[TrackerID]).AddPoseFromCallback(epcd);
             UnityEngine.Debug.Log("Received a pose from the relocalization");
         }
-        static Vector3 translateA = new Vector3();
-        static Vector3 translateB = new Vector3();
-        static Quaternion rotationA = Quaternion.identity;
-        static Quaternion rotationB = Quaternion.identity;
-        static Matrix4x4 A = new Matrix4x4();
-        static Matrix4x4 B = new Matrix4x4();
-        static Matrix4x4 Delta = new Matrix4x4();
-        static Matrix4x4 DeltaInv = new Matrix4x4();
-        static float[] deltaPoseReadbackLeft= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 
-        static float[] deltaPoseReadbackRight= new float[]{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-
-        [MonoPInvokeCallback(typeof(DeltaMatrixConvertCallback))]
-        static void DeltaMatrixConvCallback(int TrackerID, IntPtr writebackArray,bool isLeft, float tx_A, float ty_A, float tz_A, float qx_A, float qy_A, float qz_A, float qw_A, float tx_B, float ty_B, float tz_B, float qx_B, float qy_B, float qz_B, float qw_B){
-            
-            //set translations
-            translateA.x = ty_A;            
-            translateA.y = -tx_A;
-            translateA.z = tz_A;
-            
-            translateB.x = ty_B;
-            translateB.y = -tx_B;
-            translateB.z = tz_B; 
-            //set rotations
-            rotationA.x = qy_A;
-            rotationA.y = -qx_A; 
-            rotationA.z = qz_A; 
-            rotationA.w = qw_A;
-            //
-            rotationB.x = qy_B;
-            rotationB.y = -qx_B; 
-            rotationB.z = qz_B; 
-            rotationB.w = qw_B;
-
-            if(qw_A != 0 && qw_B != 0){
-            //set matricies
-                try{
-                    A.SetTRS(translateA,rotationA,Vector3.one);
-                    B.SetTRS(translateB,rotationB,Vector3.one);              
-                    // Relove delta B -> A (final - initial)
-                    if(isLeft){
-                        Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform;
-                    }else{
-                        Delta = ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform.inverse * A.inverse * B * ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform;
-                    }
-                    DeltaInv = Delta.inverse;                        
-                    for(int y = 0; y < 4; y++){
-                        for(int x = 0; x < 4; x++){
-                            if(isLeft){
-                                deltaPoseReadbackLeft[y * 4 + x] = Delta[y,x];  
-                            }else{
-                                deltaPoseReadbackRight[y * 4 + x] = Delta[y,x];
-                            }
-                        }
-                    }
-                    if(isLeft){
-                        Marshal.Copy(deltaPoseReadbackLeft,0,writebackArray,15);                   
-                    }else{
-                        Marshal.Copy(deltaPoseReadbackRight,0,writebackArray,15);                     
-                    }
-                }catch(System.Exception e){
-
-                }
-            }
-        }
         [MonoPInvokeCallback(typeof(DeltaPoseUpdateCallback))]
         static void DeltaMatrixCallback(int TrackerID, IntPtr deltaPoseLeft, IntPtr deltaPoseRight){
             if( ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer != null){         
@@ -491,5 +647,51 @@ namespace ProjectEsky.Tracking{
         }
         [DllImport("libProjectEskyLLAPIIntel")]
         static extern void SetTimeOffset(int Id, float value);
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UseAsyncHeadPosePredictor(int ID, bool val);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern IntPtr GetLatestTimestampPose(int ID);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateKFilterTranslationParams(int iD, double _q, double _r);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateKFilterRotationParams(int iD, double _q, double _r);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetKFilterEnabled(int ID, bool value);
+        
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetFilterEnabledExt(int iD, bool slam, bool velocity, bool accel, bool angvelocity, bool angaccel);        
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void SetKFilterEnabledExt(int iD, bool slam, bool velocity, bool accel, bool angvelocity, bool angaccel);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateTransFilterDollaryDooParams(int iD, double _transfreq, double _transmincutoff, double _transbeta, double _transdcutoff,
+        double _velfreq, double _velmincutoff, double _velbeta, double _veldcutoff,
+        double _accelfreq, double _accelmincutoff, double _accelbeta, double _acceldcutoff);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateRotFilterDollaryDooParams(int iD, double _rotfreq, double _rotmincutoff, double _rotbeta, double _rotdcutoff,
+        double _velfreq, double _velmincutoff, double _velbeta, double _veldcutoff,
+        double _accelfreq, double _accelmincutoff, double _accelbeta, double _acceldcutoff);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateTransFilterKParams(int iD, 
+        double _transq, double _transr,
+        double _velq, double _velr,
+        double _accelq, double _accelr);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UpdateRotFilterKParams(int iD, 
+        double _rotq, double _rotr,
+        double _angvelq, double _angvelr,
+        double _angaccelq, double _angaccelr);
+
+        [DllImport("libProjectEskyLLAPIIntel")]
+        static extern void UseNewTrackingSystemForParams(int iD);
     }
 }

@@ -11,20 +11,20 @@ public class FacingEventDriver : MonoBehaviour
     public float rangeFacing;
     bool isFacingCamera;
     [SerializeField]        
-    public ProjectEsky.Tracking.FollowTarget targetType;
+    public BEERLabs.ProjectEsky.Tracking.FollowTarget targetType;
         // Start is called before the first frame update
     void Start()
         {
             try{
                 switch(targetType){
-                    case ProjectEsky.Tracking.FollowTarget.HMD:
-                    myCameraOrigin = ProjectEsky.Tracking.EskyHMDOrigin.instance.transform;
+                    case BEERLabs.ProjectEsky.Tracking.FollowTarget.HMD:
+                    myCameraOrigin = BEERLabs.ProjectEsky.Tracking.EskyHMDOrigin.instance.transform;
                     break;
-                    case ProjectEsky.Tracking.FollowTarget.LeftHand:
-                    myCameraOrigin = ProjectEsky.Tracking.EskyHandOrigin.instanceLeft.transform;
+                    case BEERLabs.ProjectEsky.Tracking.FollowTarget.LeftHand:
+                    myCameraOrigin = BEERLabs.ProjectEsky.Tracking.EskyHandOrigin.instanceLeft.transform;
                     break;
-                    case ProjectEsky.Tracking.FollowTarget.RightHand:
-                    myCameraOrigin = ProjectEsky.Tracking.EskyHandOrigin.instanceRight.transform;
+                    case BEERLabs.ProjectEsky.Tracking.FollowTarget.RightHand:
+                    myCameraOrigin = BEERLabs.ProjectEsky.Tracking.EskyHandOrigin.instanceRight.transform;
                     break;
                 }
             }catch(System.NullReferenceException e){

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-namespace ProjectEsky.Utilities{
+namespace BEERLabs.ProjectEsky.Utilities{
     
     public class EskyMapSaverBasic : MonoBehaviour
     {
@@ -10,7 +10,15 @@ namespace ProjectEsky.Utilities{
         public string MapName;
         public bool loadMap = false;
         public bool saveMap = false;
-        
+        public bool loadBlob = false;
+
+        void Start(){
+            try{
+                BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].mapCollectedCallback.AddListener(ReceiveFile);
+            }catch(System.Exception e){
+                Debug.LogError("Couldn't auto attach to the tracker:" + e.Message);
+            }
+        }
         // Update is called once per frame
         void Update()
         {
@@ -22,26 +30,37 @@ namespace ProjectEsky.Utilities{
                 saveMap = false;
                 SaveFile();
             }
+            if(loadBlob){
+
+                loadBlob = false;
+                LoadFileBlob();
+            }
         }
-        public void ReceiveFile(ProjectEsky.Tracking.EskyMap info){
+        public void ReceiveFile(BEERLabs.ProjectEsky.Tracking.EskyMap info){
             System.IO.File.WriteAllBytes(MapName,info.GetBytes());
         }
         public void SaveFile(){
-            ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].SaveEskyMapInformation();
+            BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].SaveEskyMapInformation();
         }
         public void LoadFile(){
             byte[] dataInfo = System.IO.File.ReadAllBytes(MapName);
-            ProjectEsky.Tracking.EskyMap myMap = ProjectEsky.Tracking.EskyMap.GetMapFromArray(dataInfo);
+            BEERLabs.ProjectEsky.Tracking.EskyMap myMap = BEERLabs.ProjectEsky.Tracking.EskyMap.GetMapFromArray(dataInfo);
             if(myMap != null){
-                if(ProjectEsky.Tracking.EskyAnchor.instances[HookedTrackerID] != null){
-                    ProjectEsky.Tracking.EskyAnchor.instances[HookedTrackerID].SetEskyMapInfo(myMap);
+                if(BEERLabs.ProjectEsky.Tracking.EskyAnchor.instances[HookedTrackerID] != null){
+                    BEERLabs.ProjectEsky.Tracking.EskyAnchor.instances[HookedTrackerID].SetEskyMapInfo(myMap);
                 }
-                if(ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID] != null){
-                    ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].LoadEskyMap(myMap);
+                if(BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID] != null){
+                    BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].LoadEskyMap(myMap);
                 }
             }else{
                 throw new System.Exception("Error loading file: " + MapName + " as EskyMap");
             }
+        }
+        public void LoadFileBlob(){
+            byte[] dataInfo = System.IO.File.ReadAllBytes("temp.raw");
+            BEERLabs.ProjectEsky.Tracking.EskyMap myMap = new BEERLabs.ProjectEsky.Tracking.EskyMap();
+            myMap.mapBLOB = dataInfo;
+            BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID].LoadEskyMap(myMap);
         }
     }
 }

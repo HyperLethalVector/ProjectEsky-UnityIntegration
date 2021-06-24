@@ -11,7 +11,6 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using Leap.Unity.Attributes;
-
 namespace Leap.Unity.AR {
 
   using Pose = Leap.Unity.Pose;
@@ -40,9 +39,9 @@ namespace Leap.Unity.AR {
     [QuickButton("Load Now", "LoadCalibration")]
     public string inputCalibrationFile = "AR00.json";
 
-    public bool loadInputFileOnStart = true;
-    public bool allowSavingInBuild = true;
-    public bool saveSteamVRStyleCalibration = true;
+    public bool loadInputFileOnStart = false;
+    public bool allowSavingInBuild = false;
+    public bool saveSteamVRStyleCalibration = false;
 
     public KeyCode recalculateFromTransformsKey = KeyCode.T;
     [Tooltip("Recalculate calibration from relevant Transforms every frame.")]
@@ -87,10 +86,6 @@ namespace Leap.Unity.AR {
     }
 
     void Start() {
-      if (loadInputFileOnStart) {
-        LoadCalibration();
-      }
-      else {
         // Load a default setup.
         currentCalibration.leapTracker = new PhysicalComponent(provider.deviceOrigin.ToWorldPose(), provider.gameObject.name);
         if (leftEye != null && leftEye.ellipse != null && leftEye.Screen != null) {
@@ -101,10 +96,14 @@ namespace Leap.Unity.AR {
         if (rightEye != null && rightEye.ellipse != null && rightEye.Screen != null) {
           rightEyeProjectionParams = DEFAULT_PROJECTION_PARAMS;
           currentCalibration.rightEye = constructRightEyeOptics();
-        }
+        }      
+    }
+    void LateUpdate(){      
+      if (loadInputFileOnStart) {
+        loadInputFileOnStart = false;
+        LoadCalibration();
       }
     }
-
     void Update() {
       if ((Application.isEditor || allowSavingInBuild) && Input.GetKeyDown(saveCalibrationKey)
           && (!requireCtrlHeld // Optionally require "Ctrl" key held down
@@ -260,7 +259,54 @@ namespace Leap.Unity.AR {
 
       TryLoadCalibrationFromPath(pathToLoad, disableEllipsoids);
     }
+    public bool TryLoadCalibrationFromEsky(HeadsetCalibration calibration, bool disableEllipsoids){
+        currentCalibration = calibration;        
+        provider.deviceOrigin.localPosition = currentCalibration.leapTracker.localPose.position;
+        provider.deviceOrigin.localRotation = currentCalibration.leapTracker.localPose.rotation;
 
+        provider.deviceOrigin.SetLocalPose(currentCalibration.leapTracker.localPose);
+        if (leftEye != null) {
+          leftEye.eyePerspective.transform.localPosition = currentCalibration.leftEye.eyePosition;
+          leftEyeProjectionParams = currentCalibration.leftEye.cameraProjection;
+          if (leftEye.ellipse != null) {
+            if (disableEllipsoids) leftEye.ellipse.enabled = false;
+            leftEye.ellipse.MinorAxis = currentCalibration.leftEye.ellipseMinorAxis;
+            leftEye.ellipse.MajorAxis = currentCalibration.leftEye.ellipseMajorAxis;
+            leftEye.ellipse.sphereToWorldSpace = currentCalibration.leftEye.sphereToWorldSpace;
+            leftEye.ellipse.worldToSphereSpace = currentCalibration.leftEye.sphereToWorldSpace.inverse;
+          }
+          if (leftEye.Screen != null) {
+            Matrix4x4 screenTransform = currentCalibration.leftEye.worldToScreenSpace.inverse;
+            leftEye.Screen.position = provider.transform.parent.TransformPoint(screenTransform.GetVector3());
+            leftEye.Screen.rotation = provider.transform.parent.rotation * screenTransform.GetQuaternion();
+            leftEye.Screen.localScale = screenTransform.lossyScale;
+          }
+        }
+        if (rightEye != null) {
+          rightEye.eyePerspective.transform.localPosition = currentCalibration.rightEye.eyePosition;
+          rightEyeProjectionParams = currentCalibration.rightEye.cameraProjection;
+          if (rightEye.ellipse != null) {
+            if (disableEllipsoids) rightEye.ellipse.enabled = false;
+            rightEye.ellipse.MinorAxis = currentCalibration.rightEye.ellipseMinorAxis;
+            rightEye.ellipse.MajorAxis = currentCalibration.rightEye.ellipseMajorAxis;
+            rightEye.ellipse.sphereToWorldSpace = currentCalibration.rightEye.sphereToWorldSpace;
+            rightEye.ellipse.worldToSphereSpace = currentCalibration.rightEye.sphereToWorldSpace.inverse;
+          }
+          if (rightEye.Screen != null) {
+            Matrix4x4 screenTransform = currentCalibration.rightEye.worldToScreenSpace.inverse;
+            rightEye.Screen.position = provider.transform.parent.TransformPoint(screenTransform.GetVector3());
+            rightEye.Screen.rotation = provider.transform.parent.rotation * screenTransform.GetQuaternion();
+            rightEye.Screen.localScale = screenTransform.lossyScale;
+          }
+        }
+
+        ARRaytracer[] raytracers = GetComponentsInChildren<ARRaytracer>();
+        foreach (ARRaytracer raytracer in raytracers) {
+          raytracer.ScheduleCreateDistortionMesh();
+        }
+        Debug.Log("V1 Headset calibration successfully loaded from Esky");
+        return true;
+    }
     public bool TryLoadCalibrationFromPath(string inputFilePath,
                                            bool disableEllipsoids = true) {
       var inputFile = inputFilePath;

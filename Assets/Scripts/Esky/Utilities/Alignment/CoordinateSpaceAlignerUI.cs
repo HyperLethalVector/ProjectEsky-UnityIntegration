@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace ProjectEsky.Calibrator
+namespace BEERLabs.ProjectEsky.Calibrator
 {
     public class CoordinateSpaceAlignerUI : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace ProjectEsky.Calibrator
             Show_Message_CalculatingAlignment1,
             Show_Message_CalculatingAlignment2                        
         }
-        public ProjectEsky.Rendering.EskyNativeDxRenderer myrendererDriver;
+        public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer myrendererDriver;
 
         public CoordinateSpaceAligner myDriver;
         string HandInvisible = "Place your right hand in front of the screen, back facing you!";

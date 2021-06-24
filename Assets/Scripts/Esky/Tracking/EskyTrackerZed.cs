@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
     public class Chunk
     {
         public GameObject o;

@@ -7,7 +7,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Diagnostics;
-namespace ProjectEsky.Tracking{
+namespace BEERLabs.ProjectEsky.Tracking{
     #region 
     using UnityEngine;
     using System.Runtime.Serialization;
@@ -214,6 +214,8 @@ namespace ProjectEsky.Tracking{
         public float smoothingRotation= 0.1f;
         [HideInInspector]
         public float[] currentRealsensePose = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+        [HideInInspector]
+        public double[] currentRealsensePoseExt = new double[7]{0.0,0.0,0.0,0.0,0.0,0.0,1.0};
         [HideInInspector]        
         public float[] currentRealsenseObject = new float[7]{0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
         [HideInInspector]
@@ -235,21 +237,8 @@ namespace ProjectEsky.Tracking{
         }
         // Start is called before the first frame update
         public virtual void LoadCalibration(){
-            if(File.Exists(TrackerCalibrationsFolder + TrackerCalibrationFileName)){
-                myOffsets =  JsonUtility.FromJson<EskyTrackerOffset>(File.ReadAllText(TrackerCalibrationsFolder + TrackerCalibrationFileName));
-                myOffsets.SetCalibrationLoaded();
-                if(applyDisplayTransform){
-                    if(RigCenter != null){
-                        RigCenter.transform.localPosition = myOffsets.LocalRigTranslation;
-                        RigCenter.transform.localRotation = myOffsets.LocalRigRotation;
-                        UnityEngine.Debug.Log("Loaded 6DOF tracker offsets!");
-                    }
-                }
-                ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
-                ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
-            }else{
-                Debug.LogError("Walp, no tracking calibration was loaded, does the file exist?");
-            }
+            BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.leftEyeTransform = transform.localToWorldMatrix * EyeLeft.worldToLocalMatrix;//from tracker center to eyeLeft;
+            BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer.rightEyeTransform = transform.localToWorldMatrix * EyeRight.worldToLocalMatrix; //from tracker center to eyeRight;                                                
         }
         public virtual void SaveCalibration(){
             string json = JsonUtility.ToJson(myOffsets,true);

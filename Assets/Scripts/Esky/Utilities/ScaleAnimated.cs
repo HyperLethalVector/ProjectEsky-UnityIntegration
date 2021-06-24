@@ -11,6 +11,8 @@ public class ScaleAnimated : MonoBehaviour
     float timeAt = 0;
     public float TimeToAnimate = 1;//just assume 1
     Vector3 originalScale;
+    public GameObject ChildContent;
+    public bool CanActivate = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +26,12 @@ public class ScaleAnimated : MonoBehaviour
 
     }
     public void SetIn(bool value){
-        isIn = value;
+        if(CanActivate){
+            isIn = value;
+        }
+    }
+    public void SetCanActivate(bool value){
+        CanActivate = value;
     }
     // Update is called once per frame
     void Update()
@@ -39,6 +46,7 @@ public class ScaleAnimated : MonoBehaviour
             }else{
                 transform.localScale = originalScale;
             }
+                if(ChildContent)if(!ChildContent.activeSelf){ChildContent.SetActive(true);}             
         }else{
             if(timeAt > 0){
                 timeAt -= Time.deltaTime / TimeToAnimate; 
@@ -47,6 +55,7 @@ public class ScaleAnimated : MonoBehaviour
                 transform.localScale = nn;
             }else{
                 transform.localScale = new Vector3(0.0000001f,0.0000001f,0.0000001f);
+                if(ChildContent)if(ChildContent.activeSelf){ChildContent.SetActive(false);}                
             }            
         }
     }

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Outline
-  m_Shader: {fileID: 4800000, guid: 655452bc8c657824d9db96ecdde3fe68, type: 3}
+  m_Shader: {fileID: 4800000, guid: 7a052d2ba7d176348be6de56c061b21d, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -69,6 +69,9 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PressIntensity: 0.00027412316
+    - _PressRimPower: 3.72
+    - _RimPower: 8
     - _SecondOutlineWidth: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -76,8 +79,10 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FirstOutlineColor: {r: 1, g: 0, b: 0, a: 0.5}
+    - _PressRimColor: {r: 0, g: 1, b: 1, a: 0}
+    - _RimColor: {r: 0, g: 1, b: 1, a: 0}
     - _SecondOutlineColor: {r: 0, g: 0, b: 1, a: 0}
   m_BuildTextureStacks: []

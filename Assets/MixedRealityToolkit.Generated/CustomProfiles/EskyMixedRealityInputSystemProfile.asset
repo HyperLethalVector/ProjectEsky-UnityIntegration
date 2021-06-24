@@ -96,6 +96,13 @@ MonoBehaviour:
     componentName: Esky Leap Motion Device Manager
     priority: 0
     runtimePlatform: 17
+    deviceManagerProfile: {fileID: 0}
+  - componentType:
+      reference: Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input.EskyDeviceManager,
+        Microsoft.MixedReality.Toolkit.Providers.LeapMotion
+    componentName: Esky Device Manager
+    priority: 0
+    runtimePlatform: 17
     deviceManagerProfile: {fileID: 11400000, guid: 5a81f30941254a74ea1567984f1d813b,
       type: 2}
   focusProviderType:
@@ -103,6 +110,7 @@ MonoBehaviour:
   raycastProviderType:
     reference: Microsoft.MixedReality.Toolkit.Input.DefaultRaycastProvider, Microsoft.MixedReality.Toolkit.Services.InputSystem
   focusQueryBufferSize: 128
+  shouldUseGraphicsRaycast: 1
   focusIndividualCompoundCollider: 0
   inputActionsProfile: {fileID: 11400000, guid: 723eb97b02944311b92861f473eee53e,
     type: 2}
@@ -115,7 +123,7 @@ MonoBehaviour:
   enableControllerMapping: 1
   controllerMappingProfile: {fileID: 11400000, guid: 39ded1fd0711a0c448413d0e1ec4f7f3,
     type: 2}
-  controllerVisualizationProfile: {fileID: 11400000, guid: 345c06fdf3732db46b96299bd3cba653,
+  controllerVisualizationProfile: {fileID: 11400000, guid: cc24ff3a9bd7ed44ba3a8401fdb55d16,
     type: 2}
   handTrackingProfile: {fileID: 11400000, guid: d1d245df2528db340ab4e6aeb1239442,
     type: 2}
