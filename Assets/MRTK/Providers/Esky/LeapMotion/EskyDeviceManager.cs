@@ -185,6 +185,9 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 GameObject LeapProviderEsky =  g.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
                 if(LeapProviderEsky != null){
                     LeapMotionServiceProvider = LeapProviderEsky.GetComponent<LeapXRServiceProvider>();
+                    Debug.Log("Setting the hand models");
+                    GameObject g = GameObject.Find("HandModels");
+                    g.GetComponent<HandModelManager>().leapProvider = LeapMotionServiceProvider;
                 }else{
                     Debug.LogError("Couldn't find a 'LeapMotion' game object in scene, the Esky Leapmotion provider needs this, did you modify the transform structure???");
                 }
