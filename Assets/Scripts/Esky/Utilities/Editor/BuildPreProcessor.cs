@@ -53,10 +53,8 @@ namespace BEERLabs.ProjectEsky{
             Debug.Log(report.summary.outputPath);
             string outputpath = report.summary.outputPath.Substring(0, report.summary.outputPath.LastIndexOf("/"));
             Debug.Log(outputpath);
-            Copy("./OpticalCalibrations/",Path.Combine(outputpath,"OpticalCalibrations/"));
-            Copy("./TrackingCalibrations/",Path.Combine(outputpath,"TrackingCalibrations/"));
             File.Copy("shaders.shader",Path.Combine(outputpath, "shaders.shader"));
-            File.Copy("DisplaySettings.json",Path.Combine(outputpath, "DisplaySettings.json"));            
+            File.Copy("EskySettings.json",Path.Combine(outputpath, "EskySettings.json"));            
         }
     }
  }
