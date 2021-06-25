@@ -11031,7 +11031,6 @@ MonoBehaviour:
     usesExternalRGBCamera: 0
     UsesCameraPreview: 0
     UseTrackerOffsets: 0
-  handTrackingObjects: {fileID: 0}
 --- !u!1 &6075647101678513168
 GameObject:
   m_ObjectHideFlags: 0
