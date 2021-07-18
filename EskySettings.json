@@ -1,5 +1,5 @@
 {
-    "rigToUse": 0,
+    "rigToUse": 1,
     "targetFrameRate": 0,
     "reprojectionSettings": 0,
     "nativeShaderToUse": 0,

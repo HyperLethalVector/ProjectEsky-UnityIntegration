@@ -67,7 +67,33 @@ namespace Leap.Unity.AR {
         SendViewToScreen(view, WindowOffsetManager.WindowShift, new Vector2Int(2880, 1600));
       }
     }
+    public void LayoutViewsInternal(System.Type GameViewType,int x, int y, int width, int height) {
+      //CloseAllViews(GameViewType);
+      headsetView = (EditorWindow)CreateInstance(GameViewType);
+      EditorWindow view = headsetView;
+      view.Show();
+      ChangeTargetDisplay(view, 0);
+      SendViewToScreenInternal(view, new Vector2Int(x,y), new Vector2Int(width, height));
+    }
+    public void SendViewToScreenInternal(EditorWindow view, Vector2Int position, Vector2Int resolution) {
 
+      var size = new Vector2(resolution.x, resolution.y + UNITY_MENU_HEIGHT_SIZE);
+
+
+      Vector2 windowPosition = position + Vector2Int.down * (UNITY_MENU_HEIGHT_POSITION);
+      view.position = new Rect(windowPosition, size);
+      view.minSize = view.maxSize = size;
+
+      bool prevEnabled = target.enabled;
+      target.enabled = true;
+
+      EditorApplication.delayCall += () => {
+        //Debug.Log(view.position.size);
+        view.position = new Rect(windowPosition, view.position.size);
+        //Debug.Log(view.position.position);
+        target.enabled = prevEnabled;
+      };
+    }    
     // Send a game view to a given screen.
     void SendViewToScreen(EditorWindow view, Vector2Int position, Vector2Int resolution) {
 
@@ -87,6 +113,9 @@ namespace Leap.Unity.AR {
         //Debug.Log(view.position.position);
         target.enabled = prevEnabled;
       };
+    }
+    void CloseWindow(){
+      headsetView.Close();
     }
 
     // Send a game view to a given screen.

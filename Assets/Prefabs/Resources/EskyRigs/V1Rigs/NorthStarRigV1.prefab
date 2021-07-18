@@ -1142,94 +1142,94 @@ MonoBehaviour:
     oldTrackingSystemFilters:
       FilterEnabled: 1
       TranslationFilterParameters:
-        Frequency: 0
-        MinimumCutoff: 0
-        Beta: 0
-        DCutoff: 0
+        Frequency: 200
+        MinimumCutoff: 10
+        Beta: 0.10000000149011612
+        DCutoff: 0.0010000000474974513
         Enabled: 1
       RotationFilterParameters:
-        Frequency: 0
-        MinimumCutoff: 0
-        Beta: 0
-        DCutoff: 0
+        Frequency: 200
+        MinimumCutoff: 10
+        Beta: 0.10000000149011612
+        DCutoff: 0.0010000000474974513
         Enabled: 1
       KTranslationFilterParams:
-        Q: 0
-        R: 0
+        Q: 0.009999999776482582
+        R: 1.5
         Enabled: 1
       KRrotationFilterParams:
-        Q: 0
-        R: 0
+        Q: 0.2919999957084656
+        R: 7.110000133514404
         Enabled: 1
       UseDollaryDooFilter: 1
       UseKalmanFilter: 1
     newTrackingSystemFilters:
       dollaryDooFilterParams:
         TranslationFilterParams:
-          Frequency: 0
-          MinimumCutoff: 0
-          Beta: 0
+          Frequency: 200
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         RotationFilterParams:
-          Frequency: 0
-          MinimumCutoff: 0
-          Beta: 0
+          Frequency: 200
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         VelocityFilterParams:
-          Frequency: 0
-          MinimumCutoff: 0
-          Beta: 0
+          Frequency: 200
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         AccelerationFilterParams:
-          Frequency: 0
-          MinimumCutoff: 0
-          Beta: 0
+          Frequency: 200
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
           DCutoff: 0
-          Enabled: 1
+          Enabled: 0
         RotationVelocityFilterParams:
-          Frequency: 0
-          MinimumCutoff: 0
-          Beta: 0
+          Frequency: 200
+          MinimumCutoff: 10
+          Beta: 69
           DCutoff: 0
           Enabled: 1
         RotationAccelerationFilterParams:
-          Frequency: 0
-          MinimumCutoff: 0
-          Beta: 0
+          Frequency: 200
+          MinimumCutoff: 10
+          Beta: 0.10000000149011612
           DCutoff: 0
           Enabled: 1
       kalmanFilterParameters:
         TranslationFilterParams:
-          Q: 0
-          R: 0
-          Enabled: 1
+          Q: 1
+          R: 10
+          Enabled: 0
         RotationFilterParams:
-          Q: 0
-          R: 0
-          Enabled: 1
+          Q: 1
+          R: 0.0010000000474974513
+          Enabled: 0
         VelocityFilterParams:
-          Q: 0
-          R: 0
+          Q: 0.0010000000474974513
+          R: 0.41999998688697815
           Enabled: 1
         AccelerationFilterParams:
-          Q: 0
-          R: 0
+          Q: 0.0010000000474974513
+          R: 5.070000171661377
           Enabled: 1
         RotationVelocityFilterParams:
-          Q: 0
-          R: 0
+          Q: 0.0010000000474974513
+          R: 4.070000171661377
           Enabled: 1
         RotationAccelerationFilterParams:
-          Q: 0
-          R: 0
+          Q: 0.0010000000474974513
+          R: 5.820000171661377
           Enabled: 1
       slamDFilterEnabled: 1
       slamKFilterEnabled: 1
       DoUpdateValues: 0
-    trackingSystemUsed: 0
+    trackingSystemUsed: 1
   UseAsyncPosePredictor: 0
 --- !u!1 &2270713766075745594
 GameObject:
@@ -3407,7 +3407,6 @@ MonoBehaviour:
     usesExternalRGBCamera: 0
     UsesCameraPreview: 0
     UseTrackerOffsets: 0
-  handTrackingObjects: {fileID: 0}
 --- !u!1 &5428640251783798792
 GameObject:
   m_ObjectHideFlags: 0

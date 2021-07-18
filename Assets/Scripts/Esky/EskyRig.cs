@@ -277,7 +277,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
                 v1Renderer.TryLoadCalibrationFromEsky(hc,false);                
             }
             if(v1WindowManager != null){
-                Leap.Unity.AR.WindowOffsetManager.SetPosition(LoadedSettings.displayWindowSettings.DisplayXLoc,LoadedSettings.displayWindowSettings.DisplayYLoc,LoadedSettings.displayWindowSettings.DisplayWidth,LoadedSettings.displayWindowSettings.DisplayHeight);
+                v1WindowManager.SetManually(LoadedSettings.displayWindowSettings.DisplayXLoc,LoadedSettings.displayWindowSettings.DisplayYLoc,LoadedSettings.displayWindowSettings.DisplayWidth,LoadedSettings.displayWindowSettings.DisplayHeight);
             }
         }
         public void OnDestroy(){
