@@ -248,7 +248,7 @@ namespace BEERLabs.ProjectEsky.Rendering{
                 Application.targetFrameRate = TargetRendererRate;
                 myFrameRate = TargetRendererRate;
             }
-            if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}
+//            if(Input.GetKeyDown(KeyCode.S) && allowsSavingCalibration){SaveCalibration();}
             if(use2DTemporalWarping != usesTemporalWarping){
                 usesTemporalWarping = use2DTemporalWarping; 
                 Debug.Log("Setting Temporal Warping");
