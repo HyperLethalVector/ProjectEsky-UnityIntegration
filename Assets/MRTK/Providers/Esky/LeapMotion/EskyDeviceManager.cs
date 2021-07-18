@@ -124,9 +124,18 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         EskySettings es = new EskySettings();
         public override void Enable()
         {
+            
+            try{
+                es = JsonUtility.FromJson<EskySettings>(System.IO.File.ReadAllText("EskySettings.json"));
+            }catch(System.Exception e){
+                Debug.LogError("Couldn't load the esky config:" + e.Message);
+                #if !UNITY_EDITOR
+                Application.Quit();
+                #endif
+            }
             g = GameObject.Find("CalibrationRig");
             if(g == null){
-                switch(rigToUse){
+                switch(es.rigToUse){
                     case RigToUse.NorthStarV2:
                     g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigV2") as GameObject);
                     spawnedEskyRig = true;                
@@ -146,11 +155,6 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 }
             }else{
                 spawnedEskyRig = true;
-            }
-            try{
-                es = JsonUtility.FromJson<EskySettings>(System.IO.File.ReadAllText("EskySettings.json"));
-            }catch(System.Exception e){
-                Debug.LogError("Couldn't load the esky config:" + e.Message);
             }
             #if UNITY_EDITOR
             es.reprojectionSettings = SettingsProfile.ReprojectionSettings;

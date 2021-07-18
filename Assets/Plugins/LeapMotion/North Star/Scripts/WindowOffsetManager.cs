@@ -79,7 +79,7 @@ namespace Leap.Unity.AR {
           if (!Screen.fullScreen) {
             StartCoroutine(Position());
           } else {
-            SetPosition((int)offsetX, (int)offsetY, (int)width, (int)height);
+            SetPosition((int)offsetX, (int)offsetY, (int)height, (int)width);
           }
         }
         #if UNITY_EDITOR
@@ -91,7 +91,7 @@ namespace Leap.Unity.AR {
       Screen.fullScreen = false;
 
       yield return new WaitForSeconds(2f);
-      SetPosition(xShift, yShift+10, Width, Height);
+      SetPosition(xShift, yShift, Height, Width);
       yield return new WaitForSeconds(1f);
       Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;      
       Screen.fullScreen = true;
