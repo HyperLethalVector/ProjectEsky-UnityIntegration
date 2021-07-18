@@ -132,10 +132,10 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
     }
     [System.Serializable]
     public enum TargetApplicationFrameRate{
-        FPS_120,
-        FPS_90,
-        FPS_60,
-        FPS_30
+        FPS_120 = 120,
+        FPS_90 = 90,
+        FPS_60 = 60,
+        FPS_30 = 30
     }
     [System.Serializable] 
     public class EskySettings{

@@ -37,7 +37,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
         protected SerializedProperty reprojectionSettings;
         protected SerializedProperty nativeShaderToUse;
         protected SerializedProperty filterSystemToUse;
-
+        
         protected SerializedProperty displayWindowSettings;
         protected SerializedProperty sensorModuleCalibrations;
         protected SerializedProperty usesExternalRGBCamera;
@@ -112,6 +112,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                 else
                 {
                     serializedObject.Update();
+                    
                     //might be useful later for optical calibrations??
                     EditorGUILayout.PropertyField(rigToUse);                     
                     EditorGUILayout.PropertyField(filterSystemToUse);
@@ -123,7 +124,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                         case RigToUse.NorthStarV2:
                         case RigToUse.Ariel:
                         EditorGUILayout.PropertyField(reprojectionSettings);
-                        EditorGUILayout.PropertyField(nativeShaderToUse);
+                        EditorGUILayout.PropertyField(nativeShaderToUse);                        
+                        EditorGUILayout.PropertyField(targetFrameRate);
                         break;
                     }
                     if(instance.RigToUse == RigToUse.Custom){
@@ -136,7 +138,6 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                     }else{
 //                        EditorGUILayout.PropertyField(sensorOffsets);
                     }
-
 
 
                     EditorGUILayout.PropertyField(enterPinchDistance);

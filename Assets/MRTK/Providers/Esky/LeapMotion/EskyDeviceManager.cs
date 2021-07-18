@@ -133,6 +133,14 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 Application.Quit();
                 #endif
             }
+            #if UNITY_EDITOR
+            es.reprojectionSettings = SettingsProfile.ReprojectionSettings;
+            es.rigToUse = SettingsProfile.RigToUse;
+            es.targetFrameRate = SettingsProfile.TargetFrameRate;
+            es.UsesCameraPreview = SettingsProfile.UsesCameraPreview;
+            es.usesExternalRGBCamera = SettingsProfile.UsesExternalRGBCamera;
+            es.UseTrackerOffsets = SettingsProfile.UseTrackerOffsets;
+            #endif
             g = GameObject.Find("CalibrationRig");
             if(g == null){
                 switch(es.rigToUse){
@@ -156,14 +164,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
             }else{
                 spawnedEskyRig = true;
             }
-            #if UNITY_EDITOR
-            es.reprojectionSettings = SettingsProfile.ReprojectionSettings;
-            es.rigToUse = SettingsProfile.RigToUse;
-            es.targetFrameRate = SettingsProfile.TargetFrameRate;
-            es.UsesCameraPreview = SettingsProfile.UsesCameraPreview;
-            es.usesExternalRGBCamera = SettingsProfile.UsesExternalRGBCamera;
-            es.UseTrackerOffsets = SettingsProfile.UseTrackerOffsets;
-            #endif
+            
             string message = JsonUtility.ToJson(es,true);
             g.SendMessage("DumpSettingsConfig",SettingsProfile.SaveAfterStoppingEditor);
             g.SendMessage("ReceiveConfig",message);            
