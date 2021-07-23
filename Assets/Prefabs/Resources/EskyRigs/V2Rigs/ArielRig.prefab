@@ -956,7 +956,7 @@ RectTransform:
   m_GameObject: {fileID: 2163816765475374136}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 1.5, y: -1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 7120647663696473115}
   m_RootOrder: 0
@@ -1919,6 +1919,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   v1WindowManager: {fileID: 0}
   v1Renderer: {fileID: 0}
+  intelRealsenseTracker: {fileID: 6751110314270250276}
   nativeDirectXrenderer: {fileID: 4809383123179201830}
   RGBSensorModule: {fileID: 3154007030212663259}
   LeapMotionController: {fileID: 1105260953839632240}

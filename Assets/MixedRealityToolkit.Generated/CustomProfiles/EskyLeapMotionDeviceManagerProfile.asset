@@ -26,7 +26,7 @@ MonoBehaviour:
     RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
     RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
     RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
-  usesCameraPreview: 1
+  usesCameraPreview: 0
   targetFrameRate: 120
   reprojectionSettings: 0
   nativeShaderToUse: 1
@@ -150,7 +150,7 @@ MonoBehaviour:
     SensorHeight: 0
     SensorChannels: 0
     SensorFoV: 0
-  usesExternalRGBCamera: 0
+  usesExternalRGBCamera: 1
   filterSystemToUse: 0
   useTrackerOffsets: 1
   saveAfterStoppingEditor: 1

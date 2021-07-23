@@ -171,6 +171,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
     {
         public Leap.Unity.AR.WindowOffsetManager v1WindowManager;
         public Leap.Unity.AR.OpticalCalibrationManager v1Renderer;
+        public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel intelRealsenseTracker;
         public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer nativeDirectXrenderer;
         public BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule RGBSensorModule;
 
@@ -229,6 +230,9 @@ namespace BEERLabs.ProjectEsky.Configurations{
                 if(SensorPreview != null){
                     SensorPreview.gameObject.SetActive(true);
                 }
+                if(intelRealsenseTracker != null){
+                    intelRealsenseTracker.UseExternalCameraPreview = true;
+                }
             }
 
             if(LoadedSettings.usesExternalRGBCamera){
@@ -238,10 +242,10 @@ namespace BEERLabs.ProjectEsky.Configurations{
                     RGBSensor.localRotation = LoadedSettings.myOffsets.RGBSensorRotationFromTracker;
                     ProjectEsky.RGBSensorModuleCalibrations rsmc = new ProjectEsky.RGBSensorModuleCalibrations();
                     rsmc.camID = LoadedSettings.sensorModuleCalibrations.camID;                
-                    rsmc.cx = LoadedSettings.sensorModuleCalibrations.camID;
-                    rsmc.cy = LoadedSettings.sensorModuleCalibrations.camID;
-                    rsmc.fx = LoadedSettings.sensorModuleCalibrations.camID;
-                    rsmc.fy = LoadedSettings.sensorModuleCalibrations.camID;                
+                    rsmc.cx = LoadedSettings.sensorModuleCalibrations.cx;
+                    rsmc.cy = LoadedSettings.sensorModuleCalibrations.cy;
+                    rsmc.fx = LoadedSettings.sensorModuleCalibrations.fx;
+                    rsmc.fy = LoadedSettings.sensorModuleCalibrations.fy;                
                     rsmc.d1 = LoadedSettings.sensorModuleCalibrations.d1;
                     rsmc.d2 = LoadedSettings.sensorModuleCalibrations.d2;
                     rsmc.d3 = LoadedSettings.sensorModuleCalibrations.d3;

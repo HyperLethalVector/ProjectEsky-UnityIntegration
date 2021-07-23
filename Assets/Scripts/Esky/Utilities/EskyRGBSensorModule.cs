@@ -10,6 +10,7 @@ namespace BEERLabs.ProjectEsky.Extras.Modules{
     
     public class EskyRGBSensorModule : SensorImageSource
     {
+        public static EskyRGBSensorModule instance;
         public static string RGBSensorInfoLocation = "./RGBSensorConfigurations/";
         public string TrackerFileName = "RGBSensorCalibration.json";
 
@@ -30,7 +31,8 @@ namespace BEERLabs.ProjectEsky.Extras.Modules{
         Sprite s;
         void Awake()
         {         
-
+            instance = this;
+            RGBImageSource = this;
         }
         void Start(){
             ChangeCameraParam();
@@ -148,7 +150,7 @@ namespace BEERLabs.ProjectEsky.Extras.Modules{
         }
         [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]
         public static void ReceiveImageCallback(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
-//            Debug.Log("Received Normal Texture Callback");
+            instance.SendImageData(info,lengthofarray,width,height,pixelCount);
         }
         [DllImport("libProjectEskyRGBSensorModule")]
         static extern void StartCamera(int camID, float fx, float fy, float cx, float cy, float d1, float d2, float d3, float d4);

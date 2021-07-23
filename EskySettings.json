@@ -1,5 +1,5 @@
 {
-    "rigToUse": 1,
+    "rigToUse": 0,
     "targetFrameRate": 120,
     "reprojectionSettings": 0,
     "nativeShaderToUse": 0,
@@ -27,15 +27,15 @@
             "w": 1.0
         },
         "RGBSensorTranslationFromTracker": {
-            "x": 0.0,
+            "x": -0.03500000014901161,
             "y": 0.0,
-            "z": 0.0
+            "z": -0.02800000086426735
         },
         "RGBSensorRotationFromTracker": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
+            "x": 0.257999986410141,
+            "y": 0.05900000035762787,
+            "z": 0.01600000075995922,
+            "w": 0.9639999866485596
         }
     },
     "v2CalibrationValues": {
@@ -265,21 +265,21 @@
         "EyeTextureHeight": 1440
     },
     "sensorModuleCalibrations": {
-        "camID": 0,
-        "fx": 0.0,
-        "fy": 0.0,
-        "cx": 0.0,
-        "cy": 0.0,
-        "d1": 0.0,
-        "d2": 0.0,
-        "d3": 0.0,
-        "d4": 0.0,
-        "SensorWidth": 0,
-        "SensorHeight": 0,
-        "SensorChannels": 0,
-        "SensorFoV": 0.0
+        "camID": 2,
+        "fx": 933.255859375,
+        "fy": 936.1187133789063,
+        "cx": 616.01171875,
+        "cy": 394.8177185058594,
+        "d1": 0.2156328409910202,
+        "d2": -0.3420626223087311,
+        "d3": 0.00436313496902585,
+        "d4": -0.003252417081966996,
+        "SensorWidth": 1280,
+        "SensorHeight": 720,
+        "SensorChannels": 4,
+        "SensorFoV": 78.0
     },
-    "usesExternalRGBCamera": false,
-    "UsesCameraPreview": true,
+    "usesExternalRGBCamera": true,
+    "UsesCameraPreview": false,
     "UseTrackerOffsets": true
 }

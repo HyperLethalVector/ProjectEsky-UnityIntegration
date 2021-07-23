@@ -179,6 +179,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
     }
     public class EskyTrackerIntel : EskyTracker
     {
+        public static EskyTrackerIntel instance;
         float currentHeadPosePredict = -1;
         public delegate void ConvertToQuaternionCallback(IntPtr arrayToCopy, float eux, float euy, float euz);
         public delegate void DeltaPoseUpdateCallback (int TrackerID, IntPtr deltaLeft, IntPtr deltaRight);        
@@ -203,6 +204,8 @@ namespace BEERLabs.ProjectEsky.Tracking{
         bool _filterEnabled;        
         public override void AfterAwake()
         {
+            instance = this;
+            GrayscaleImageSource = this;
             RegisterDebugCallback(OnDebugCallback);    
             LoadCalibration();
             Debug.Log("Initializing track");
@@ -572,6 +575,8 @@ namespace BEERLabs.ProjectEsky.Tracking{
         
         [MonoPInvokeCallback(typeof(ReceiveSensorImageCallbackWithInstanceID))]        
         public static void GetImage(int TrackerID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
+            instance.SendImageData(info,lengthofarray,width,height,pixelCount);
+//            Debug.Log("Getting Image");
         }        
         [DllImport("libProjectEskyLLAPIIntel")] 
         static extern void RegisterDeltaPoseUpdate(int TrackerID, DeltaPoseUpdateCallback callback);

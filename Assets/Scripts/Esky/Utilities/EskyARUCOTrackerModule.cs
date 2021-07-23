@@ -10,26 +10,25 @@ namespace BEERLabs.ProjectEsky.Extras.Modules{
     public class ARUCOModuleInfo{
         [SerializeField]
         public int InstanceID;
-        [SerializeField]
-        public SensorImageSource myImageSource;
+        [HideInInspector]public SensorImageSource myImageSource;
         public int dictID;
         public int markerID;
         public float MarkerLengthInMeters = 0.05f;
         public float MarkerLengthInPixels = 200f;
-        public string FileToSaveMarkerName = "Marker";
         public int borderBits;
     }
     
     public class EskyARUCOTrackerModule : MonoBehaviour
     {
+        public SensorSourceType sourceType;
         static float radians2Deg = 180.0f/3.14159265359f;
-        public ARUCOModuleInfo myInfo;
+        public ARUCOModuleInfo markerInfo;
         int instanceID;
         public static Dictionary<int,EskyARUCOTrackerModule> moduleInstances = new Dictionary<int, EskyARUCOTrackerModule>();
         public delegate void FuncPoseReceiveCallback(int instanceID, float tx, float ty, float tz, float rx, float ry, float rz);
-        Vector3 LocalMarkerPosition = Vector3.zero;
-        Quaternion LocalMarkerRotation = Quaternion.identity;
-        public RGBSensorModuleCalibrations myCalibrations;
+        [SerializeField]Vector3 LocalMarkerPosition = Vector3.zero;
+        [SerializeField]Quaternion LocalMarkerRotation = Quaternion.identity;
+        RGBSensorModuleCalibrations myCalibrations;
         public bool printMarker = false;
         public bool isWorldCenter = false;
         bool isInitialized = false;
@@ -39,79 +38,99 @@ namespace BEERLabs.ProjectEsky.Extras.Modules{
         // Start is called before the first frame update
         void Awake(){
 
-            instanceID = myInfo.InstanceID;
+            instanceID = markerInfo.InstanceID;
             if(!moduleInstances.ContainsKey(instanceID)){
                 moduleInstances.Add(instanceID,this);
             }else{
                 Debug.LogError("Duplicate InstanceID: " + instanceID);
             }
             RegisterDebugCallback(OnDebugCallback);
-            InitTrackerModule(myInfo.dictID, myInfo.markerID,myInfo.MarkerLengthInMeters,instanceID);
-            SubscribeToPoseCallback(myInfo.InstanceID,ReceivePoseCallback);
+            InitTrackerModule(markerInfo.dictID, markerInfo.markerID,markerInfo.MarkerLengthInMeters,instanceID);
+            SubscribeToPoseCallback(markerInfo.InstanceID,ReceivePoseCallback);
         }
         bool hasSubscribed = false;
         void Start()
         {
-            instanceID = myInfo.InstanceID;
+            instanceID = markerInfo.InstanceID;
 
         }
-
-        public static void ReceiveImageCallback(int instanceID, IntPtr info, int lengthofarray, int width, int height, int pixelCount){
-            Debug.Log("Processing Marker Image");
-            if(!moduleInstances[instanceID].receivedFirstFrame){
-                moduleInstances[instanceID].receivedFirstFrame = true;
-                moduleInstances[instanceID].myCalibrations = moduleInstances[instanceID].myInfo.myImageSource.myCalibrations;
-                InitARUCOTrackerParams(
-                moduleInstances[instanceID].instanceID,
-                moduleInstances[instanceID].myInfo.MarkerLengthInMeters,
-                moduleInstances[instanceID].myCalibrations.fx,
-                moduleInstances[instanceID].myCalibrations.fy,
-                moduleInstances[instanceID].myCalibrations.cx,
-                moduleInstances[instanceID].myCalibrations.cy,
-                moduleInstances[instanceID].myCalibrations.d1,
-                moduleInstances[instanceID].myCalibrations.d2,
-                moduleInstances[instanceID].myCalibrations.d3,
-                moduleInstances[instanceID].myCalibrations.d4);
-            }else{            
-                if(moduleInstances[instanceID].isInitialized){
-                    ProcessImage(moduleInstances[instanceID].instanceID,info,lengthofarray,width,height,pixelCount);
-                }
-            }
-        }
+        float TimeoutBeforeLocking = 0.01f;
+        float DetectionLeft = 0.01f;
         [MonoPInvokeCallback(typeof(FuncPoseReceiveCallback))]
         static void ReceivePoseCallback(int instanceID, float tx, float ty, float tz, float rx, float ry, float rz){
-            moduleInstances[instanceID].LocalMarkerPosition.x = -tx;
-            moduleInstances[instanceID].LocalMarkerPosition.y = ty;
-            moduleInstances[instanceID].LocalMarkerPosition.z = -tz;
-            moduleInstances[instanceID].LocalMarkerRotation = Quaternion.Euler(-rx*radians2Deg,ry*radians2Deg,-rz*radians2Deg);
-
+            moduleInstances[instanceID].DetectionLeft = moduleInstances[instanceID].TimeoutBeforeLocking;
+            moduleInstances[instanceID].LocalMarkerPosition.x = tx;
+            moduleInstances[instanceID].LocalMarkerPosition.y = -ty;
+            moduleInstances[instanceID].LocalMarkerPosition.z = tz;
+            moduleInstances[instanceID].LocalMarkerRotation = Quaternion.Inverse(Quaternion.Euler(
+                (rx*radians2Deg)+180,
+                (-rz*radians2Deg)+180,
+                -ry*radians2Deg//rx*radians2Deg*flipZZ
+                ));
+  //          moduleInstances[instanceID].transformToMarker.SetTRS(moduleInstances[instanceID].LocalMarkerPosition,moduleInstances[instanceID].LocalMarkerRotation,Vector3.one);
+//            moduleInstances[instanceID].transformToMarker = moduleInstances[instanceID].transformToMarker.inverse;
+        }
+        public void ReceiveImage(ImageData id){
+           // Debug.Log("Receiving Image");
+            if(!receivedFirstFrame){
+            //    Debug.Log("Receiving First Image");                
+                receivedFirstFrame = true;
+                myCalibrations = markerInfo.myImageSource.myCalibrations;
+                InitARUCOTrackerParams(
+                instanceID,
+                markerInfo.MarkerLengthInMeters,
+                myCalibrations.fx,
+                myCalibrations.fy,
+                myCalibrations.cx,
+                myCalibrations.cy,
+                myCalibrations.d1,
+                myCalibrations.d2,
+                myCalibrations.d3,
+                myCalibrations.d4);
+            }else{            
+//                Debug.Log("Receiving Subsequent Image");                                    
+                ProcessImage(instanceID,id.info,id.lengthOfArray,id.width,id.height,id.pixelCount);
+            }            
         }
         // Update is called once per frame
-
+        void FixedUpdate()
+        {
+            if(markerInfo.myImageSource == null){
+               markerInfo.myImageSource = sourceType == SensorSourceType.RGB?SensorImageSource.RGBImageSource:SensorImageSource.GrayscaleImageSource;
+                if(markerInfo.myImageSource != null){
+                 //   Debug.Log("Subscribing");
+                   markerInfo.myImageSource.SubscribeImageCallback(ReceiveImage);
+                }
+            }            
+        }
         void Update()
         {
+            
             if(!hasSubscribed){
                 hasSubscribed = true;
-                if(myInfo.myImageSource != null){
-                    myInfo.myImageSource.SubscribeCallback(instanceID,ReceiveImageCallback);
-                    isInitialized = true;
-                }
             }
-            if(myInfo.myImageSource != null){
+            if(markerInfo.myImageSource != null){
                 transfromFromMarker.SetTRS(LocalMarkerPosition,LocalMarkerRotation,Vector3.one);
                 transfromFromMarker = transformToMarker.inverse;
                 if(isWorldCenter){
-                    myInfo.myImageSource.transform.position = transformToMarker.MultiplyPoint(Vector3.zero);
-                    myInfo.myImageSource.transform.rotation = transformToMarker.rotation;                    
+                    markerInfo.myImageSource.transform.position = transformToMarker.MultiplyPoint(Vector3.zero);
+                    markerInfo.myImageSource.transform.rotation = transformToMarker.rotation;                    
                 }else{
-                    transform.position = myInfo.myImageSource.transform.worldToLocalMatrix.MultiplyPoint(transfromFromMarker.MultiplyPoint(Vector3.zero));
-                    transform.rotation = myInfo.myImageSource.transform.rotation * transfromFromMarker.rotation;                    
+                    if(DetectionLeft > 0f){
+                        DetectionLeft -= Time.deltaTime;
+                        transform.position = markerInfo.myImageSource.transform.TransformPoint(LocalMarkerPosition);
+                        transform.rotation = markerInfo.myImageSource.transform.rotation * LocalMarkerRotation;                    
+                    }
                 }
 
             }
             if(printMarker){
                 printMarker = false;
-                PrintMarker(instanceID,myInfo.FileToSaveMarkerName,myInfo.markerID,myInfo.MarkerLengthInPixels,myInfo.borderBits);
+                PrintMarker(instanceID,
+                "Marker_"+markerInfo.markerID+"_"+markerInfo.dictID+"_"+markerInfo.borderBits+"_"+markerInfo.MarkerLengthInPixels+"x"+markerInfo.MarkerLengthInPixels+".png",
+                markerInfo.markerID,
+                markerInfo.MarkerLengthInPixels,
+                markerInfo.borderBits);
             }
         }
         [DllImport("libProjectEskyARUCOTrackerModule")]

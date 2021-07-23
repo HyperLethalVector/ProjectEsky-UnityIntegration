@@ -3271,6 +3271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   v1WindowManager: {fileID: 2270713766064784064}
   v1Renderer: {fileID: 2270713766064784065}
+  intelRealsenseTracker: {fileID: 1938216733753418008}
   nativeDirectXrenderer: {fileID: 0}
   RGBSensorModule: {fileID: 945738837845913034}
   LeapMotionController: {fileID: 2270713767089028987}
@@ -3566,6 +3567,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2270713766064784067}
     m_Modifications:
+    - target: {fileID: 803430086122427075, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 803430086122427075, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: -1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_RootOrder
@@ -3595,6 +3606,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015355006315975281, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: myCalibrations.d1
+      value: 0.17365466
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015355006315975281, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: myCalibrations.d2
+      value: -0.10049386
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015355006315975281, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: myCalibrations.d3
+      value: -0.001998636
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015355006315975281, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: myCalibrations.d4
+      value: -0.004904505
+      objectReference: {fileID: 0}
+    - target: {fileID: 9015355006315975281, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: myCalibrations.SensorWidth
+      value: 1280
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e1a25e53a545224a868deac260b36b6, type: 3}

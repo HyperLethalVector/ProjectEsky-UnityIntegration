@@ -10895,6 +10895,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   v1WindowManager: {fileID: 0}
   v1Renderer: {fileID: 0}
+  intelRealsenseTracker: {fileID: 1108374288927384702}
   nativeDirectXrenderer: {fileID: 2890445241416919790}
   RGBSensorModule: {fileID: 1028522048054681457}
   LeapMotionController: {fileID: 2225884142245623700}
@@ -10905,7 +10906,7 @@ MonoBehaviour:
   Rig: {fileID: 6250105436719633482}
   LoadedSettings:
     rigToUse: 0
-    targetFrameRate: 0
+    targetFrameRate: 120
     reprojectionSettings: 0
     nativeShaderToUse: 0
     myOffsets:
@@ -11514,6 +11515,9 @@ MonoBehaviour:
     SensorHeight: 0
     SensorChannels: 0
     SensorFoV: 0
+  imageDataCallbacks:
+    m_PersistentCalls:
+      m_Calls: []
   hasInitializedTracker: 0
   applyDisplayTransform: 0
   TrackerCalibrationFileName: TrackerOffset.json
@@ -16891,6 +16895,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4006825230845938166}
     m_Modifications:
+    - target: {fileID: 803430086122427075, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 803430086122427075, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2323377603551223879, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: near clip plane
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 5567372019272873720, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_Name
@@ -16909,22 +16928,22 @@ PrefabInstance:
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: -0.035
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.033
+      value: -0.028
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.97236997
+      value: 0.9659258
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.23344536
+      value: 0.2588191
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
@@ -16939,7 +16958,7 @@ PrefabInstance:
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 27
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
