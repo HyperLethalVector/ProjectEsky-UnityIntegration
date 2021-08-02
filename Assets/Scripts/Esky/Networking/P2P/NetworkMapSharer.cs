@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using BEERLabs.ProjectEsky.Networking;
 using BEERLabs.ProjectEsky.Networking.WebAPI;
+using BEERLabs.ProjectEsky.Networking.WebRTC;
 
 namespace BEERLabs.ProjectEsky.Networking{
     public class NetworkMapSharer : MonoBehaviour
@@ -23,6 +24,7 @@ namespace BEERLabs.ProjectEsky.Networking{
         void Start(){
             try{
                 myAttachedTracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
+                myAttachedTracker.mapCollectedCallback.AddListener(SendMap);
             }catch(System.Exception e){
                 Debug.LogError("Couldn't auto attach to the tracker:" + e.Message);
             }
@@ -54,6 +56,7 @@ namespace BEERLabs.ProjectEsky.Networking{
             if(myAttachedTracker == null){
                 try{
                     myAttachedTracker = BEERLabs.ProjectEsky.Tracking.EskyTracker.instances[HookedTrackerID];
+                    myAttachedTracker.mapCollectedCallback.AddListener(SendMap);
                 }catch(System.Exception e){
                     Debug.LogError("Couldn't auto attach to the tracker:" + e.Message);
                 }
