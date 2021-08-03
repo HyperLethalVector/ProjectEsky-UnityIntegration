@@ -470,6 +470,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             Dictionary<string, float> clientsToSend = new Dictionary<string, float>(ClientsDiscovered);
             foreach(KeyValuePair<string,float> client in clientsToSend){
                 string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
+                Debug.Log("Sending SDP Offer to: " + location);
                 UnityWebRequest request = UnityWebRequest.Get(location);
                 request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
                 request.uploadHandler.contentType = "application/json";
