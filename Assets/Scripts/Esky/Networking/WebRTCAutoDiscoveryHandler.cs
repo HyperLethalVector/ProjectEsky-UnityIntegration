@@ -582,7 +582,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                             byte[] packetBytesAck = Encoding.Unicode.GetBytes("ACK*"+NetworkingUtils.GetLocalIPAddress()); // Acknowledged
                             newsock.Send(packetBytesAck, packetBytesAck.Length, RemoteEP);
                             this.workerUDP.ReportProgress(1, "Answering(ACK) " + packetBytesAck.Length + " bytes to " + IncomingIP);
-                            createOfferDelegate.Invoke();
+                            //createOfferDelegate.Invoke();
                         }
                         else
                         {
@@ -689,6 +689,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
     //                    Debug.Log("Received IP Address: " + returnDataSpl[1]);
                         hookedAutoDiscovery.ClientsDiscovered[returnDataSpl[1]] = hookedAutoDiscovery.TimeoutBeforeRemovalFromList;                             
                         hookedAutoDiscovery.cancellationsToSend.Add(returnDataSpl[1]);
+                        hookedAutoDiscovery.CreateOffer();
                     }else{
                         this.worker.ReportProgress(3,"RECEIVED GARBAGE?");   
                     }
