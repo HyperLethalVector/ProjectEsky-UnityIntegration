@@ -159,6 +159,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             
         }
         public void StartMyConnection(){
+            Debug.Log("Starting my Connection");
             WebAPIInterface.instance.SubscribeWebEvent("StopDiscovery",StopDiscoveryAnswering);
             StartReceiver();
             if(isHosting){
@@ -202,6 +203,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             if(receiveOffer){receiveOffer = false;
                 PeerConnection.HandleConnectionMessageAsync(sdpOffer).ContinueWith(_ =>
                 {
+                    Debug.Log("Handled offer");
                     // If the remote description was successfully applied then immediately send
                     // back an answer to the remote peer to acccept the offer.
                     waitingToCreateAnswer = true;
