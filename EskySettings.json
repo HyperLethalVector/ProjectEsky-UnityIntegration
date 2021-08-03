@@ -279,7 +279,7 @@
         "SensorChannels": 4,
         "SensorFoV": 78.0
     },
-    "usesExternalRGBCamera": true,
-    "UsesCameraPreview": false,
+    "usesExternalRGBCamera": false,
+    "UsesCameraPreview": true,
     "UseTrackerOffsets": true
 }

@@ -62,25 +62,31 @@ namespace BEERLabs.ProjectEsky.Networking{
                 }
             }
         }
+        bool hasTriedObtainMap = false;
         IEnumerator GetMap() {
                 string mapLoc = "http://"+WebRTCAutoDiscoveryHandler.instance.HostingIP+":"+WebAPIInterface.instance.port+"/";
+                    if(!hasTriedObtainMap){
+                    Debug.Log("Obtaining map from: " + mapLoc);
+                    WWWForm form = new WWWForm();
+                    form.AddField("EventID","GetMap");                 
+                    UnityWebRequest www = UnityWebRequest.Post(mapLoc,form);
+                    
+                    yield return www.SendWebRequest();        
+                    if (www.result != UnityWebRequest.Result.Success) {
+                        Debug.Log(www.error);
+                        StartCoroutine(GetMap());
+                    }
+                    else {
+                        // Show results as text
+                        Debug.Log("Received map! Now to load to the tracker");        
+                        // Or retrieve results as binary data
+                        mapBytes = www.downloadHandler.data;
 
-                Debug.Log("Obtaining map from: " + mapLoc);
-                WWWForm form = new WWWForm();
-                form.AddField("EventID","GetMap");                 
-                UnityWebRequest www = UnityWebRequest.Post(mapLoc,form);
-                
-                yield return www.SendWebRequest();        
-                if (www.result != UnityWebRequest.Result.Success) {
-                    Debug.Log(www.error);
-                    StartCoroutine(GetMap());
-                }
-                else {
-                    // Show results as text
-                    Debug.Log("Received map! Now to load to the tracker");        
-                    // Or retrieve results as binary data
-                    mapBytes = www.downloadHandler.data;
-                    receivedMap = true;
+                            hasTriedObtainMap = true;
+                            receivedMap = true;
+                        
+                    }
+                    yield return null;
                 }
                 yield return null;
             }
