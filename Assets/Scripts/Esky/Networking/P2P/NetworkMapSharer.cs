@@ -33,11 +33,17 @@ namespace BEERLabs.ProjectEsky.Networking{
         public void ObtainMap(){
             StartCoroutine(GetMap());
         }
+        bool hasObtainedMapOnce = false;
         public void SendMap(EskyMap m){
-            Debug.Log("Sending map of size: " + m.mapBLOB.Length);
-            WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
-            p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
-            WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);            
+            if(hasObtainedMapOnce){
+                hasObtainedMapOnce = false;
+                Debug.Log("Sending map of size: " + m.mapBLOB.Length);
+                WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
+                p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
+                WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);            
+            }else{
+                hasObtainedMapOnce = true;
+            }
         }
         public void TriggerObtainMap(){
             if(WebRTCAutoDiscoveryHandler.instance.isHosting){
