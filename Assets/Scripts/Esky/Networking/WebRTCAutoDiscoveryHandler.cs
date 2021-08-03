@@ -198,7 +198,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         }
         private void FixedUpdate() {
             ProcessHeartBeat();
-            if(createOffer){createOffer = false;PeerConnection.StartConnection();}     
+            if(createOffer){createOffer = false;PeerConnection.StartConnection(); Debug.Log("Starting Webrtc connection");}     
             if(receiveOffer){receiveOffer = false;
                 PeerConnection.HandleConnectionMessageAsync(sdpOffer).ContinueWith(_ =>
                 {
@@ -229,7 +229,8 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         public IEnumerator SendHeartbeat(){            
         //    Debug.Log("Sending Heartbeat");
             List<string> keysToRemove = new List<string>();
-            foreach(KeyValuePair<string,float> clientConnected in ClientsDiscovered){
+            Dictionary<string,float> clients = new Dictionary<string, float>(ClientsDiscovered);
+            foreach(KeyValuePair<string,float> clientConnected in clients){
       //          Debug.Log("Sending Heartbeat to: " + clientConnected.Key);
                 WWWForm form = new WWWForm();
                 form.AddField("APIType","Base");
@@ -261,6 +262,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             form.AddField("APIType","Base");
             form.AddField("EventID","StopDiscovery");
             UnityWebRequest request = UnityWebRequest.Post("http://"+IP+":8079/",form);
+            Debug.Log("Posting complete connection http://"+IP+":8079/");
             yield return request.SendWebRequest();
             if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
         		Debug.Log("Issue sending complete connect request, trying again: " + request.error);
@@ -268,6 +270,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             }
             
             else {
+                createOffer = true;
               Debug.Log("Done Sending Completion request");
             }
 
@@ -438,13 +441,14 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
 
             switch(key){
                 case "SDPOffer":
-//                Debug.Log("Checking: " + key + "," + request.formData["Offer"].Value);                
+                Debug.Log("Checking: " + key + "," + request.formData["Offer"].Value);                
                 shake = JsonUtility.FromJson<WebrtcShakeClass>(request.formData["Offer"].Value);
                 ReceiveCompletedOffer(shake);
                 receiveOffer = true;                
                 response.statusCode = 200;
                 response.message = "OK";
                 response.Write(request.uri.LocalPath + " OK");                
+
                 return true;
                 case "SDPAnswer":
   //              Debug.Log("Checking: " + key + "," + request.formData["Answer"].Value);                
