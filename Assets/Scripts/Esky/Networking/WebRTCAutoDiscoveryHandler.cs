@@ -467,40 +467,40 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
             string offer = JsonUtility.ToJson(shake);            
             jsonreq.ModifyRequest("EventID","SDPOffer");
             jsonreq.ModifyRequest("Offer",offer);            
-            string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
-//            Debug.Log("Sending IP:" + HostingIP);
-            UnityWebRequest request = UnityWebRequest.Get(location);
-            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
-            request.uploadHandler.contentType = "application/json";
-            request.SetRequestHeader("Content-Type","application/json");
-            yield return request.SendWebRequest();     
-            if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
-//                Debug.Log("Issue sending offer to: " + location);
-            }                
-            else {
-  //              Debug.Log("Done Sending offer to: " + location);            
-            } 
-            yield return null;
+            Dictionary<string, float> clientsToSend = new Dictionary<string, float>(ClientsDiscovered);
+            foreach(KeyValuePair<string,float> client in clientsToSend){
+                string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
+                UnityWebRequest request = UnityWebRequest.Get(location);
+                request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
+                request.uploadHandler.contentType = "application/json";
+                request.SetRequestHeader("Content-Type","application/json");
+                yield return request.SendWebRequest();     
+                if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
+    //                Debug.Log("Issue sending offer to: " + location);
+                }                
+                else {
+    //              Debug.Log("Done Sending offer to: " + location);            
+                } 
+                yield return null;
+            }
         }
         public IEnumerator SendSDPAnswer(){
             JSONRequest jsonreq = new JSONRequest();
             string offer = JsonUtility.ToJson(shake);            
             jsonreq.ModifyRequest("EventID","SDPAnswer");
-            jsonreq.ModifyRequest("Answer",offer);       
-            foreach(KeyValuePair<string,float> client in ClientsDiscovered){                       
-                string location = "http://"+client.Key+":"+WebAPIInterface.instance.port+"/";
-                UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
-                request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
-                request.uploadHandler.contentType = "application/json";                 
-                yield return request.SendWebRequest();
-                if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
-                  //  Debug.Log("Issue sending Answer to: " + location);
-                }                
-                else {
-                    //Debug.Log("Done Sending Answer to: " + location);            
-                }
-                yield return null;            
+            jsonreq.ModifyRequest("Answer",offer);                         
+            string location = "http://"+HostingIP+":"+WebAPIInterface.instance.port+"/";
+            UnityWebRequest request = UnityWebRequest.Post(location,JsonUtility.ToJson(jsonreq));
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(jsonreq)));
+            request.uploadHandler.contentType = "application/json";                 
+            yield return request.SendWebRequest();
+            if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
+                //  Debug.Log("Issue sending Answer to: " + location);
+            }                
+            else {
+                //Debug.Log("Done Sending Answer to: " + location);            
             }
+            yield return null;            
 
         }
     }
