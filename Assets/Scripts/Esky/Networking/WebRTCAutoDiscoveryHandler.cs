@@ -461,7 +461,7 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
         }
         public IEnumerator SendSDPOffer(){
             while(shake.iceMessages.Count == 0){
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(1);
             }
             JSONRequest jsonreq = new JSONRequest();
             string offer = JsonUtility.ToJson(shake);            
