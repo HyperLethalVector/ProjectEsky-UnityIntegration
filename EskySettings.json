@@ -281,5 +281,6 @@
     },
     "usesExternalRGBCamera": false,
     "UsesCameraPreview": true,
-    "UseTrackerOffsets": true
+    "UseTrackerOffsets": true,
+    "UseNetworkingDebugVis": true
 }
