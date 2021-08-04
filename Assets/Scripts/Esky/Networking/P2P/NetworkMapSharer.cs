@@ -47,7 +47,10 @@ namespace BEERLabs.ProjectEsky.Networking{
         }
         public void TriggerObtainMap(){
             if(WebRTCAutoDiscoveryHandler.instance.isHosting){
-                myAttachedTracker.SaveEskyMapInformation();
+                //myAttachedTracker.SaveEskyMapInformation();
+                WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
+                p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
+                WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);
             }
         }
 //        EmbeddedWebServerComponent server;
@@ -122,7 +125,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                         // serve the file
                         response.statusCode = 200;
                         response.message = "OK";
-                        response.headers.Add("Content-Type", MimeTypeMap.GetMimeType(".raw"));
+//                        response.headers.Add("Content-Type", MimeTypeMap.GetMimeType(".raw"));
                         // read file and set bytes
                         using (FileStream fs = File.OpenRead("Dump.raw"))
                         {
