@@ -483,10 +483,10 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                 request.SetRequestHeader("Content-Type","application/json");
                 yield return request.SendWebRequest();     
                 if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
-                    Debug.Log("Issue sending offer to: " + location);
+    //                Debug.Log("Issue sending offer to: " + location);
                 }                
                 else {
-                  Debug.Log("Done Sending offer to: " + location);            
+    //              Debug.Log("Done Sending offer to: " + location);            
                 } 
                 yield return null;
             }
@@ -687,7 +687,6 @@ namespace BEERLabs.ProjectEsky.Networking.WebRTC.Discovery{
                     }else if(returnDataSpl[0] == "ACK"){//everything ok
                         this.worker.ReportProgress(3,"It was ACK! " + returnDataSpl[1]);
     //                    Debug.Log("Received IP Address: " + returnDataSpl[1]);
-    
                         hookedAutoDiscovery.ClientsDiscovered[returnDataSpl[1]] = hookedAutoDiscovery.TimeoutBeforeRemovalFromList;                             
                         hookedAutoDiscovery.cancellationsToSend.Add(returnDataSpl[1]);
                         hookedAutoDiscovery.CreateOffer();

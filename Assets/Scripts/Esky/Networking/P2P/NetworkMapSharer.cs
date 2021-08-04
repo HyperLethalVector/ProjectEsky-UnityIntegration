@@ -47,10 +47,10 @@ namespace BEERLabs.ProjectEsky.Networking{
         }
         public void TriggerObtainMap(){
             if(WebRTCAutoDiscoveryHandler.instance.isHosting){
-                //myAttachedTracker.SaveEskyMapInformation();
-                WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
-                p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
-                WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);
+                myAttachedTracker.SaveEskyMapInformation();
+//                WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
+  //              p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
+    //            WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);
             }
         }
 //        EmbeddedWebServerComponent server;
@@ -64,11 +64,11 @@ namespace BEERLabs.ProjectEsky.Networking{
             }
             if(!shouldntLoadMap){
                 shouldntLoadMap = true;
-                if(GetComponent<WebRTCAutoDiscoveryHandler>().isHosting){
-                    EskyMap m = new EskyMap();
-                    m.mapBLOB = File.ReadAllBytes("Dump.raw");
-                    myAttachedTracker.LoadEskyMap(m);
-                }
+//                if(GetComponent<WebRTCAutoDiscoveryHandler>().isHosting){
+  //                  EskyMap m = new EskyMap();
+    //                m.mapBLOB = File.ReadAllBytes("Dump.raw");
+      //              myAttachedTracker.LoadEskyMap(m);
+        //        }
             }
             if(myAttachedTracker == null){
                 try{
@@ -116,7 +116,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 string s = request.formData["EventID"].Value.Trim();
                 switch(s){
                     case "GetMap":
-                        if (!File.Exists("Dump.raw")) {
+                        if (!File.Exists("temp.raw")) {
                             response.statusCode = 404;
                             response.message = "Not Found";
                             return true;
@@ -127,7 +127,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                         response.message = "OK";
 //                        response.headers.Add("Content-Type", MimeTypeMap.GetMimeType(".raw"));
                         // read file and set bytes
-                        using (FileStream fs = File.OpenRead("Dump.raw"))
+                        using (FileStream fs = File.OpenRead("temp.raw"))
                         {
                             int length = (int)fs.Length;
                             byte[] buffer;
