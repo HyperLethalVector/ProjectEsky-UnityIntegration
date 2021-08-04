@@ -712,6 +712,9 @@ MonoBehaviour:
     SensorHeight: 0
     SensorChannels: 0
     SensorFoV: 0
+  imageDataCallbacks:
+    m_PersistentCalls:
+      m_Calls: []
   hasInitializedTracker: 0
   applyDisplayTransform: 0
   TrackerCalibrationFileName: TrackerOffset.json
@@ -2056,6 +2059,8 @@ MonoBehaviour:
     usesExternalRGBCamera: 0
     UsesCameraPreview: 0
     UseTrackerOffsets: 0
+    UseNetworkingDebugVis: 0
+  NetworkDebugRig: {fileID: 158582741685586139}
 --- !u!1 &6039318582912602084
 GameObject:
   m_ObjectHideFlags: 0
@@ -3088,6 +3093,9 @@ MonoBehaviour:
     SensorHeight: 720
     SensorChannels: 4
     SensorFoV: 78
+  imageDataCallbacks:
+    m_PersistentCalls:
+      m_Calls: []
   TrackerFileName: RGBSensorCalibration.json
   loadCalibration: 0
   allowSavingCalibration: 1
@@ -3288,6 +3296,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d7aba36f098e404c91de4a9cfe790ef, type: 3}
+--- !u!1 &158582741685586139 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7452955135043448556, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 7304083355234821687}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &158582741685586140 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7452955135043448555, guid: 1d7aba36f098e404c91de4a9cfe790ef,

@@ -140,6 +140,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
             es.UsesCameraPreview = SettingsProfile.UsesCameraPreview;
             es.usesExternalRGBCamera = SettingsProfile.UsesExternalRGBCamera;
             es.UseTrackerOffsets = SettingsProfile.UseTrackerOffsets;
+            es.UseNetworkingDebugVis = SettingsProfile.UseNetworkingDebugRig;
             #endif
             g = GameObject.Find("CalibrationRig");
             if(g == null){

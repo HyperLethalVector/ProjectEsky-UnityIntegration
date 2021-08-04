@@ -166,6 +166,8 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public bool UsesCameraPreview;
         [SerializeField]
         public bool UseTrackerOffsets;
+        [SerializeField]
+        public bool UseNetworkingDebugVis = false;
     }
     public class EskyRig : MonoBehaviour
     {
@@ -183,6 +185,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public Transform NetworkingObject;
         public GameObject Rig;
         public EskySettings LoadedSettings;
+        public GameObject NetworkDebugRig;
         bool dumpSettings = true;
         bool didLoadSettings = false;
         // Start is called before the first frame update
@@ -255,6 +258,11 @@ namespace BEERLabs.ProjectEsky.Configurations{
                     rsmc.SensorWidth = LoadedSettings.sensorModuleCalibrations.SensorWidth;
                     rsmc.SensorHeight = LoadedSettings.sensorModuleCalibrations.SensorHeight;
                     RGBSensor.GetComponent<BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule>().myCalibrations = rsmc;
+                }
+            }
+            if(LoadedSettings.UseNetworkingDebugVis){
+                if(NetworkDebugRig != null){
+                    NetworkDebugRig.SetActive(true);
                 }
             }
             Rig.SetActive(true);
