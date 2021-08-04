@@ -34,10 +34,12 @@ namespace BEERLabs.ProjectEsky.Networking{
             StartCoroutine(GetMap());
         }
         bool hasObtainedMapOnce = false;
+        byte[] bb = null;
         public void SendMap(EskyMap m){
             if(hasObtainedMapOnce){
                 hasObtainedMapOnce = false;
-                Debug.Log("Sending map of size: " + m.mapBLOB.Length);
+                bb = m.mapBLOB;
+//                Debug.Log("Sending map of size: " + m.mapBLOB.Length);
                 WebRTC.WebRTCPacket p = new WebRTC.WebRTCPacket();
                 p.packetType = WebRTC.WebRTCPacketType.MapBLOBShare;
                 WebRTC.WebRTCDataStreamManager.instance.SendPacketReliable(p);            
@@ -116,7 +118,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 string s = request.formData["EventID"].Value.Trim();
                 switch(s){
                     case "GetMap":
-                        if (!File.Exists("temp.raw")) {
+                        if (bb == null) {
                             response.statusCode = 404;
                             response.message = "Not Found";
                             return true;
@@ -127,20 +129,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                         response.message = "OK";
 //                        response.headers.Add("Content-Type", MimeTypeMap.GetMimeType(".raw"));
                         // read file and set bytes
-                        using (FileStream fs = File.OpenRead("temp.raw"))
-                        {
-                            int length = (int)fs.Length;
-                            byte[] buffer;
-                            // add content length
-                            response.headers.Add("Content-Length", length.ToString());
-
-                            // use binary for mostly all except text
-                            using (BinaryReader br = new BinaryReader(fs))
-                            {
-                                buffer = br.ReadBytes(length);
-                            }
-                            response.SetBytes(buffer);
-                        }
+                        response.SetBytes(bb);
                         return true;
                 }
                 Debug.Log("Handling External Request");
