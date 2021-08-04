@@ -51,13 +51,21 @@ namespace BEERLabs.ProjectEsky.Networking{
             }
         }
 //        EmbeddedWebServerComponent server;
-        
+        bool shouldntLoadMap = false;
         void FixedUpdate(){
             if(receivedMap){ 
                 receivedMap = false;
                 EskyMap m = new EskyMap();
                 m.mapBLOB = mapBytes;
                 myAttachedTracker.LoadEskyMap(m);
+            }
+            if(!shouldntLoadMap){
+                shouldntLoadMap = true;
+                if(GetComponent<WebRTCAutoDiscoveryHandler>().isHosting){
+                    EskyMap m = new EskyMap();
+                    m.mapBLOB = File.ReadAllBytes("Dump.raw");
+                    myAttachedTracker.LoadEskyMap(m);
+                }
             }
             if(myAttachedTracker == null){
                 try{
@@ -105,7 +113,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 string s = request.formData["EventID"].Value.Trim();
                 switch(s){
                     case "GetMap":
-                        if (!File.Exists("temp.raw")) {
+                        if (!File.Exists("Dump.raw")) {
                             response.statusCode = 404;
                             response.message = "Not Found";
                             return true;
@@ -116,7 +124,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                         response.message = "OK";
                         response.headers.Add("Content-Type", MimeTypeMap.GetMimeType(".raw"));
                         // read file and set bytes
-                        using (FileStream fs = File.OpenRead("temp.raw"))
+                        using (FileStream fs = File.OpenRead("Dump.raw"))
                         {
                             int length = (int)fs.Length;
                             byte[] buffer;
