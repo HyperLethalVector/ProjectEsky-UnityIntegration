@@ -6,14 +6,14 @@
     "myOffsets": {
         "TranslationEyeToLeapMotion": {
             "x": 0.019999999552965165,
-            "y": 0.08238893747329712,
+            "y": 0.07000000029802323,
             "z": 0.053352318704128268
         },
         "RotationEyeToLeapMotion": {
-            "x": 0.12272651493549347,
-            "y": 0.0014791039284318686,
-            "z": -0.011960044503211975,
-            "w": 0.9923673868179321
+            "x": 0.08500000089406967,
+            "y": 0.0,
+            "z": -0.012000000104308129,
+            "w": 0.9959999918937683
         },
         "TranslationFromTracker": {
             "x": 0.0,
@@ -282,5 +282,5 @@
     "usesExternalRGBCamera": false,
     "UsesCameraPreview": true,
     "UseTrackerOffsets": true,
-    "UseNetworkingDebugVis": true
+    "UseNetworkingDebugVis": false
 }
