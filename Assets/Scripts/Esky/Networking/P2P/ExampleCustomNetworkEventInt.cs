@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using ProtoBuf;
 namespace BEERLabs.ProjectEsky.Networking{
+    //This class shows how to subscribe a custom networking event that can
+    //be fired from the esky webrtc data manager
     public class ExampleCustomNetworkEventInt : NetworkEvent
     {
         public UnityEvent<float> floatEvents;
