@@ -87,7 +87,7 @@ namespace Microsoft.MixedReality.WebRTC.Unity
         /// is a valid use case for hard-coding it.
         /// </remarks>
         /// <seealso cref="PeerConnection.GetVideoCaptureDevicesAsync"/>
-        [HideInInspector]
+        
         public VideoCaptureDevice WebcamDevice = default;
 
         /// <summary>

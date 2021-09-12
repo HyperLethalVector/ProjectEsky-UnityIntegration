@@ -646,6 +646,7 @@ PlayerSettings:
     WindowsStoreApps:
       GazeInput: True
       InternetClient: True
+      WebCam: True
       Microphone: True
   metroTargetDeviceFamilies: {}
   metroFTAName: 

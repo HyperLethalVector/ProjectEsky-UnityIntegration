@@ -1,5 +1,5 @@
 {
-    "rigToUse": 0,
+    "rigToUse": 1,
     "targetFrameRate": 120,
     "reprojectionSettings": 0,
     "nativeShaderToUse": 0,
@@ -257,10 +257,10 @@
         }
     },
     "displayWindowSettings": {
-        "DisplayXLoc": 0,
-        "DisplayYLoc": 1080,
-        "DisplayWidth": 2880,
-        "DisplayHeight": 1600,
+        "DisplayXLoc": 1080,
+        "DisplayYLoc": 0,
+        "DisplayWidth": 640,
+        "DisplayHeight": 480,
         "EyeTextureWidth": 1600,
         "EyeTextureHeight": 1440
     },

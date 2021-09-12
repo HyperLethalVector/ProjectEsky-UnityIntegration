@@ -17,7 +17,7 @@ MonoBehaviour:
   leapControllerOffset: {x: 0, y: -0.2, z: 0.2}
   enterPinchDistance: 0.02
   exitPinchDistance: 0.05
-  rigToUse: 0
+  rigToUse: 1
   customRig: {fileID: 0}
   sensorOffsets:
     TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
