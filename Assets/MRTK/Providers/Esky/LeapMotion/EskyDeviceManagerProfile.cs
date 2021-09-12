@@ -164,6 +164,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         public bool UsesCameraPreview;
         [SerializeField]
         public bool UseTrackerOffsets;
+        [SerializeField]
+        public bool UseNetworkingDebugVis = false;
     }
     /// <summary>
     /// The profile for the Leap Motion Device Manager. The settings for this profile can be viewed if the Leap Motion Device Manager input data provider is 
@@ -282,6 +284,10 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         [Tooltip("Do we use the RGB sensor module?")]                
         private bool usesExternalRGBCamera = false;
         [SerializeField]
+        [Tooltip("Do we want to use the Networking Debug rig?")]
+        private bool useNetworkingDebugRig = false;
+
+        [SerializeField]
         [Tooltip("What pose filter system do we want?")]
         private FilterSystemToUse filterSystemToUse;
 
@@ -297,7 +303,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         [Tooltip("Should we dump the current settins after stopping the 'play in editor?'")]
         private bool saveAfterStoppingEditor;
 
-
+    
         [SerializeField]
         public bool SaveAfterStoppingEditor{
             get => saveAfterStoppingEditor;
@@ -374,6 +380,11 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         public bool UsesExternalRGBCamera{
             get => usesExternalRGBCamera;
             set => usesExternalRGBCamera = value;
+        }
+        [SerializeField]
+        public bool UseNetworkingDebugRig{
+            get => useNetworkingDebugRig;
+            set => useNetworkingDebugRig = value;
         }
 
     }

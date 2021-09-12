@@ -5,15 +5,22 @@ using UnityEngine;
 using ProtoBuf;
 using System.IO;
 using BEERLabs.ProjectEsky.Networking.WebRTC;
-
+//This scene graph handles the bulk of the network pose processes 
+//It registers each network object within a dictionary, storing each NetworkObject as an 'Esky Scene graph node'
+//We then use the pose architecture described in my Large Scale High Fidelity Collaborative AR paper 
+//
 namespace BEERLabs.ProjectEsky.Networking{
     public delegate void ItemUpdateDelegate(string key,EskySceneGraphNode value);
+    //This enum marks an objects ownership status (Local == Owned by local user, Other == Owned by another user)
+    //A locally owned object transmits it's updated pose to the other clients
     [ProtoContract]
     public enum NetworkOwnership{
         None = 0,
         Local = 1,
         Other = 2
     }
+
+    //The following two classes are stubs for serializing unity's vector3 as a proto contract serializable object
     [ProtoContract]
     public class ProtoVector3{
         [ProtoMember(1)]        
@@ -51,6 +58,7 @@ namespace BEERLabs.ProjectEsky.Networking{
             w = q.w;
         }
     }
+    //The scene graph node contains the game object, and the transformation (Rotation/Translation/Scale) relative to the esky anchor
     [ProtoContract]    
     public class EskySceneGraphNode{
         [ProtoMember(1)]        
@@ -66,6 +74,7 @@ namespace BEERLabs.ProjectEsky.Networking{
         [ProtoMember(6)]
         public string UUID;
     }
+    //This is the networking scene graph, containing all of the relative transforms to the esky anchor in the scene
     public class EskySynchronizedSceneGraph{
         public Dictionary<string,EskySceneGraphNode> Items = new Dictionary<string,EskySceneGraphNode>();
         public EskySynchronizedSceneGraph(){}
@@ -165,21 +174,29 @@ namespace BEERLabs.ProjectEsky.Networking{
             }
         }
     }
+    //The scene graph container is the monobehaviour that contains the esky scene graph, it is how the 
+    //Networking scene graph is implemented within unity, this class also handles spawn and destroy events
+    //To update the scene graph
+    //TODO: Extend this class to handle:
+    //A) the initial synchronization of the scene graph upon connection
+    //B) Periodic 'heartbeat' synchronizations to ensure there is consistency between clients
+    //TODO: END
     public class EskySceneGraphContainer : MonoBehaviour
     {
         // Start is called before the first frame update
-        public NetworkObject RegisteredClient;
-        public List<NetworkObject> RegisteredPrefabs;
+        public NetworkObject RegisteredClient; // This is the client representation registered to be spawned when new clients are connected
+        public List<NetworkObject> RegisteredPrefabs; //This is the list of registered prefabs that can be spawned
         public Dictionary<string,NetworkObject> objectsInScene = new Dictionary<string, NetworkObject>();//key is UUID, value is the associated game object
-        public EskySynchronizedSceneGraph mySyncedSceneGraph = new EskySynchronizedSceneGraph();
-        public static EskySceneGraphContainer instance;
-        public BEERLabs.ProjectEsky.Tracking.EskyAnchor SceneOrigin;
+        public EskySynchronizedSceneGraph mySyncedSceneGraph = new EskySynchronizedSceneGraph();// This is the synchronized esky scene graph
+        public static EskySceneGraphContainer instance; 
+        public BEERLabs.ProjectEsky.Tracking.EskyAnchor SceneOrigin; // The anchor that we consider the 'origin' of our virtual scene
         void Awake(){
             instance = this;
             mySyncedSceneGraph.ValueChangedEvent += OnItemUpdated;
             mySyncedSceneGraph.ValueRemovedEvent += OnItemRemoved;
         }
-        public void UpdateSceneGraphLocally(NetworkObject networkObject){//this should only ever be done by objects that the local player owns
+        //this should only ever be done by objects that the local player owns
+        public void UpdateSceneGraphLocally(NetworkObject networkObject){
             EskySceneGraphNode n = mySyncedSceneGraph.UpdateValueLocally(networkObject.UUID,networkObject,networkObject.GetRegisteredPrefabIndex());
             WebRTCPacket p = new WebRTCPacket();
             p.packetType = WebRTCPacketType.PoseGraphSync;
@@ -189,6 +206,7 @@ namespace BEERLabs.ProjectEsky.Networking{
             }
             WebRTCDataStreamManager.instance.SendPacket(p);
         }
+        //take ownership locally and transmit the packet 
         public void TakeOwnershipLocally(NetworkObject obj){
             using(MemoryStream bnStream = new MemoryStream()){
                 EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.Local,obj);
@@ -205,6 +223,7 @@ namespace BEERLabs.ProjectEsky.Networking{
             }
 
         }
+        //revoke ownership locally and transmit the packet         
         public void RevokeOwnershipLocally(NetworkObject obj){
             using(MemoryStream bnStream = new MemoryStream()){
                 EskySceneGraphNode n = mySyncedSceneGraph.SetOwnerShip(obj.UUID,NetworkOwnership.None,obj);
@@ -220,6 +239,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 WebRTCDataStreamManager.instance.SendPacket(packet);
             }
         }
+        //When we receive a packet enlisting the ownership, set it
         public void ReceiveNewOwnershipPacket(WebRTCPacket packet){
             using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
                 EskySceneGraphNode p = Serializer.Deserialize<EskySceneGraphNode>(bnStream);
@@ -227,12 +247,14 @@ namespace BEERLabs.ProjectEsky.Networking{
                 objectsInScene[p.UUID].ownership = p.ownership;
             }
         }
+        //We process and apply poses to the scene graph 
         public void ReceiveSceneGraphPacket(WebRTCPacket packet){
             using(MemoryStream bnStream = new MemoryStream(packet.packetData)){
                 EskySceneGraphNode p = Serializer.Deserialize<EskySceneGraphNode>(bnStream);
                 mySyncedSceneGraph.UpdateValue(p);
             }
         }
+        //Subscribing an object enlists it within the scene graph
         public void SubscribeNewItem(string UUID, NetworkObject go){//should be called by all items created on the local player
             Debug.LogWarning("Subscribed: " + UUID);
             if(objectsInScene.ContainsKey(UUID)){ 
@@ -248,7 +270,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 OnItemUpdated(UUID,n);
             }
         }
-        public NetworkObject SpawnNewNetworkObject(int id){
+        public NetworkObject SpawnNewNetworkObject(int id){//this spawns a new object across the network
             if(id > 0 && id < RegisteredPrefabs.Count){
                 GameObject g = Instantiate<GameObject>(RegisteredPrefabs[id].gameObject);
                 NetworkObject no = g.GetComponent<NetworkObject>();
@@ -260,6 +282,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 return null;
             }
         }
+        //Whenever the scene graph is changed, we reflect this on the game object in the scene
         void OnItemUpdated(string key, EskySceneGraphNode node){
             if(objectsInScene.ContainsKey(key)){
                 NetworkObject n = objectsInScene[key];

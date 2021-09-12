@@ -10895,6 +10895,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   v1WindowManager: {fileID: 0}
   v1Renderer: {fileID: 0}
+  intelRealsenseTracker: {fileID: 1108374288927384702}
   nativeDirectXrenderer: {fileID: 2890445241416919790}
   RGBSensorModule: {fileID: 1028522048054681457}
   LeapMotionController: {fileID: 2225884142245623700}
@@ -10905,7 +10906,7 @@ MonoBehaviour:
   Rig: {fileID: 6250105436719633482}
   LoadedSettings:
     rigToUse: 0
-    targetFrameRate: 0
+    targetFrameRate: 120
     reprojectionSettings: 0
     nativeShaderToUse: 0
     myOffsets:
@@ -11031,6 +11032,8 @@ MonoBehaviour:
     usesExternalRGBCamera: 0
     UsesCameraPreview: 0
     UseTrackerOffsets: 0
+    UseNetworkingDebugVis: 0
+  NetworkDebugRig: {fileID: 617740283057470245}
 --- !u!1 &6075647101678513168
 GameObject:
   m_ObjectHideFlags: 0
@@ -11514,6 +11517,9 @@ MonoBehaviour:
     SensorHeight: 0
     SensorChannels: 0
     SensorFoV: 0
+  imageDataCallbacks:
+    m_PersistentCalls:
+      m_Calls: []
   hasInitializedTracker: 0
   applyDisplayTransform: 0
   TrackerCalibrationFileName: TrackerOffset.json
@@ -12084,7 +12090,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5147452592125372655
 Transform:
   m_ObjectHideFlags: 0
@@ -16884,6 +16890,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8069483745849562569}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &617740283057470245 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7452955135043448556, guid: 1d7aba36f098e404c91de4a9cfe790ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 8069483745849562569}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8312222997007305984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16891,6 +16903,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4006825230845938166}
     m_Modifications:
+    - target: {fileID: 803430086122427075, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 803430086122427075, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2323377603551223879, guid: 9e1a25e53a545224a868deac260b36b6,
+        type: 3}
+      propertyPath: near clip plane
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 5567372019272873720, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_Name
@@ -16909,22 +16936,22 @@ PrefabInstance:
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: -0.0371
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.033
+      value: -0.0123
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.97236997
+      value: 0.96126175
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.23344536
+      value: 0.27563733
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
@@ -16939,7 +16966,7 @@ PrefabInstance:
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 27
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 5633107925933363719, guid: 9e1a25e53a545224a868deac260b36b6,
         type: 3}

@@ -43,6 +43,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
         protected SerializedProperty usesExternalRGBCamera;
         protected SerializedProperty saveAfterStoppingEditor;
         protected SerializedProperty useTrackerOffsets;
+        protected SerializedProperty useNetworkDebugRig;
 
         private const string leapDocURL = "https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/CrossPlatform/LeapMotionMRTK.html";
         protected override void Awake(){
@@ -76,6 +77,8 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
             filterSystemToUse =         serializedObject.FindProperty("filterSystemToUse");
             saveAfterStoppingEditor =                serializedObject.FindProperty("saveAfterStoppingEditor");
             useTrackerOffsets =         serializedObject.FindProperty("useTrackerOffsets");
+
+            useNetworkDebugRig = serializedObject.FindProperty("useNetworkingDebugRig");
         }
 
         /// <summary>
@@ -147,6 +150,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                     EditorGUILayout.PropertyField(useTrackerOffsets);
                     EditorGUILayout.PropertyField(usesCameraPreview);
                     EditorGUILayout.PropertyField(usesExternalRGBCamera);
+                    EditorGUILayout.PropertyField(useNetworkDebugRig);
                     serializedObject.ApplyModifiedProperties();
 
                 }

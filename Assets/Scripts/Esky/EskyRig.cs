@@ -166,11 +166,14 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public bool UsesCameraPreview;
         [SerializeField]
         public bool UseTrackerOffsets;
+        [SerializeField]
+        public bool UseNetworkingDebugVis = false;
     }
     public class EskyRig : MonoBehaviour
     {
         public Leap.Unity.AR.WindowOffsetManager v1WindowManager;
         public Leap.Unity.AR.OpticalCalibrationManager v1Renderer;
+        public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel intelRealsenseTracker;
         public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer nativeDirectXrenderer;
         public BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule RGBSensorModule;
 
@@ -182,6 +185,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public Transform NetworkingObject;
         public GameObject Rig;
         public EskySettings LoadedSettings;
+        public GameObject NetworkDebugRig;
         bool dumpSettings = true;
         bool didLoadSettings = false;
         // Start is called before the first frame update
@@ -229,6 +233,9 @@ namespace BEERLabs.ProjectEsky.Configurations{
                 if(SensorPreview != null){
                     SensorPreview.gameObject.SetActive(true);
                 }
+                if(intelRealsenseTracker != null){
+                    intelRealsenseTracker.UseExternalCameraPreview = true;
+                }
             }
 
             if(LoadedSettings.usesExternalRGBCamera){
@@ -238,10 +245,10 @@ namespace BEERLabs.ProjectEsky.Configurations{
                     RGBSensor.localRotation = LoadedSettings.myOffsets.RGBSensorRotationFromTracker;
                     ProjectEsky.RGBSensorModuleCalibrations rsmc = new ProjectEsky.RGBSensorModuleCalibrations();
                     rsmc.camID = LoadedSettings.sensorModuleCalibrations.camID;                
-                    rsmc.cx = LoadedSettings.sensorModuleCalibrations.camID;
-                    rsmc.cy = LoadedSettings.sensorModuleCalibrations.camID;
-                    rsmc.fx = LoadedSettings.sensorModuleCalibrations.camID;
-                    rsmc.fy = LoadedSettings.sensorModuleCalibrations.camID;                
+                    rsmc.cx = LoadedSettings.sensorModuleCalibrations.cx;
+                    rsmc.cy = LoadedSettings.sensorModuleCalibrations.cy;
+                    rsmc.fx = LoadedSettings.sensorModuleCalibrations.fx;
+                    rsmc.fy = LoadedSettings.sensorModuleCalibrations.fy;                
                     rsmc.d1 = LoadedSettings.sensorModuleCalibrations.d1;
                     rsmc.d2 = LoadedSettings.sensorModuleCalibrations.d2;
                     rsmc.d3 = LoadedSettings.sensorModuleCalibrations.d3;
@@ -251,6 +258,11 @@ namespace BEERLabs.ProjectEsky.Configurations{
                     rsmc.SensorWidth = LoadedSettings.sensorModuleCalibrations.SensorWidth;
                     rsmc.SensorHeight = LoadedSettings.sensorModuleCalibrations.SensorHeight;
                     RGBSensor.GetComponent<BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule>().myCalibrations = rsmc;
+                }
+            }
+            if(LoadedSettings.UseNetworkingDebugVis){
+                if(NetworkDebugRig != null){
+                    NetworkDebugRig.SetActive(true);
                 }
             }
             Rig.SetActive(true);

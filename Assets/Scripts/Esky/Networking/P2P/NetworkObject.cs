@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 namespace BEERLabs.ProjectEsky.Networking{
+    //This is the abstract class that handles network object pose synchronization
     public enum PoseSynctype{
         Instant = 0,
         Smooth = 1
@@ -63,7 +64,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 myLabel.text = UUID;
             }              
         }
-        // Update is called once per frame
+        // Update is called once per frame, here we apply the local pose relative to the anchor if we don't have ownership of it
         void Update()
         {
             if(ownership == NetworkOwnership.Local){
@@ -80,6 +81,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 setPoseRelative();
             }
         }
+        //This function gets the pose relative to the anchor
         public (Vector3, Quaternion, Vector3) getPoseRelative(){
             if(EskySceneGraphContainer.instance.SceneOrigin != null){
                 Vector3 pos = EskySceneGraphContainer.instance.SceneOrigin.transform.InverseTransformPoint(transform.position);
@@ -89,6 +91,7 @@ namespace BEERLabs.ProjectEsky.Networking{
                 return (transform.localPosition,transform.localRotation,transform.localScale);
             }
         }
+        //This function sets the pose of the object relative to the synchronized anchor in world space.
         public void setPoseRelative(){
             if(EskySceneGraphContainer.instance.SceneOrigin != null){
                 Vector3 pos = EskySceneGraphContainer.instance.SceneOrigin.transform.TransformPoint(localPosition);
@@ -112,11 +115,13 @@ namespace BEERLabs.ProjectEsky.Networking{
             //scaling is separate since it's independent of the synchronized anchors existence, plus the fact it doesn't scale
             transform.localScale = (PoseSyncronisationType == PoseSynctype.Smooth)? Vector3.MoveTowards(transform.localScale,localScale,Time.deltaTime * SmoothingFactorScale): localScale;
         }
+        //We call this when we want to take ownership of an object
         public void TakeOwnership(){
             EskySceneGraphContainer.instance.TakeOwnershipLocally(this);
             ownership = NetworkOwnership.Local;
             Debug.Log("Taking ownership locally");            
         }
+        //We call this when we want to relinquish ownership of an object
         public void RelinquishOwnership(){
             if(ownership == NetworkOwnership.Local){
                 Debug.Log("Reqlinquishing ownership locally");
@@ -126,9 +131,11 @@ namespace BEERLabs.ProjectEsky.Networking{
                 Debug.Log("Someone already has control!");                
             }
         }
+        //This is so we can obtain what spawn ID is used
         public int GetRegisteredPrefabIndex(){
             return RegisteredPrefabIndex;
         }
+        //This is set upon spawning
         public void SetRegisteredPrefabIndex(int newIndex){
             RegisteredPrefabIndex = newIndex;
         }
