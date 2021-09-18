@@ -118,6 +118,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
         NorthStarV2,
         NorthStarV1,
         Ariel,
+        ArielMKII,
         Custom        
     }
     [System.Serializable]

@@ -163,6 +163,7 @@ namespace BEERLabs.ProjectEsky.Rendering{
         public DisplayCalibration calibration;
         public GameObject LeapMotionCamera;
         public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel myAttachedTracker;
+        public BEERLabs.ProjectEsky.Tracking.EskyTrackerX myAttachedTrackerX;
         public GameObject RigCenter;
         [Range(0,1)]
         public float RenderedGraphicsBrightness = 1.0f;
@@ -297,6 +298,9 @@ namespace BEERLabs.ProjectEsky.Rendering{
                 if(myAttachedTracker != null){ 
                     myAttachedTracker.RenderResetFlag();
                 }                
+                if(myAttachedTrackerX != null){
+                    myAttachedTrackerX.RenderResetFlag();
+                }
                 GL.IssuePluginEvent(GetRenderEventFunc(), 0);
 
             }		

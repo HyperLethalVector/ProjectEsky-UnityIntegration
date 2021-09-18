@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.MixedReality.Toolkit.UI;
+using UnityEngine;
+namespace BEERLabs.ProjectEsky.Utilities.UI{
+    public class OpenWindowUGUIAction : MonoBehaviour
+    {
+        public string ManagerID;
+        public string WindowID;
+        // Start is called before the first frame update
+        UnityEngine.UI.Button myInteractible;
+        // Start is called before the first frame update
+        void Start()
+        {
+            myInteractible = GetComponent<UnityEngine.UI.Button>();
+            myInteractible.onClick.AddListener(OnPress);
+        }
+
+        // Update is called once per frame
+        void OnPress()
+        {
+            Debug.Log("Opening " + WindowID + " within manager ID: " + ManagerID);
+            UIManager.OpenWindow(ManagerID,WindowID);
+        }
+    }
+}

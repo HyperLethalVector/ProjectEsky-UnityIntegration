@@ -153,6 +153,10 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                     g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/ArielRig") as GameObject);                
                     spawnedEskyRig = true;                
                     break;
+                    case RigToUse.ArielMKII:
+                    g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/ArielRigMKII") as GameObject);                
+                    spawnedEskyRig = true;                
+                    break;                    
                     case RigToUse.NorthStarV1:
                     g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V1Rigs/NorthStarRigV1") as GameObject);
                     spawnedEskyRig = true;                

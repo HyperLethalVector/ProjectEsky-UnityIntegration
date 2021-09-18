@@ -153,5 +153,5 @@ MonoBehaviour:
   usesExternalRGBCamera: 0
   useNetworkingDebugRig: 0
   filterSystemToUse: 0
-  useTrackerOffsets: 1
+  useTrackerOffsets: 0
   saveAfterStoppingEditor: 1
