@@ -10,7 +10,7 @@ https://docs.projectnorthstar.org/software/esky
 
 
 Esky (With the exception of the V1 rendering integration) 
-is licenced under the BSD 3 clause. While I don't really care where and how you use this software, with great power comes great responsibility. 
+is licenced under MIT. While I don't really care where and how you use this software, with great power comes great responsibility. 
 Using this software comes with one condition, that you please use the following bibtex citation:
 
 @inbook{10.1145/3411763.3451804,
