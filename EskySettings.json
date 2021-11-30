@@ -259,10 +259,10 @@
     "displayWindowSettings": {
         "DisplayXLoc": 0,
         "DisplayYLoc": 1080,
-        "DisplayWidth": 1366,
-        "DisplayHeight": 768,
-        "EyeTextureWidth": 1366,
-        "EyeTextureHeight": 1366
+        "DisplayWidth": 2880,
+        "DisplayHeight": 1600,
+        "EyeTextureWidth": 1600,
+        "EyeTextureHeight": 1440
     },
     "sensorModuleCalibrations": {
         "camID": 2,
