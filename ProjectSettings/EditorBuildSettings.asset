@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Examples/HandInteractionExamples.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Examples/NetworkingP2PExample.unity
     guid: ba344786805aac64aaaacceddfabed6d
   m_configObjects:
