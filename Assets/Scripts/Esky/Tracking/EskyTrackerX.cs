@@ -52,9 +52,9 @@ namespace BEERLabs.ProjectEsky.Tracking{
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
             EnablePassthrough(TrackerID,UseExternalCameraPreview);
             StartTrackerThread(TrackerID, false);    
-            AfterInitialization();     
+            AfterInitialization();
             SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
-            UpdateNewFilterValues();            
+            UpdateNewFilterValues();
         }
         public override void AfterStart()
         {
@@ -86,13 +86,13 @@ namespace BEERLabs.ProjectEsky.Tracking{
         {
 
             base.AfterUpdate();
-            if(UseExternalCameraPreview){
+            if (UseExternalCameraPreview){
                 if(hasInitializedTexture){
                     ChangeCameraParam(textureWidth,textureHeight);
                     HookDeviceToIntel(TrackerID);
                     hasInitializedTexture = false;
                     hasInitializedTracker = true;
-/*                    if(textureChannels == 4){
+                    if (textureChannels == 4){
                         tex = new RenderTexture(textureWidth,textureHeight,0,RenderTextureFormat.BGRA32);
                         tex.Create();
                         SetRenderTexturePointer(TrackerID, tex.GetNativeTexturePtr());
@@ -116,7 +116,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
                     if(doesSubscribe){
                         doesSubscribe = false;
                         SubscribeCallback(TrackerID,GetImage);  
-                    }*/
+                    }
                 }
             }
             else{
@@ -347,8 +347,13 @@ namespace BEERLabs.ProjectEsky.Tracking{
 
         [MonoPInvokeCallback(typeof(DeltaPoseUpdateCallback))]
         static void DeltaMatrixCallback(int TrackerID, IntPtr deltaPoseLeft, IntPtr deltaPoseRight){
-            if( ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer != null){         
-                ((EskyTrackerIntel)instances[TrackerID]).attachedRenderer.SetDeltas(deltaPoseLeft,deltaPoseRight);
+            try{
+                if( ((EskyTrackerX)instances[TrackerID]).attachedRenderer != null){     
+//                    Debug.Log("Calling back delta pose");    
+                    ((EskyTrackerX)instances[TrackerID]).attachedRenderer.SetDeltas(deltaPoseLeft,deltaPoseRight);
+                }
+            }catch(System.Exception e){
+                Debug.LogError(e);
             }
         }
 

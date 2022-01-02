@@ -119,6 +119,8 @@ namespace BEERLabs.ProjectEsky.Configurations{
         NorthStarV2,
         NorthStarV1,
         Ariel,
+        ArielMKII,
+        NorthStarXSensor,
         Custom        
     }
     [System.Serializable]
@@ -174,6 +176,7 @@ namespace BEERLabs.ProjectEsky.Configurations{
         public Leap.Unity.AR.WindowOffsetManager v1WindowManager;
         public Leap.Unity.AR.OpticalCalibrationManager v1Renderer;
         public BEERLabs.ProjectEsky.Tracking.EskyTrackerIntel intelRealsenseTracker;
+        public BEERLabs.ProjectEsky.Tracking.EskyTrackerX eskyTrackerX;
         public BEERLabs.ProjectEsky.Rendering.EskyNativeDxRenderer nativeDirectXrenderer;
         public BEERLabs.ProjectEsky.Extras.Modules.EskyRGBSensorModule RGBSensorModule;
 
@@ -235,7 +238,13 @@ namespace BEERLabs.ProjectEsky.Configurations{
                 }
                 if(intelRealsenseTracker != null){
                     intelRealsenseTracker.UseExternalCameraPreview = true;
+
                 }
+                if(eskyTrackerX != null)
+                {
+                    eskyTrackerX.UseExternalCameraPreview = true;
+                }
+
             }
 
             if(LoadedSettings.usesExternalRGBCamera){

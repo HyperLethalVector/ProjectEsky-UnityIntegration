@@ -299,6 +299,7 @@ namespace BEERLabs.ProjectEsky.Rendering{
                     myAttachedTracker.RenderResetFlag();
                 }                
                 if(myAttachedTrackerX != null){
+//                    Debug.Log("Setting Reset Flag");
                     myAttachedTrackerX.RenderResetFlag();
                 }
                 GL.IssuePluginEvent(GetRenderEventFunc(), 0);
@@ -342,7 +343,11 @@ namespace BEERLabs.ProjectEsky.Rendering{
             StartCoroutine(StopWindowCoroutine(id));
         }
         public void SetDeltas(IntPtr deltaLeft,IntPtr deltaRight){
-            SetDeltas(0,deltaLeft,deltaRight);
+            try{
+                SetDeltas(0,deltaLeft,deltaRight);
+            }catch(System.Exception e){
+                Debug.LogError(e);
+            }
         }
         IEnumerator StopWindowCoroutine(int id) {
             yield return new WaitForEndOfFrame();

@@ -145,6 +145,10 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
             g = GameObject.Find("CalibrationRig");
             if(g == null){
                 switch(es.rigToUse){
+                    case RigToUse.NorthStarXSensor:
+                    g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigXSensor") as GameObject);
+                    spawnedEskyRig = true;
+                    break;
                     case RigToUse.NorthStarV2:
                     g = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/V2Rigs/NorthStarRigV2") as GameObject);
                     spawnedEskyRig = true;                

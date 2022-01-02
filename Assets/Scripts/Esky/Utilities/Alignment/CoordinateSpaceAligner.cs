@@ -485,6 +485,7 @@ namespace BEERLabs.ProjectEsky.Calibrator
         }
 
     }
+        #if CALIBRATOR_ENABLED
 
     public class KabschSolver
     {
@@ -563,6 +564,7 @@ namespace BEERLabs.ProjectEsky.Calibrator
             return covariance;
         }
     }
+    #endif 
 
 
 }
