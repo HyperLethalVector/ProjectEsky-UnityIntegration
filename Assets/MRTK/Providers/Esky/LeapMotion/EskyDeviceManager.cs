@@ -179,6 +179,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
             g.SendMessage("ReceiveConfig",message);            
             g.transform.position = CameraCache.Main.transform.position;
             g.transform.rotation = CameraCache.Main.transform.rotation;
+            g.transform.parent = CameraCache.Main.transform.parent;
             GameObject.DestroyImmediate(CameraCache.Main.gameObject);
             g.SetActive(true);
             base.Enable();
