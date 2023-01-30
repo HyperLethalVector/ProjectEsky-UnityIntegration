@@ -197,7 +197,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Input
                 LeapMotionServiceProvider.transform.position += leapHandsOffset;                
                 break;
                 case EskyLeapControllerOrientation.Esky:
-                GameObject LeapProviderEsky =  g.transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
+                GameObject LeapProviderEsky =  GameObject.Find("LeapMotion");
                 if(LeapProviderEsky != null){
                     LeapMotionServiceProvider = LeapProviderEsky.GetComponent<LeapXRServiceProvider>();
                     Debug.Log("Setting the hand models");

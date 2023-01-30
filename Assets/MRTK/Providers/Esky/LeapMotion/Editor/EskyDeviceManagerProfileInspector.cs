@@ -127,6 +127,7 @@ namespace Microsoft.MixedReality.Toolkit.Esky.LeapMotion.Inspectors
                         case RigToUse.NorthStarV2:
                         case RigToUse.Ariel:
                         case RigToUse.ArielMKII:
+                        default:
                         EditorGUILayout.PropertyField(reprojectionSettings);
                         EditorGUILayout.PropertyField(nativeShaderToUse);                        
                         EditorGUILayout.PropertyField(targetFrameRate);

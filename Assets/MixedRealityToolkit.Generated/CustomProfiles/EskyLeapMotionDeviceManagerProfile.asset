@@ -17,7 +17,7 @@ MonoBehaviour:
   leapControllerOffset: {x: 0, y: -0.2, z: 0.2}
   enterPinchDistance: 0.02
   exitPinchDistance: 0.05
-  rigToUse: 0
+  rigToUse: 1
   customRig: {fileID: 0}
   sensorOffsets:
     TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}
@@ -26,9 +26,9 @@ MonoBehaviour:
     RotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
     RGBSensorTranslationFromTracker: {x: 0, y: 0, z: 0}
     RGBSensorRotationFromTracker: {x: 0, y: 0, z: 0, w: 0}
-  usesCameraPreview: 1
+  usesCameraPreview: 0
   targetFrameRate: 120
-  reprojectionSettings: 0
+  reprojectionSettings: 1
   nativeShaderToUse: 1
   myOffsets:
     TranslationEyeToLeapMotion: {x: 0, y: 0, z: 0}

@@ -887,7 +887,7 @@ GameObject:
   - component: {fileID: 2270713766064784064}
   - component: {fileID: 2270713766064784065}
   - component: {fileID: 2270713766064784094}
-  - component: {fileID: 1938216733753418008}
+  - component: {fileID: 3372310773096939931}
   m_Layer: 0
   m_Name: V1RigIntel
   m_TagString: Untagged
@@ -902,8 +902,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2270713766064784095}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: 0.0362, z: 0.0091}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2270713766075745597}
@@ -914,8 +914,8 @@ Transform:
   - {fileID: 6541339494566876317}
   - {fileID: 3990961168961597660}
   m_Father: {fileID: 1623928125278433849}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &2270713766064784064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,7 +988,7 @@ MonoBehaviour:
   adjustTrackerLeftKey: 260
   adjustTrackerRightKey: 262
   debugText: {fileID: 0}
---- !u!114 &1938216733753418008
+--- !u!114 &3372310773096939931
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -997,7 +997,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2270713766064784095}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6875b57a49687d5449fb40c72ff82523, type: 3}
+  m_Script: {fileID: 11500000, guid: 01a8920f7e6e2c64cb5cface6236d170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   myCalibrations:
@@ -1014,6 +1014,9 @@ MonoBehaviour:
     SensorHeight: 0
     SensorChannels: 0
     SensorFoV: 0
+  imageDataCallbacks:
+    m_PersistentCalls:
+      m_Calls: []
   hasInitializedTracker: 0
   applyDisplayTransform: 0
   TrackerCalibrationFileName: TrackerOffset.json
@@ -1030,23 +1033,11 @@ MonoBehaviour:
       m_Calls: []
   mapCollectedCallback:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ProjectEsky.Utilities.EskyMapSaverBasic, Assembly-CSharp
-        m_MethodName: ReceiveFile
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   velocity: {x: 0, y: 0, z: 0}
   velocityRotation: {x: 0, y: 0, z: 0}
-  smoothing: 0.000001
-  smoothingRotation: 1e-11
+  smoothing: 0.1
+  smoothingRotation: 0.1
   currentRealsensePose:
   - 0
   - 0
@@ -1133,103 +1124,103 @@ MonoBehaviour:
   previewCamera: {fileID: 6585833403110226984}
   tex: {fileID: 0}
   myImage: {fileID: 8906095263668707320}
-  UsesDeckXIntegrator: 1
-  comPort: 5
+  UsesDeckXIntegrator: 0
+  comPort: 0
   attachedRenderer: {fileID: 0}
   HeadPosePredictionOffsets:
-    HeadPosePredictionOffset: 0.05
+    HeadPosePredictionOffset: 0
   trackingSystemFilters:
     oldTrackingSystemFilters:
       FilterEnabled: 1
       TranslationFilterParameters:
-        Frequency: 200
-        MinimumCutoff: 10
-        Beta: 0.10000000149011612
-        DCutoff: 0.0010000000474974513
+        Frequency: 0
+        MinimumCutoff: 0
+        Beta: 0
+        DCutoff: 0
         Enabled: 1
       RotationFilterParameters:
-        Frequency: 200
-        MinimumCutoff: 10
-        Beta: 0.10000000149011612
-        DCutoff: 0.0010000000474974513
+        Frequency: 0
+        MinimumCutoff: 0
+        Beta: 0
+        DCutoff: 0
         Enabled: 1
       KTranslationFilterParams:
-        Q: 0.009999999776482582
-        R: 1.5
+        Q: 0
+        R: 0
         Enabled: 1
       KRrotationFilterParams:
-        Q: 0.2919999957084656
-        R: 7.110000133514404
+        Q: 0
+        R: 0
         Enabled: 1
       UseDollaryDooFilter: 1
       UseKalmanFilter: 1
     newTrackingSystemFilters:
       dollaryDooFilterParams:
         TranslationFilterParams:
-          Frequency: 200
-          MinimumCutoff: 10
-          Beta: 0.10000000149011612
+          Frequency: 0
+          MinimumCutoff: 0
+          Beta: 0
           DCutoff: 0
-          Enabled: 0
+          Enabled: 1
         RotationFilterParams:
-          Frequency: 200
-          MinimumCutoff: 10
-          Beta: 0.10000000149011612
+          Frequency: 0
+          MinimumCutoff: 0
+          Beta: 0
           DCutoff: 0
-          Enabled: 0
+          Enabled: 1
         VelocityFilterParams:
-          Frequency: 200
-          MinimumCutoff: 10
-          Beta: 0.10000000149011612
+          Frequency: 0
+          MinimumCutoff: 0
+          Beta: 0
           DCutoff: 0
-          Enabled: 0
+          Enabled: 1
         AccelerationFilterParams:
-          Frequency: 200
-          MinimumCutoff: 10
-          Beta: 0.10000000149011612
+          Frequency: 0
+          MinimumCutoff: 0
+          Beta: 0
           DCutoff: 0
-          Enabled: 0
+          Enabled: 1
         RotationVelocityFilterParams:
-          Frequency: 200
-          MinimumCutoff: 10
-          Beta: 69
+          Frequency: 0
+          MinimumCutoff: 0
+          Beta: 0
           DCutoff: 0
           Enabled: 1
         RotationAccelerationFilterParams:
-          Frequency: 200
-          MinimumCutoff: 10
-          Beta: 0.10000000149011612
+          Frequency: 0
+          MinimumCutoff: 0
+          Beta: 0
           DCutoff: 0
           Enabled: 1
       kalmanFilterParameters:
         TranslationFilterParams:
-          Q: 1
-          R: 10
-          Enabled: 0
+          Q: 0
+          R: 0
+          Enabled: 1
         RotationFilterParams:
-          Q: 1
-          R: 0.0010000000474974513
-          Enabled: 0
+          Q: 0
+          R: 0
+          Enabled: 1
         VelocityFilterParams:
-          Q: 0.0010000000474974513
-          R: 0.41999998688697815
+          Q: 0
+          R: 0
           Enabled: 1
         AccelerationFilterParams:
-          Q: 0.0010000000474974513
-          R: 5.070000171661377
+          Q: 0
+          R: 0
           Enabled: 1
         RotationVelocityFilterParams:
-          Q: 0.0010000000474974513
-          R: 4.070000171661377
+          Q: 0
+          R: 0
           Enabled: 1
         RotationAccelerationFilterParams:
-          Q: 0.0010000000474974513
-          R: 5.820000171661377
+          Q: 0
+          R: 0
           Enabled: 1
       slamDFilterEnabled: 1
       slamKFilterEnabled: 1
       DoUpdateValues: 0
-    trackingSystemUsed: 1
+    trackingSystemUsed: 0
   UseAsyncPosePredictor: 0
 --- !u!1 &2270713766075745594
 GameObject:
@@ -1241,6 +1232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2270713766075745597}
   - component: {fileID: 2270713766075745596}
+  - component: {fileID: 2008029214679404007}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -1286,6 +1278,19 @@ MonoBehaviour:
     description: None
     axisConstraint: 0
   handedness: 1
+--- !u!114 &2008029214679404007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2270713766075745594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25a11978ff7e36c4db32d02ff641157c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAR: 0
 --- !u!1 &2270713766077840704
 GameObject:
   m_ObjectHideFlags: 0
@@ -2925,7 +2930,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3027091531764239938
 Transform:
   m_ObjectHideFlags: 0
@@ -3253,6 +3258,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 2407435400744541370}
   - {fileID: 2270713766064784067}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -3271,7 +3277,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   v1WindowManager: {fileID: 2270713766064784064}
   v1Renderer: {fileID: 2270713766064784065}
-  intelRealsenseTracker: {fileID: 1938216733753418008}
+  intelRealsenseTracker: {fileID: 0}
+  eskyTrackerX: {fileID: 3372310773096939931}
   nativeDirectXrenderer: {fileID: 0}
   RGBSensorModule: {fileID: 945738837845913034}
   LeapMotionController: {fileID: 2270713767089028987}
@@ -3282,7 +3289,7 @@ MonoBehaviour:
   Rig: {fileID: 2270713766064784095}
   LoadedSettings:
     rigToUse: 2
-    targetFrameRate: 0
+    targetFrameRate: 30
     reprojectionSettings: 0
     nativeShaderToUse: 0
     myOffsets:
@@ -3408,6 +3415,8 @@ MonoBehaviour:
     usesExternalRGBCamera: 0
     UsesCameraPreview: 0
     UseTrackerOffsets: 0
+    UseNetworkingDebugVis: 0
+  NetworkDebugRig: {fileID: 0}
 --- !u!1 &5428640251783798792
 GameObject:
   m_ObjectHideFlags: 0
@@ -3480,6 +3489,112 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!1 &7867913207640483346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2407435400744541370}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2407435400744541370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7867913207640483346}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1489706433019520}
+  m_Father: {fileID: 1623928125278433849}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &544921932089203051
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2407435400744541370}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8e5a574f7c9d5f64683950eac3656729,
+        type: 3}
+      propertyPath: m_Name
+      value: Deck_Zero_220122
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8e5a574f7c9d5f64683950eac3656729, type: 3}
+--- !u!4 &1489706433019520 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8e5a574f7c9d5f64683950eac3656729,
+    type: 3}
+  m_PrefabInstance: {fileID: 544921932089203051}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4443283347964459638
 PrefabInstance:
   m_ObjectHideFlags: 0

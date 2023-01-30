@@ -208,8 +208,6 @@ namespace BEERLabs.ProjectEsky.Configurations{
             LoadedSettings = JsonUtility.FromJson<EskySettings>(config);
             LeapMotionController.localPosition = LoadedSettings.myOffsets.TranslationEyeToLeapMotion;
             LeapMotionController.localRotation = LoadedSettings.myOffsets.RotationEyeToLeapMotion;
-  //          GameObject gg = GameObject.Instantiate<GameObject>(Resources.Load("EskyRigs/HandModels") as GameObject);
-//            gg.GetComponent<HandModelManager>().leapProvider = LeapMotionController.GetComponent<LeapXRServiceProvider>();
             if(LoadedSettings.UseTrackerOffsets){
                 RigCenter.localPosition = LoadedSettings.myOffsets.TranslationFromTracker;
                 RigCenter.localRotation = LoadedSettings.myOffsets.RotationFromTracker;
@@ -244,7 +242,6 @@ namespace BEERLabs.ProjectEsky.Configurations{
                 {
                     eskyTrackerX.UseExternalCameraPreview = true;
                 }
-
             }
 
             if(LoadedSettings.usesExternalRGBCamera){

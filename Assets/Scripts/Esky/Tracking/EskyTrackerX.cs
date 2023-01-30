@@ -50,7 +50,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
             if(attachedRenderer != null)
             RegisterDeltaPoseUpdate(TrackerID, DeltaMatrixCallback);
             RegisterLocalizationCallback(TrackerID, OnLocalization);            
-            EnablePassthrough(TrackerID,UseExternalCameraPreview);
+          //  EnablePassthrough(TrackerID,UseExternalCameraPreview);
             StartTrackerThread(TrackerID, false);    
             AfterInitialization();
             SetTextureInitializedCallback(TrackerID, OnTextureInitialized);     
@@ -206,7 +206,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
         }
         public override void ObtainPose(){
             if(ApplyPoses){
-                switch(trackingSystemFilters.trackingSystemUsed){
+/*                switch(trackingSystemFilters.trackingSystemUsed){
                     case TrackingSystemUsed.NEW:
                         IntPtr ptr = GetLatestTimestampPose(TrackerID);                 
                         Marshal.Copy(ptr, currentRealsensePoseExt, 0, 7);
@@ -219,7 +219,12 @@ namespace BEERLabs.ProjectEsky.Tracking{
                         transform.position =  new Vector3(currentRealsensePose[0],currentRealsensePose[1],currentRealsensePose[2]);
                         transform.rotation = new Quaternion(currentRealsensePose[3],currentRealsensePose[4],currentRealsensePose[5],currentRealsensePose[6]); 
                         break;
-                }
+                }*/
+                IntPtr ptr = GetLatestTimestampPose(TrackerID);                 
+                Marshal.Copy(ptr, currentRealsensePoseExt, 0, 7);
+                transform.position =  new Vector3((float)currentRealsensePoseExt[0],-(float)currentRealsensePoseExt[1],(float)currentRealsensePoseExt[2]);
+                transform.rotation = new Quaternion(-(float)currentRealsensePoseExt[3],(float)currentRealsensePoseExt[4],-(float)currentRealsensePoseExt[5],(float)currentRealsensePoseExt[6]);
+
             }
         } 
         public override void SaveEskyMapInformation(){
