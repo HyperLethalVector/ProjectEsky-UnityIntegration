@@ -1,5 +1,5 @@
 {
-    "rigToUse": 4,
+    "rigToUse": 0,
     "targetFrameRate": 120,
     "reprojectionSettings": 0,
     "nativeShaderToUse": 0,
@@ -280,7 +280,7 @@
         "SensorFoV": 78.0
     },
     "usesExternalRGBCamera": false,
-    "UsesCameraPreview": true,
+    "UsesCameraPreview": false,
     "UseTrackerOffsets": false,
     "UseNetworkingDebugVis": false
 }
