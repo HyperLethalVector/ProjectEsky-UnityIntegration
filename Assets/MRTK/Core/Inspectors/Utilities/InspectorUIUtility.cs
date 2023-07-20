@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
+
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.Utilities.Editor
@@ -650,7 +650,7 @@ namespace Microsoft.MixedReality.Toolkit.Utilities.Editor
                     else
                     {
                         bool isNestedInCurrentPrefab = false;
-                        var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                        var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
                         if (prefabStage != null)
                         {
                             var instancePath = AssetDatabase.GetAssetPath(scriptable.objectReferenceValue);

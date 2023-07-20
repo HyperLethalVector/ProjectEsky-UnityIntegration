@@ -104,10 +104,12 @@ namespace Microsoft.MixedReality.Toolkit.MSBuild
         /// <returns>True if the operation was successful.</returns>
         public static bool TryGetGuidForAsset(FileInfo assetPath, out Guid guid)
         {
+            Guid gguid = default;
             string metaFile = $"{assetPath.FullName}.meta";
 
             if (!File.Exists(metaFile))
             {
+                gguid = default;
                 guid = default;
                 return false;
             }
@@ -127,9 +129,9 @@ namespace Microsoft.MixedReality.Toolkit.MSBuild
                     }
                 }
             }
-
-            if (guid != null && Guid.TryParse(guidString, out guid))
+            if (gguid != null && Guid.TryParse(guidString, out gguid))
             {
+                guid = gguid;
                 return true;
             }
 
