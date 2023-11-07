@@ -109,28 +109,28 @@ float4 resolveWithoutDistortion(float xSettled, float ySettled){
 float4 resolveWithDistortion(float xSettled, float ySettled){
     if(xSettled < 0.5){//we render the left eye
         float2 newTex = float2(xSettled*2,ySettled);// input quad UV in world space (should be between 0-1)
-        float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, rightUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, rightUvToRectY), 1.0); //resolve the 2D polynomial to get a modified world space UV
-        float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixRight,rectilinear_coordinate); //project back into screen space
-        distorted_uv += float2(offsets.z,offsets.w); //apply a screen space UV offset
+        float3 rectilinear_coordinate = float3(polyval2d(newTex.x, newTex.y, leftUvToRectX), -polyval2d(newTex.x, newTex.y, leftUvToRectY), -1.0); //resolve the 2D polynomial to get a modified world space UV
+        float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixLeft,rectilinear_coordinate); //project back into screen space
+        //distorted_uv += float2(offsets.z,offsets.w); //apply a screen space UV offset
         if(toggleConfigs.x == 0.0){
             distorted_uv = resolveTemporalWarping(distorted_uv,DeltaPoseLeft);        //Should do things here for reprojection ....
         }
-        if(distorted_uv.x < eyeBordersRight.x || distorted_uv.x > eyeBordersRight.y || distorted_uv.y < eyeBordersRight.z || distorted_uv.y > eyeBordersRight.w)//ensure the UVS are within the set bounds for the eye
+        if(distorted_uv.x < eyeBordersLeft.x || distorted_uv.x > eyeBordersLeft.y || distorted_uv.y < eyeBordersLeft.z || distorted_uv.y > eyeBordersLeft.w)//ensure the UVS are within the set bounds for the eye
         return float4(0.0,0.0,0.0,1.0);//if outside, return black (prevent)
         else
-        return txDiffuseLeft.Sample(samLinear, distorted_uv)* toggleConfigs.y;
+        return txDiffuseRight.Sample(samLinear, distorted_uv)* toggleConfigs.y;
     }else{//we render the right eye
         float2 newTex = float2((xSettled-0.5)*2,ySettled);  
-        float3 rectilinear_coordinate = float3(polyval2d(1.0-newTex.x, newTex.y, leftUvToRectX),polyval2d(1.0 - newTex.x, newTex.y, leftUvToRectY), 1.0);
-        float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixLeft,rectilinear_coordinate);
-        distorted_uv += float2(offsets.x,offsets.y);
+        float3 rectilinear_coordinate = float3(polyval2d(newTex.x, newTex.y, rightUvToRectX), -polyval2d(newTex.x, newTex.y, rightUvToRectY), -1.0);
+        float2 distorted_uv = WorldToViewportInnerVec(cameraMatrixRight,rectilinear_coordinate);
+        //distorted_uv += float2(offsets.x,offsets.y);
         if(toggleConfigs.x == 0.0){
             distorted_uv = resolveTemporalWarping(distorted_uv,DeltaPoseRight);        
         }
-        if(distorted_uv.x < eyeBordersLeft.x || distorted_uv.x > eyeBordersLeft.y || distorted_uv.y < eyeBordersLeft.z || distorted_uv.y > eyeBordersLeft.w)
+        if(distorted_uv.x < eyeBordersRight.x || distorted_uv.x > eyeBordersRight.y || distorted_uv.y < eyeBordersRight.z || distorted_uv.y > eyeBordersRight.w)
         return float4(0.0,0.0,0.0,1.0);
         else
-        return txDiffuseRight.Sample(samLinear, distorted_uv)* toggleConfigs.y;        
+        return txDiffuseLeft.Sample(samLinear, distorted_uv)* toggleConfigs.y;        
     }
     return float4(0.0,0.0,0.0,1.0);
 }
@@ -161,7 +161,7 @@ float4 resolveWithLuT(float xSettled, float ySettled){
 //note the left and right eyes are flipped due to the NorthStar rendering being upside down
 float4 PShader(float4 position : SV_POSITION, float2 tex: TEXCOORD) : SV_TARGET
 {
-    float xSettled = 1.0-(tex.x); // flip the X axis since the screen is upside down
+    float xSettled = tex.x; // flip the X axis since the screen is upside down
     float ySettled = tex.y; //we can use the raw Y
     return resolveWithDistortion(xSettled,ySettled);
 }
