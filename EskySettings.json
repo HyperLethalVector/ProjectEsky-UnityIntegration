@@ -6,14 +6,14 @@
     "myOffsets": {
         "TranslationEyeToLeapMotion": {
             "x": 0.0,
-            "y": 0.063,
-            "z": 0.0551
+            "y": 0.06300000101327896,
+            "z": 0.05510000139474869
         },
         "RotationEyeToLeapMotion": {
-            "x": 0.194,
+            "x": 0.1940000057220459,
             "y": 0.0,
             "z": 0.0,
-            "w": 0.981
+            "w": 0.9810000061988831
         },
         "TranslationFromTracker": {
             "x": 0.0,
