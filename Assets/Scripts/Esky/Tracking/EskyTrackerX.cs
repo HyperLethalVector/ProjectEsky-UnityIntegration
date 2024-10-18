@@ -30,6 +30,8 @@ namespace BEERLabs.ProjectEsky.Tracking{
         bool setParametersFilterFirstTime = false;
         public bool UseAsyncPosePredictor = false;
         
+        public int slamMode = 1; //0 edge, 1 mixed
+
         bool _useDollaryDooFilter = false;
         bool _useKalmanFilter = false;
         bool _filterEnabled;        
@@ -40,7 +42,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
             RegisterDebugCallback(OnDebugCallback);    
             LoadCalibration();
             Debug.Log("Initializing track");
-            InitializeTrackerObject(TrackerID);       
+            InitializeTrackerObject(TrackerID, slamMode);
             Debug.Log("Done initializing tracker object");            
             RegisterBinaryMapCallback(TrackerID,OnMapCallback);
             RegisterObjectPoseCallback(TrackerID, OnLocalizationPoseReceivedCallback);
@@ -410,7 +412,7 @@ namespace BEERLabs.ProjectEsky.Tracking{
         public static extern IntPtr GetLatestPose(int TrackerID);
  
         [DllImport("libProjectEskyLLAPIX")]
-        public static extern void InitializeTrackerObject(int TrackerID);
+        public static extern void InitializeTrackerObject(int TrackerID, int slamMode);
         
  
         [DllImport("libProjectEskyLLAPIX")]
